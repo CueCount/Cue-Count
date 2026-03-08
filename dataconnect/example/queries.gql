@@ -1,0 +1,91 @@
+query GetPerspective($id: UUID!) @auth(level: USER) {
+  perspective(id: $id) {
+    id
+    name
+    slug
+    plan
+    createdAt
+  }
+}
+
+query GetPerspectiveMembers($perspectiveId: UUID!) @auth(level: USER) {
+  perspectiveMembers(where: { perspectiveId: { eq: $perspectiveId } }) {
+    userId
+    role
+    createdAt
+  }
+}
+
+query GetStoriesByPerspective($perspectiveId: UUID!) @auth(level: USER) {
+  stories(where: { perspectiveId: { eq: $perspectiveId } }) {
+    id
+    name
+    createdAt
+    focalTrend {
+      id
+      name
+      unit
+      frequency
+    }
+  }
+}
+
+query GetTrend($id: UUID!) @auth(level: USER) {
+  trend(id: $id) {
+    id
+    name
+    unit
+    description
+    source
+    frequency
+    createdAt
+  }
+}
+
+query GetStory($id: UUID!) @auth(level: USER) {
+  story(id: $id) {
+    id
+    name
+    createdAt
+    focalTrend {
+      id
+      name
+      unit
+      frequency
+    }
+    connections: connections_on_story {
+      id
+      sourceType
+      sourceTrend {
+        id
+        name
+      }
+      targetType
+      targetTrend {
+        id
+        name
+      }
+      direction
+      weight
+    }
+    variants: variants_on_story {
+      id
+      name
+      trend {
+        id
+        name
+      }
+    }
+  }
+}
+
+query SearchTrends($name: String!) @auth(level: USER) {
+  trends(where: { name: { contains: $name } }) {
+    id
+    name
+    unit
+    description
+    frequency
+    source
+  }
+}

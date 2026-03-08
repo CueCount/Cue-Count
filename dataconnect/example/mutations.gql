@@ -1,0 +1,58 @@
+mutation CreatePerspective($name: String!, $slug: String!, $createdBy: String!) @auth(level: USER) {
+  perspective_insert(data: {
+    name: $name
+    slug: $slug
+    createdBy: $createdBy
+  })
+}
+
+mutation AddPerspectiveMember($perspectiveId: UUID!, $userId: String!, $role: String!) @auth(level: USER) {
+  perspectiveMember_insert(data: {
+    perspectiveId: $perspectiveId
+    userId: $userId
+    role: $role
+  })
+}
+
+mutation CreateTrend($name: String!, $unit: String, $description: String, $source: String!, $frequency: String!, $createdBy: String!) @auth(level: USER) {
+  trend_insert(data: {
+    name: $name
+    unit: $unit
+    description: $description
+    source: $source
+    frequency: $frequency
+    createdBy: $createdBy
+  })
+}
+
+mutation CreateStory($perspectiveId: UUID!, $focalTrendId: UUID!, $name: String!, $createdBy: String!) @auth(level: USER) {
+  story_insert(data: {
+    perspectiveId: $perspectiveId
+    focalTrendId: $focalTrendId
+    name: $name
+    createdBy: $createdBy
+  })
+}
+
+mutation CreateConnection($storyId: UUID!, $sourceType: String!, $sourceTrendId: UUID, $sourceConnectionId: UUID, $targetType: String!, $targetTrendId: UUID, $targetConnectionId: UUID, $direction: String!, $weight: Float!) @auth(level: USER) {
+  connection_insert(data: {
+    storyId: $storyId
+    sourceType: $sourceType
+    sourceTrendId: $sourceTrendId
+    sourceConnectionId: $sourceConnectionId
+    targetType: $targetType
+    targetTrendId: $targetTrendId
+    targetConnectionId: $targetConnectionId
+    direction: $direction
+    weight: $weight
+  })
+}
+
+mutation CreateVariant($storyId: UUID!, $trendId: UUID!, $name: String, $createdBy: String!) @auth(level: USER) {
+  variant_insert(data: {
+    storyId: $storyId
+    trendId: $trendId
+    name: $name
+    createdBy: $createdBy
+  })
+}

@@ -1,0 +1,38 @@
+[
+  {
+    "id": "story-0001-0000-0000-000000000001",
+    "perspectiveId": "persp-0002-0000-0000-000000000002",
+    "focalTrendId": "trend-0001-0000-0000-000000000001",
+    "name": "Is US population growth slowing across major states?",
+    "createdBy": "user-firebase-uid-001",
+    "createdAt": "2024-02-01T10:00:00Z",
+    "updatedAt": "2024-12-01T10:00:00Z"
+  },
+  {
+    "id": "story-0002-0000-0000-000000000002",
+    "perspectiveId": "persp-0002-0000-0000-000000000002",
+    "focalTrendId": "trend-0004-0000-0000-000000000004",
+    "name": "Is labor force participation recovering post-pandemic?",
+    "createdBy": "user-firebase-uid-001",
+    "createdAt": "2024-02-05T10:00:00Z",
+    "updatedAt": "2024-12-01T10:00:00Z"
+  },
+  {
+    "id": "story-0003-0000-0000-000000000003",
+    "perspectiveId": "persp-0002-0000-0000-000000000002",
+    "focalTrendId": "trend-0006-0000-0000-000000000006",
+    "name": "Are Sun Belt home prices diverging from wage growth?",
+    "createdBy": "user-firebase-uid-001",
+    "createdAt": "2024-02-10T10:00:00Z",
+    "updatedAt": "2024-12-01T10:00:00Z"
+  },
+  {
+    "id": "story-0004-0000-0000-000000000004",
+    "perspectiveId": "persp-0003-0000-0000-000000000003",
+    "focalTrendId": "trend-0007-0000-0000-000000000007",
+    "name": "Is US shale output outpacing OPEC supply cuts?",
+    "createdBy": "user-firebase-uid-002",
+    "createdAt": "2024-02-10T10:00:00Z",
+    "updatedAt": "2024-12-01T10:00:00Z"
+  }
+]

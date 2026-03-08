@@ -1,23 +1,37 @@
 "use client";
 
 import { useState } from "react";
-import mockPerspectives from "@/data/mock/perspectives.json";
-import type { PerspectiveRow } from "@/types/db";
+import { useParams } from "next/navigation";
 import WorkspaceCard from "@/components/WorkspaceCard";
 import WorkspaceSidebar from "@/components/WorkspaceSidebar";
 import Breadcrumb from "@/components/Breadcrumb";
+import mockPerspectives from "@/data/mock/perspectives.json";
+import mockStories from "@/data/mock/stories.json";
+import type { PerspectiveRow, StoryRow } from "@/types/db";
 
-const perspectives = mockPerspectives as PerspectiveRow[];
+export default function PerspectivePage() {
+  const params = useParams();
+  const perspectiveId = params.id as string;
 
-export default function HomePage() {
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+
+  // Look up perspective metadata from mock JSON
+  const perspective = (mockPerspectives as PerspectiveRow[]).find(
+    (p) => p.id === perspectiveId
+  );
+
+  // Get all stories belonging to this perspective
+  const allStories = (mockStories as StoryRow[]).filter(
+    (s) => s.perspectiveId === perspectiveId
+  );
 
   return (
     <div className="flex flex-col min-h-screen">
 
       <Breadcrumb items={[
         { label: "Home", href: "/" },
-        { label: "Perspectives" },
+        { label: "Perspectives", href: "/" },
+        { label: perspective?.name ?? "Perspective" },
       ]} />
 
       <div className="flex flex-1">
@@ -30,27 +44,27 @@ export default function HomePage() {
         </aside>
 
         <main className="flex-1 px-8 py-6 flex flex-col gap-6">
-          {perspectives.length > 0 ? (
+          {allStories.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-              {perspectives.map((perspective, index) => (
+              {allStories.map((story, index) => (
                 <WorkspaceCard
-                  key={perspective.id}
+                  key={story.id}
                   workspace={{
-                    id: perspective.id,
-                    title: perspective.name,
+                    id: story.id,
+                    title: story.name,
                     projections: 0,
                     contributors: 0,
                     hasNewData: false,
                     tags: [],
                   }}
                   index={index}
-                  href={`/perspective/${perspective.id}`}
+                  href={`/story/${story.id}`}
                 />
               ))}
             </div>
           ) : (
             <div className="flex items-center justify-center h-64 text-zinc-400 text-sm">
-              No perspectives found.
+              No stories found for this perspective.
             </div>
           )}
         </main>

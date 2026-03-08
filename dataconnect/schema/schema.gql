@@ -1,0 +1,77 @@
+type Perspective @table {
+  id: UUID! @default(expr: "uuidV4()")
+  name: String!
+  slug: String! @unique
+  createdBy: String!
+  plan: String! @default(expr: "'free'")
+  createdAt: Timestamp! @default(expr: "request.time")
+}
+
+type PerspectiveMember @table {
+  perspective: Perspective!
+  userId: String!
+  role: String!
+  createdAt: Timestamp! @default(expr: "request.time")
+}
+
+type Trend @table {
+  id: UUID! @default(expr: "uuidV4()")
+  name: String!
+  unit: String
+  description: String
+  source: String!
+  frequency: String!
+  externalId: String
+  createdBy: String!
+  createdAt: Timestamp! @default(expr: "request.time")
+  updatedAt: Timestamp! @default(expr: "request.time")
+}
+
+type TrendValue @table {
+  id: UUID! @default(expr: "uuidV4()")
+  trend: Trend!
+  index: Int!
+  value: Float!
+  timestamp: Timestamp!
+}
+
+type Story @table {
+  id: UUID! @default(expr: "uuidV4()")
+  perspective: Perspective!
+  focalTrend: Trend!
+  name: String!
+  createdBy: String!
+  createdAt: Timestamp! @default(expr: "request.time")
+  updatedAt: Timestamp! @default(expr: "request.time")
+}
+
+type Variant @table {
+  id: UUID! @default(expr: "uuidV4()")
+  story: Story!
+  trend: Trend!
+  name: String
+  createdBy: String!
+  createdAt: Timestamp! @default(expr: "request.time")
+}
+
+type VariantValue @table {
+  id: UUID! @default(expr: "uuidV4()")
+  variant: Variant!
+  index: Int!
+  value: Float!
+  timestamp: Timestamp!
+}
+
+type Connection @table {
+  id: UUID! @default(expr: "uuidV4()")
+  story: Story!
+  sourceType: String!
+  sourceTrend: Trend
+  sourceConnection: Connection
+  targetType: String!
+  targetTrend: Trend
+  targetConnection: Connection
+  direction: String!
+  weight: Float!
+  createdAt: Timestamp! @default(expr: "request.time")
+}

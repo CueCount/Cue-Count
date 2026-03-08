@@ -1,0 +1,34 @@
+[
+  {
+    "id": "persp-0001-0000-0000-000000000001",
+    "name": "AbCellera Investment Analysis",
+    "slug": "abcellera-investment",
+    "createdBy": "user-firebase-uid-001",
+    "plan": "pro",
+    "createdAt": "2024-01-15T10:00:00Z"
+  },
+  {
+    "id": "persp-0002-0000-0000-000000000002",
+    "name": "US Macro Trends",
+    "slug": "us-macro-trends",
+    "createdBy": "user-firebase-uid-001",
+    "plan": "free",
+    "createdAt": "2024-02-01T09:00:00Z"
+  },
+  {
+    "id": "persp-0003-0000-0000-000000000003",
+    "name": "Energy Markets",
+    "slug": "energy-markets",
+    "createdBy": "user-firebase-uid-002",
+    "plan": "free",
+    "createdAt": "2024-02-10T14:00:00Z"
+  },
+  {
+    "id": "persp-0004-0000-0000-000000000004",
+    "name": "Consumer Economy",
+    "slug": "consumer-economy",
+    "createdBy": "user-firebase-uid-001",
+    "plan": "free",
+    "createdAt": "2024-03-01T11:00:00Z"
+  }
+]

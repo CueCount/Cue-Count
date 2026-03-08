@@ -1,0 +1,426 @@
+extend type Query {
+  """
+  ✨ Look up a single `Connection` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  connection(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Connection_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Connection_FirstRow
+  ): Connection @fdc_generated(from: "Connection", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `Perspective` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  perspective(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Perspective_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Perspective_FirstRow
+  ): Perspective @fdc_generated(from: "Perspective", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `PerspectiveMember` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  perspectiveMember(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: PerspectiveMember_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: PerspectiveMember_FirstRow
+  ): PerspectiveMember @fdc_generated(from: "PerspectiveMember", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `Story` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  story(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Story_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Story_FirstRow
+  ): Story @fdc_generated(from: "Story", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `Trend` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  trend(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Trend_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Trend_FirstRow
+  ): Trend @fdc_generated(from: "Trend", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `TrendValue` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  trendValue(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: TrendValue_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: TrendValue_FirstRow
+  ): TrendValue @fdc_generated(from: "TrendValue", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `Variant` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  variant(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Variant_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Variant_FirstRow
+  ): Variant @fdc_generated(from: "Variant", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `VariantValue` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  variantValue(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: VariantValue_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: VariantValue_FirstRow
+  ): VariantValue @fdc_generated(from: "VariantValue", purpose: QUERY_SINGLE)
+  """
+  ✨ List `Connection` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  connections(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Connection_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Connection_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Connection_Having
+  ): [Connection!]! @fdc_generated(from: "Connection", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `Perspective` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  perspectives(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Perspective_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Perspective_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Perspective_Having
+  ): [Perspective!]! @fdc_generated(from: "Perspective", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `PerspectiveMember` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  perspectiveMembers(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: PerspectiveMember_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [PerspectiveMember_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: PerspectiveMember_Having
+  ): [PerspectiveMember!]! @fdc_generated(from: "PerspectiveMember", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `Story` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  stories(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Story_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Story_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Story_Having
+  ): [Story!]! @fdc_generated(from: "Story", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `Trend` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  trends(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Trend_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Trend_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Trend_Having
+  ): [Trend!]! @fdc_generated(from: "Trend", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `TrendValue` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  trendValues(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: TrendValue_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [TrendValue_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: TrendValue_Having
+  ): [TrendValue!]! @fdc_generated(from: "TrendValue", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `Variant` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  variants(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Variant_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Variant_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Variant_Having
+  ): [Variant!]! @fdc_generated(from: "Variant", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `VariantValue` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  variantValues(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: VariantValue_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [VariantValue_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: VariantValue_Having
+  ): [VariantValue!]! @fdc_generated(from: "VariantValue", purpose: QUERY_MULTIPLE)
+}

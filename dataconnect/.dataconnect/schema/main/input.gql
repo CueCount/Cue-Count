@@ -1,0 +1,2740 @@
+"""
+✨ `Connection_KeyOutput` returns the primary key fields of table type `Connection`.
+
+It has the same format as `Connection_Key`, but is only used as mutation return value.
+"""
+scalar Connection_KeyOutput
+"""
+✨ `Perspective_KeyOutput` returns the primary key fields of table type `Perspective`.
+
+It has the same format as `Perspective_Key`, but is only used as mutation return value.
+"""
+scalar Perspective_KeyOutput
+"""
+✨ `PerspectiveMember_KeyOutput` returns the primary key fields of table type `PerspectiveMember`.
+
+It has the same format as `PerspectiveMember_Key`, but is only used as mutation return value.
+"""
+scalar PerspectiveMember_KeyOutput
+"""
+✨ `Story_KeyOutput` returns the primary key fields of table type `Story`.
+
+It has the same format as `Story_Key`, but is only used as mutation return value.
+"""
+scalar Story_KeyOutput
+"""
+✨ `Trend_KeyOutput` returns the primary key fields of table type `Trend`.
+
+It has the same format as `Trend_Key`, but is only used as mutation return value.
+"""
+scalar Trend_KeyOutput
+"""
+✨ `TrendValue_KeyOutput` returns the primary key fields of table type `TrendValue`.
+
+It has the same format as `TrendValue_Key`, but is only used as mutation return value.
+"""
+scalar TrendValue_KeyOutput
+"""
+✨ `Variant_KeyOutput` returns the primary key fields of table type `Variant`.
+
+It has the same format as `Variant_Key`, but is only used as mutation return value.
+"""
+scalar Variant_KeyOutput
+"""
+✨ `VariantValue_KeyOutput` returns the primary key fields of table type `VariantValue`.
+
+It has the same format as `VariantValue_Key`, but is only used as mutation return value.
+"""
+scalar VariantValue_KeyOutput
+"""
+✨ Generated data input type for table 'Connection'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input Connection_Data {
+  """
+  ✨ Generated from Field `Connection`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Connection`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Connection`.`sourceConnectionId` of type `UUID`
+  """
+  sourceConnectionId: UUID
+  """
+  ✨ `_expr` server value variant of `sourceConnectionId` (✨ Generated from Field `Connection`.`sourceConnectionId` of type `UUID`)
+  """
+  sourceConnectionId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Connection`.`sourceTrendId` of type `UUID`
+  """
+  sourceTrendId: UUID
+  """
+  ✨ `_expr` server value variant of `sourceTrendId` (✨ Generated from Field `Connection`.`sourceTrendId` of type `UUID`)
+  """
+  sourceTrendId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Connection`.`storyId` of type `UUID!`
+  """
+  storyId: UUID
+  """
+  ✨ `_expr` server value variant of `storyId` (✨ Generated from Field `Connection`.`storyId` of type `UUID!`)
+  """
+  storyId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Connection`.`targetConnectionId` of type `UUID`
+  """
+  targetConnectionId: UUID
+  """
+  ✨ `_expr` server value variant of `targetConnectionId` (✨ Generated from Field `Connection`.`targetConnectionId` of type `UUID`)
+  """
+  targetConnectionId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Connection`.`targetTrendId` of type `UUID`
+  """
+  targetTrendId: UUID
+  """
+  ✨ `_expr` server value variant of `targetTrendId` (✨ Generated from Field `Connection`.`targetTrendId` of type `UUID`)
+  """
+  targetTrendId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Connection`.`sourceConnection` of type `Connection`
+  """
+  sourceConnection: Connection_Key
+  """
+  ✨ Generated from Field `Connection`.`sourceTrend` of type `Trend`
+  """
+  sourceTrend: Trend_Key
+  """
+  ✨ Generated from Field `Connection`.`story` of type `Story!`
+  """
+  story: Story_Key
+  """
+  ✨ Generated from Field `Connection`.`targetConnection` of type `Connection`
+  """
+  targetConnection: Connection_Key
+  """
+  ✨ Generated from Field `Connection`.`targetTrend` of type `Trend`
+  """
+  targetTrend: Trend_Key
+  """
+  ✨ Generated from Field `Connection`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `Connection`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `Connection`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `Connection`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `Connection`.`direction` of type `String!`
+  """
+  direction: String
+  """
+  ✨ `_expr` server value variant of `direction` (✨ Generated from Field `Connection`.`direction` of type `String!`)
+  """
+  direction_expr: String_Expr
+  """
+  ✨ Generated from Field `Connection`.`sourceType` of type `String!`
+  """
+  sourceType: String
+  """
+  ✨ `_expr` server value variant of `sourceType` (✨ Generated from Field `Connection`.`sourceType` of type `String!`)
+  """
+  sourceType_expr: String_Expr
+  """
+  ✨ Generated from Field `Connection`.`targetType` of type `String!`
+  """
+  targetType: String
+  """
+  ✨ `_expr` server value variant of `targetType` (✨ Generated from Field `Connection`.`targetType` of type `String!`)
+  """
+  targetType_expr: String_Expr
+  """
+  ✨ Generated from Field `Connection`.`weight` of type `Float!`
+  """
+  weight: Float
+  """
+  ✨ `_expr` server value variant of `weight` (✨ Generated from Field `Connection`.`weight` of type `Float!`)
+  """
+  weight_expr: Float_Expr
+  """
+  ✨ `_update` server value variant of `weight` (✨ Generated from Field `Connection`.`weight` of type `Float!`)
+  """
+  weight_update: [Float_Update!]
+}
+"""
+✨ Generated filter input type for table 'Connection'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Connection_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [Connection_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: Connection_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [Connection_Filter!]
+  """
+  ✨ Generated from Field `Connection`.`id` of type `UUID!`
+  """
+  id: UUID_Filter
+  """
+  ✨ Generated from Field `Connection`.`sourceConnectionId` of type `UUID`
+  """
+  sourceConnectionId: UUID_Filter
+  """
+  ✨ Generated from Field `Connection`.`sourceTrendId` of type `UUID`
+  """
+  sourceTrendId: UUID_Filter
+  """
+  ✨ Generated from Field `Connection`.`storyId` of type `UUID!`
+  """
+  storyId: UUID_Filter
+  """
+  ✨ Generated from Field `Connection`.`targetConnectionId` of type `UUID`
+  """
+  targetConnectionId: UUID_Filter
+  """
+  ✨ Generated from Field `Connection`.`targetTrendId` of type `UUID`
+  """
+  targetTrendId: UUID_Filter
+  """
+  ✨ Generated from Field `Connection`.`sourceConnection` of type `Connection`
+  """
+  sourceConnection: Connection_Filter
+  """
+  ✨ Generated from Field `Connection`.`sourceTrend` of type `Trend`
+  """
+  sourceTrend: Trend_Filter
+  """
+  ✨ Generated from Field `Connection`.`story` of type `Story!`
+  """
+  story: Story_Filter
+  """
+  ✨ Generated from Field `Connection`.`targetConnection` of type `Connection`
+  """
+  targetConnection: Connection_Filter
+  """
+  ✨ Generated from Field `Connection`.`targetTrend` of type `Trend`
+  """
+  targetTrend: Trend_Filter
+  """
+  ✨ Generated from Field `Connection`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `Connection`.`direction` of type `String!`
+  """
+  direction: String_Filter
+  """
+  ✨ Generated from Field `Connection`.`sourceType` of type `String!`
+  """
+  sourceType: String_Filter
+  """
+  ✨ Generated from Field `Connection`.`targetType` of type `String!`
+  """
+  targetType: String_Filter
+  """
+  ✨ Generated from Field `Connection`.`weight` of type `Float!`
+  """
+  weight: Float_Filter
+  """
+  ✨ Generated from Field `Connection`.`connections_on_sourceConnection` of type `[Connection!]!`
+  """
+  connections_on_sourceConnection: Connection_ListFilter
+  """
+  ✨ Generated from Field `Connection`.`connections_on_targetConnection` of type `[Connection!]!`
+  """
+  connections_on_targetConnection: Connection_ListFilter
+}
+"""
+✨ Generated first-row input type for table 'Connection'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input Connection_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [Connection_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: Connection_Filter
+}
+"""
+✨ Generated having input type for table 'Connection'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Connection_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [Connection_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: Connection_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [Connection_Having!]
+  """
+  ✨ Generated from Field `Connection`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `Connection`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: Int_Filter
+  """
+  ✨ Generated from Field `Connection`.`direction_count` of type `Int!`
+  """
+  direction_count: Int_Filter
+  """
+  ✨ Generated from Field `Connection`.`id_count` of type `Int!`
+  """
+  id_count: Int_Filter
+  """
+  ✨ Generated from Field `Connection`.`sourceConnectionId_count` of type `Int!`
+  """
+  sourceConnectionId_count: Int_Filter
+  """
+  ✨ Generated from Field `Connection`.`sourceTrendId_count` of type `Int!`
+  """
+  sourceTrendId_count: Int_Filter
+  """
+  ✨ Generated from Field `Connection`.`sourceType_count` of type `Int!`
+  """
+  sourceType_count: Int_Filter
+  """
+  ✨ Generated from Field `Connection`.`storyId_count` of type `Int!`
+  """
+  storyId_count: Int_Filter
+  """
+  ✨ Generated from Field `Connection`.`targetConnectionId_count` of type `Int!`
+  """
+  targetConnectionId_count: Int_Filter
+  """
+  ✨ Generated from Field `Connection`.`targetTrendId_count` of type `Int!`
+  """
+  targetTrendId_count: Int_Filter
+  """
+  ✨ Generated from Field `Connection`.`targetType_count` of type `Int!`
+  """
+  targetType_count: Int_Filter
+  """
+  ✨ Generated from Field `Connection`.`weight_count` of type `Int!`
+  """
+  weight_count: Int_Filter
+  """
+  ✨ Generated from Field `Connection`.`weight_sum` of type `Float`
+  """
+  weight_sum: Float_Filter
+  """
+  ✨ Generated from Field `Connection`.`weight_avg` of type `Float`
+  """
+  weight_avg: Float_Filter
+  """
+  ✨ Generated from Field `Connection`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `Connection`.`weight_min` of type `Float`
+  """
+  weight_min: Float_Filter
+  """
+  ✨ Generated from Field `Connection`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `Connection`.`weight_max` of type `Float`
+  """
+  weight_max: Float_Filter
+}
+"""
+✨ Generated key input type for table 'Connection'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input Connection_Key {
+  """
+  ✨ Generated from Field `Connection`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Connection`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr
+}
+"""
+✨ Generated list filter input type for table 'Connection'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input Connection_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: Connection_Filter
+}
+"""
+✨ Generated order input type for table 'Connection'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input Connection_Order {
+  """
+  ✨ Generated from Field `Connection`.`id` of type `UUID!`
+  """
+  id: OrderDirection
+  """
+  ✨ Generated from Field `Connection`.`sourceConnectionId` of type `UUID`
+  """
+  sourceConnectionId: OrderDirection
+  """
+  ✨ Generated from Field `Connection`.`sourceTrendId` of type `UUID`
+  """
+  sourceTrendId: OrderDirection
+  """
+  ✨ Generated from Field `Connection`.`storyId` of type `UUID!`
+  """
+  storyId: OrderDirection
+  """
+  ✨ Generated from Field `Connection`.`targetConnectionId` of type `UUID`
+  """
+  targetConnectionId: OrderDirection
+  """
+  ✨ Generated from Field `Connection`.`targetTrendId` of type `UUID`
+  """
+  targetTrendId: OrderDirection
+  """
+  ✨ Generated from Field `Connection`.`sourceConnection` of type `Connection`
+  """
+  sourceConnection: Connection_Order
+  """
+  ✨ Generated from Field `Connection`.`sourceTrend` of type `Trend`
+  """
+  sourceTrend: Trend_Order
+  """
+  ✨ Generated from Field `Connection`.`story` of type `Story!`
+  """
+  story: Story_Order
+  """
+  ✨ Generated from Field `Connection`.`targetConnection` of type `Connection`
+  """
+  targetConnection: Connection_Order
+  """
+  ✨ Generated from Field `Connection`.`targetTrend` of type `Trend`
+  """
+  targetTrend: Trend_Order
+  """
+  ✨ Generated from Field `Connection`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `Connection`.`direction` of type `String!`
+  """
+  direction: OrderDirection
+  """
+  ✨ Generated from Field `Connection`.`sourceType` of type `String!`
+  """
+  sourceType: OrderDirection
+  """
+  ✨ Generated from Field `Connection`.`targetType` of type `String!`
+  """
+  targetType: OrderDirection
+  """
+  ✨ Generated from Field `Connection`.`weight` of type `Float!`
+  """
+  weight: OrderDirection
+  """
+  ✨ Generated from Field `Connection`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `Connection`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: OrderDirection
+  """
+  ✨ Generated from Field `Connection`.`direction_count` of type `Int!`
+  """
+  direction_count: OrderDirection
+  """
+  ✨ Generated from Field `Connection`.`id_count` of type `Int!`
+  """
+  id_count: OrderDirection
+  """
+  ✨ Generated from Field `Connection`.`sourceConnectionId_count` of type `Int!`
+  """
+  sourceConnectionId_count: OrderDirection
+  """
+  ✨ Generated from Field `Connection`.`sourceTrendId_count` of type `Int!`
+  """
+  sourceTrendId_count: OrderDirection
+  """
+  ✨ Generated from Field `Connection`.`sourceType_count` of type `Int!`
+  """
+  sourceType_count: OrderDirection
+  """
+  ✨ Generated from Field `Connection`.`storyId_count` of type `Int!`
+  """
+  storyId_count: OrderDirection
+  """
+  ✨ Generated from Field `Connection`.`targetConnectionId_count` of type `Int!`
+  """
+  targetConnectionId_count: OrderDirection
+  """
+  ✨ Generated from Field `Connection`.`targetTrendId_count` of type `Int!`
+  """
+  targetTrendId_count: OrderDirection
+  """
+  ✨ Generated from Field `Connection`.`targetType_count` of type `Int!`
+  """
+  targetType_count: OrderDirection
+  """
+  ✨ Generated from Field `Connection`.`weight_count` of type `Int!`
+  """
+  weight_count: OrderDirection
+  """
+  ✨ Generated from Field `Connection`.`weight_sum` of type `Float`
+  """
+  weight_sum: OrderDirection
+  """
+  ✨ Generated from Field `Connection`.`weight_avg` of type `Float`
+  """
+  weight_avg: OrderDirection
+  """
+  ✨ Generated from Field `Connection`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: OrderDirection
+  """
+  ✨ Generated from Field `Connection`.`weight_min` of type `Float`
+  """
+  weight_min: OrderDirection
+  """
+  ✨ Generated from Field `Connection`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: OrderDirection
+  """
+  ✨ Generated from Field `Connection`.`weight_max` of type `Float`
+  """
+  weight_max: OrderDirection
+}
+"""
+✨ Generated data input type for table 'Perspective'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input Perspective_Data {
+  """
+  ✨ Generated from Field `Perspective`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Perspective`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Perspective`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `Perspective`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `Perspective`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `Perspective`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `Perspective`.`createdBy` of type `String!`
+  """
+  createdBy: String
+  """
+  ✨ `_expr` server value variant of `createdBy` (✨ Generated from Field `Perspective`.`createdBy` of type `String!`)
+  """
+  createdBy_expr: String_Expr
+  """
+  ✨ Generated from Field `Perspective`.`name` of type `String!`
+  """
+  name: String
+  """
+  ✨ `_expr` server value variant of `name` (✨ Generated from Field `Perspective`.`name` of type `String!`)
+  """
+  name_expr: String_Expr
+  """
+  ✨ Generated from Field `Perspective`.`plan` of type `String!`
+  """
+  plan: String
+  """
+  ✨ `_expr` server value variant of `plan` (✨ Generated from Field `Perspective`.`plan` of type `String!`)
+  """
+  plan_expr: String_Expr
+  """
+  ✨ Generated from Field `Perspective`.`slug` of type `String!`
+  """
+  slug: String
+  """
+  ✨ `_expr` server value variant of `slug` (✨ Generated from Field `Perspective`.`slug` of type `String!`)
+  """
+  slug_expr: String_Expr
+}
+"""
+✨ Generated filter input type for table 'Perspective'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Perspective_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [Perspective_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: Perspective_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [Perspective_Filter!]
+  """
+  ✨ Generated from Field `Perspective`.`id` of type `UUID!`
+  """
+  id: UUID_Filter
+  """
+  ✨ Generated from Field `Perspective`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `Perspective`.`createdBy` of type `String!`
+  """
+  createdBy: String_Filter
+  """
+  ✨ Generated from Field `Perspective`.`name` of type `String!`
+  """
+  name: String_Filter
+  """
+  ✨ Generated from Field `Perspective`.`plan` of type `String!`
+  """
+  plan: String_Filter
+  """
+  ✨ Generated from Field `Perspective`.`slug` of type `String!`
+  """
+  slug: String_Filter
+  """
+  ✨ Generated from Field `Perspective`.`perspectiveMembers_on_perspective` of type `[PerspectiveMember!]!`
+  """
+  perspectiveMembers_on_perspective: PerspectiveMember_ListFilter
+  """
+  ✨ Generated from Field `Perspective`.`stories_on_perspective` of type `[Story!]!`
+  """
+  stories_on_perspective: Story_ListFilter
+}
+"""
+✨ Generated first-row input type for table 'Perspective'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input Perspective_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [Perspective_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: Perspective_Filter
+}
+"""
+✨ Generated having input type for table 'Perspective'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Perspective_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [Perspective_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: Perspective_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [Perspective_Having!]
+  """
+  ✨ Generated from Field `Perspective`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `Perspective`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: Int_Filter
+  """
+  ✨ Generated from Field `Perspective`.`createdBy_count` of type `Int!`
+  """
+  createdBy_count: Int_Filter
+  """
+  ✨ Generated from Field `Perspective`.`id_count` of type `Int!`
+  """
+  id_count: Int_Filter
+  """
+  ✨ Generated from Field `Perspective`.`name_count` of type `Int!`
+  """
+  name_count: Int_Filter
+  """
+  ✨ Generated from Field `Perspective`.`plan_count` of type `Int!`
+  """
+  plan_count: Int_Filter
+  """
+  ✨ Generated from Field `Perspective`.`slug_count` of type `Int!`
+  """
+  slug_count: Int_Filter
+  """
+  ✨ Generated from Field `Perspective`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `Perspective`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: Timestamp_Filter
+}
+"""
+✨ Generated key input type for table 'Perspective'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input Perspective_Key {
+  """
+  ✨ Generated from Field `Perspective`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Perspective`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr
+}
+"""
+✨ Generated list filter input type for table 'Perspective'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input Perspective_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: Perspective_Filter
+}
+"""
+✨ Generated order input type for table 'Perspective'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input Perspective_Order {
+  """
+  ✨ Generated from Field `Perspective`.`id` of type `UUID!`
+  """
+  id: OrderDirection
+  """
+  ✨ Generated from Field `Perspective`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `Perspective`.`createdBy` of type `String!`
+  """
+  createdBy: OrderDirection
+  """
+  ✨ Generated from Field `Perspective`.`name` of type `String!`
+  """
+  name: OrderDirection
+  """
+  ✨ Generated from Field `Perspective`.`plan` of type `String!`
+  """
+  plan: OrderDirection
+  """
+  ✨ Generated from Field `Perspective`.`slug` of type `String!`
+  """
+  slug: OrderDirection
+  """
+  ✨ Generated from Field `Perspective`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `Perspective`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: OrderDirection
+  """
+  ✨ Generated from Field `Perspective`.`createdBy_count` of type `Int!`
+  """
+  createdBy_count: OrderDirection
+  """
+  ✨ Generated from Field `Perspective`.`id_count` of type `Int!`
+  """
+  id_count: OrderDirection
+  """
+  ✨ Generated from Field `Perspective`.`name_count` of type `Int!`
+  """
+  name_count: OrderDirection
+  """
+  ✨ Generated from Field `Perspective`.`plan_count` of type `Int!`
+  """
+  plan_count: OrderDirection
+  """
+  ✨ Generated from Field `Perspective`.`slug_count` of type `Int!`
+  """
+  slug_count: OrderDirection
+  """
+  ✨ Generated from Field `Perspective`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: OrderDirection
+  """
+  ✨ Generated from Field `Perspective`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: OrderDirection
+}
+"""
+✨ Generated data input type for table 'PerspectiveMember'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input PerspectiveMember_Data {
+  """
+  ✨ Generated from Field `PerspectiveMember`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `PerspectiveMember`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr
+  """
+  ✨ Generated from Field `PerspectiveMember`.`perspectiveId` of type `UUID!`
+  """
+  perspectiveId: UUID
+  """
+  ✨ `_expr` server value variant of `perspectiveId` (✨ Generated from Field `PerspectiveMember`.`perspectiveId` of type `UUID!`)
+  """
+  perspectiveId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `PerspectiveMember`.`perspective` of type `Perspective!`
+  """
+  perspective: Perspective_Key
+  """
+  ✨ Generated from Field `PerspectiveMember`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `PerspectiveMember`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `PerspectiveMember`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `PerspectiveMember`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `PerspectiveMember`.`role` of type `String!`
+  """
+  role: String
+  """
+  ✨ `_expr` server value variant of `role` (✨ Generated from Field `PerspectiveMember`.`role` of type `String!`)
+  """
+  role_expr: String_Expr
+  """
+  ✨ Generated from Field `PerspectiveMember`.`userId` of type `String!`
+  """
+  userId: String
+  """
+  ✨ `_expr` server value variant of `userId` (✨ Generated from Field `PerspectiveMember`.`userId` of type `String!`)
+  """
+  userId_expr: String_Expr
+}
+"""
+✨ Generated filter input type for table 'PerspectiveMember'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input PerspectiveMember_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [PerspectiveMember_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: PerspectiveMember_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [PerspectiveMember_Filter!]
+  """
+  ✨ Generated from Field `PerspectiveMember`.`id` of type `UUID!`
+  """
+  id: UUID_Filter
+  """
+  ✨ Generated from Field `PerspectiveMember`.`perspectiveId` of type `UUID!`
+  """
+  perspectiveId: UUID_Filter
+  """
+  ✨ Generated from Field `PerspectiveMember`.`perspective` of type `Perspective!`
+  """
+  perspective: Perspective_Filter
+  """
+  ✨ Generated from Field `PerspectiveMember`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `PerspectiveMember`.`role` of type `String!`
+  """
+  role: String_Filter
+  """
+  ✨ Generated from Field `PerspectiveMember`.`userId` of type `String!`
+  """
+  userId: String_Filter
+}
+"""
+✨ Generated first-row input type for table 'PerspectiveMember'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input PerspectiveMember_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [PerspectiveMember_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: PerspectiveMember_Filter
+}
+"""
+✨ Generated having input type for table 'PerspectiveMember'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input PerspectiveMember_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [PerspectiveMember_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: PerspectiveMember_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [PerspectiveMember_Having!]
+  """
+  ✨ Generated from Field `PerspectiveMember`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `PerspectiveMember`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: Int_Filter
+  """
+  ✨ Generated from Field `PerspectiveMember`.`id_count` of type `Int!`
+  """
+  id_count: Int_Filter
+  """
+  ✨ Generated from Field `PerspectiveMember`.`perspectiveId_count` of type `Int!`
+  """
+  perspectiveId_count: Int_Filter
+  """
+  ✨ Generated from Field `PerspectiveMember`.`role_count` of type `Int!`
+  """
+  role_count: Int_Filter
+  """
+  ✨ Generated from Field `PerspectiveMember`.`userId_count` of type `Int!`
+  """
+  userId_count: Int_Filter
+  """
+  ✨ Generated from Field `PerspectiveMember`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `PerspectiveMember`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: Timestamp_Filter
+}
+"""
+✨ Generated key input type for table 'PerspectiveMember'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input PerspectiveMember_Key {
+  """
+  ✨ Generated from Field `PerspectiveMember`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `PerspectiveMember`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr
+}
+"""
+✨ Generated list filter input type for table 'PerspectiveMember'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input PerspectiveMember_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: PerspectiveMember_Filter
+}
+"""
+✨ Generated order input type for table 'PerspectiveMember'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input PerspectiveMember_Order {
+  """
+  ✨ Generated from Field `PerspectiveMember`.`id` of type `UUID!`
+  """
+  id: OrderDirection
+  """
+  ✨ Generated from Field `PerspectiveMember`.`perspectiveId` of type `UUID!`
+  """
+  perspectiveId: OrderDirection
+  """
+  ✨ Generated from Field `PerspectiveMember`.`perspective` of type `Perspective!`
+  """
+  perspective: Perspective_Order
+  """
+  ✨ Generated from Field `PerspectiveMember`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `PerspectiveMember`.`role` of type `String!`
+  """
+  role: OrderDirection
+  """
+  ✨ Generated from Field `PerspectiveMember`.`userId` of type `String!`
+  """
+  userId: OrderDirection
+  """
+  ✨ Generated from Field `PerspectiveMember`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `PerspectiveMember`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: OrderDirection
+  """
+  ✨ Generated from Field `PerspectiveMember`.`id_count` of type `Int!`
+  """
+  id_count: OrderDirection
+  """
+  ✨ Generated from Field `PerspectiveMember`.`perspectiveId_count` of type `Int!`
+  """
+  perspectiveId_count: OrderDirection
+  """
+  ✨ Generated from Field `PerspectiveMember`.`role_count` of type `Int!`
+  """
+  role_count: OrderDirection
+  """
+  ✨ Generated from Field `PerspectiveMember`.`userId_count` of type `Int!`
+  """
+  userId_count: OrderDirection
+  """
+  ✨ Generated from Field `PerspectiveMember`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: OrderDirection
+  """
+  ✨ Generated from Field `PerspectiveMember`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: OrderDirection
+}
+"""
+✨ Generated data input type for table 'Story'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input Story_Data {
+  """
+  ✨ Generated from Field `Story`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Story`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Story`.`focalTrendId` of type `UUID!`
+  """
+  focalTrendId: UUID
+  """
+  ✨ `_expr` server value variant of `focalTrendId` (✨ Generated from Field `Story`.`focalTrendId` of type `UUID!`)
+  """
+  focalTrendId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Story`.`perspectiveId` of type `UUID!`
+  """
+  perspectiveId: UUID
+  """
+  ✨ `_expr` server value variant of `perspectiveId` (✨ Generated from Field `Story`.`perspectiveId` of type `UUID!`)
+  """
+  perspectiveId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Story`.`focalTrend` of type `Trend!`
+  """
+  focalTrend: Trend_Key
+  """
+  ✨ Generated from Field `Story`.`perspective` of type `Perspective!`
+  """
+  perspective: Perspective_Key
+  """
+  ✨ Generated from Field `Story`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `Story`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `Story`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `Story`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `Story`.`createdBy` of type `String!`
+  """
+  createdBy: String
+  """
+  ✨ `_expr` server value variant of `createdBy` (✨ Generated from Field `Story`.`createdBy` of type `String!`)
+  """
+  createdBy_expr: String_Expr
+  """
+  ✨ Generated from Field `Story`.`name` of type `String!`
+  """
+  name: String
+  """
+  ✨ `_expr` server value variant of `name` (✨ Generated from Field `Story`.`name` of type `String!`)
+  """
+  name_expr: String_Expr
+  """
+  ✨ Generated from Field `Story`.`updatedAt` of type `Timestamp!`
+  """
+  updatedAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `updatedAt` (✨ Generated from Field `Story`.`updatedAt` of type `Timestamp!`)
+  """
+  updatedAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `updatedAt` (✨ Generated from Field `Story`.`updatedAt` of type `Timestamp!`)
+  """
+  updatedAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `updatedAt` (✨ Generated from Field `Story`.`updatedAt` of type `Timestamp!`)
+  """
+  updatedAt_update: [Timestamp_Update!]
+}
+"""
+✨ Generated filter input type for table 'Story'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Story_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [Story_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: Story_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [Story_Filter!]
+  """
+  ✨ Generated from Field `Story`.`id` of type `UUID!`
+  """
+  id: UUID_Filter
+  """
+  ✨ Generated from Field `Story`.`focalTrendId` of type `UUID!`
+  """
+  focalTrendId: UUID_Filter
+  """
+  ✨ Generated from Field `Story`.`perspectiveId` of type `UUID!`
+  """
+  perspectiveId: UUID_Filter
+  """
+  ✨ Generated from Field `Story`.`focalTrend` of type `Trend!`
+  """
+  focalTrend: Trend_Filter
+  """
+  ✨ Generated from Field `Story`.`perspective` of type `Perspective!`
+  """
+  perspective: Perspective_Filter
+  """
+  ✨ Generated from Field `Story`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `Story`.`createdBy` of type `String!`
+  """
+  createdBy: String_Filter
+  """
+  ✨ Generated from Field `Story`.`name` of type `String!`
+  """
+  name: String_Filter
+  """
+  ✨ Generated from Field `Story`.`updatedAt` of type `Timestamp!`
+  """
+  updatedAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `Story`.`connections_on_story` of type `[Connection!]!`
+  """
+  connections_on_story: Connection_ListFilter
+  """
+  ✨ Generated from Field `Story`.`variants_on_story` of type `[Variant!]!`
+  """
+  variants_on_story: Variant_ListFilter
+}
+"""
+✨ Generated first-row input type for table 'Story'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input Story_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [Story_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: Story_Filter
+}
+"""
+✨ Generated having input type for table 'Story'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Story_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [Story_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: Story_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [Story_Having!]
+  """
+  ✨ Generated from Field `Story`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `Story`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: Int_Filter
+  """
+  ✨ Generated from Field `Story`.`createdBy_count` of type `Int!`
+  """
+  createdBy_count: Int_Filter
+  """
+  ✨ Generated from Field `Story`.`focalTrendId_count` of type `Int!`
+  """
+  focalTrendId_count: Int_Filter
+  """
+  ✨ Generated from Field `Story`.`id_count` of type `Int!`
+  """
+  id_count: Int_Filter
+  """
+  ✨ Generated from Field `Story`.`name_count` of type `Int!`
+  """
+  name_count: Int_Filter
+  """
+  ✨ Generated from Field `Story`.`perspectiveId_count` of type `Int!`
+  """
+  perspectiveId_count: Int_Filter
+  """
+  ✨ Generated from Field `Story`.`updatedAt_count` of type `Int!`
+  """
+  updatedAt_count: Int_Filter
+  """
+  ✨ Generated from Field `Story`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `Story`.`updatedAt_min` of type `Timestamp`
+  """
+  updatedAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `Story`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `Story`.`updatedAt_max` of type `Timestamp`
+  """
+  updatedAt_max: Timestamp_Filter
+}
+"""
+✨ Generated key input type for table 'Story'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input Story_Key {
+  """
+  ✨ Generated from Field `Story`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Story`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr
+}
+"""
+✨ Generated list filter input type for table 'Story'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input Story_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: Story_Filter
+}
+"""
+✨ Generated order input type for table 'Story'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input Story_Order {
+  """
+  ✨ Generated from Field `Story`.`id` of type `UUID!`
+  """
+  id: OrderDirection
+  """
+  ✨ Generated from Field `Story`.`focalTrendId` of type `UUID!`
+  """
+  focalTrendId: OrderDirection
+  """
+  ✨ Generated from Field `Story`.`perspectiveId` of type `UUID!`
+  """
+  perspectiveId: OrderDirection
+  """
+  ✨ Generated from Field `Story`.`focalTrend` of type `Trend!`
+  """
+  focalTrend: Trend_Order
+  """
+  ✨ Generated from Field `Story`.`perspective` of type `Perspective!`
+  """
+  perspective: Perspective_Order
+  """
+  ✨ Generated from Field `Story`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `Story`.`createdBy` of type `String!`
+  """
+  createdBy: OrderDirection
+  """
+  ✨ Generated from Field `Story`.`name` of type `String!`
+  """
+  name: OrderDirection
+  """
+  ✨ Generated from Field `Story`.`updatedAt` of type `Timestamp!`
+  """
+  updatedAt: OrderDirection
+  """
+  ✨ Generated from Field `Story`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `Story`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: OrderDirection
+  """
+  ✨ Generated from Field `Story`.`createdBy_count` of type `Int!`
+  """
+  createdBy_count: OrderDirection
+  """
+  ✨ Generated from Field `Story`.`focalTrendId_count` of type `Int!`
+  """
+  focalTrendId_count: OrderDirection
+  """
+  ✨ Generated from Field `Story`.`id_count` of type `Int!`
+  """
+  id_count: OrderDirection
+  """
+  ✨ Generated from Field `Story`.`name_count` of type `Int!`
+  """
+  name_count: OrderDirection
+  """
+  ✨ Generated from Field `Story`.`perspectiveId_count` of type `Int!`
+  """
+  perspectiveId_count: OrderDirection
+  """
+  ✨ Generated from Field `Story`.`updatedAt_count` of type `Int!`
+  """
+  updatedAt_count: OrderDirection
+  """
+  ✨ Generated from Field `Story`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: OrderDirection
+  """
+  ✨ Generated from Field `Story`.`updatedAt_min` of type `Timestamp`
+  """
+  updatedAt_min: OrderDirection
+  """
+  ✨ Generated from Field `Story`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: OrderDirection
+  """
+  ✨ Generated from Field `Story`.`updatedAt_max` of type `Timestamp`
+  """
+  updatedAt_max: OrderDirection
+}
+"""
+✨ Generated data input type for table 'Trend'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input Trend_Data {
+  """
+  ✨ Generated from Field `Trend`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Trend`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Trend`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `Trend`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `Trend`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `Trend`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `Trend`.`createdBy` of type `String!`
+  """
+  createdBy: String
+  """
+  ✨ `_expr` server value variant of `createdBy` (✨ Generated from Field `Trend`.`createdBy` of type `String!`)
+  """
+  createdBy_expr: String_Expr
+  """
+  ✨ Generated from Field `Trend`.`description` of type `String`
+  """
+  description: String
+  """
+  ✨ `_expr` server value variant of `description` (✨ Generated from Field `Trend`.`description` of type `String`)
+  """
+  description_expr: String_Expr
+  """
+  ✨ Generated from Field `Trend`.`externalId` of type `String`
+  """
+  externalId: String
+  """
+  ✨ `_expr` server value variant of `externalId` (✨ Generated from Field `Trend`.`externalId` of type `String`)
+  """
+  externalId_expr: String_Expr
+  """
+  ✨ Generated from Field `Trend`.`frequency` of type `String!`
+  """
+  frequency: String
+  """
+  ✨ `_expr` server value variant of `frequency` (✨ Generated from Field `Trend`.`frequency` of type `String!`)
+  """
+  frequency_expr: String_Expr
+  """
+  ✨ Generated from Field `Trend`.`name` of type `String!`
+  """
+  name: String
+  """
+  ✨ `_expr` server value variant of `name` (✨ Generated from Field `Trend`.`name` of type `String!`)
+  """
+  name_expr: String_Expr
+  """
+  ✨ Generated from Field `Trend`.`source` of type `String!`
+  """
+  source: String
+  """
+  ✨ `_expr` server value variant of `source` (✨ Generated from Field `Trend`.`source` of type `String!`)
+  """
+  source_expr: String_Expr
+  """
+  ✨ Generated from Field `Trend`.`unit` of type `String`
+  """
+  unit: String
+  """
+  ✨ `_expr` server value variant of `unit` (✨ Generated from Field `Trend`.`unit` of type `String`)
+  """
+  unit_expr: String_Expr
+  """
+  ✨ Generated from Field `Trend`.`updatedAt` of type `Timestamp!`
+  """
+  updatedAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `updatedAt` (✨ Generated from Field `Trend`.`updatedAt` of type `Timestamp!`)
+  """
+  updatedAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `updatedAt` (✨ Generated from Field `Trend`.`updatedAt` of type `Timestamp!`)
+  """
+  updatedAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `updatedAt` (✨ Generated from Field `Trend`.`updatedAt` of type `Timestamp!`)
+  """
+  updatedAt_update: [Timestamp_Update!]
+}
+"""
+✨ Generated filter input type for table 'Trend'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Trend_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [Trend_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: Trend_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [Trend_Filter!]
+  """
+  ✨ Generated from Field `Trend`.`id` of type `UUID!`
+  """
+  id: UUID_Filter
+  """
+  ✨ Generated from Field `Trend`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `Trend`.`createdBy` of type `String!`
+  """
+  createdBy: String_Filter
+  """
+  ✨ Generated from Field `Trend`.`description` of type `String`
+  """
+  description: String_Filter
+  """
+  ✨ Generated from Field `Trend`.`externalId` of type `String`
+  """
+  externalId: String_Filter
+  """
+  ✨ Generated from Field `Trend`.`frequency` of type `String!`
+  """
+  frequency: String_Filter
+  """
+  ✨ Generated from Field `Trend`.`name` of type `String!`
+  """
+  name: String_Filter
+  """
+  ✨ Generated from Field `Trend`.`source` of type `String!`
+  """
+  source: String_Filter
+  """
+  ✨ Generated from Field `Trend`.`unit` of type `String`
+  """
+  unit: String_Filter
+  """
+  ✨ Generated from Field `Trend`.`updatedAt` of type `Timestamp!`
+  """
+  updatedAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `Trend`.`connections_on_sourceTrend` of type `[Connection!]!`
+  """
+  connections_on_sourceTrend: Connection_ListFilter
+  """
+  ✨ Generated from Field `Trend`.`connections_on_targetTrend` of type `[Connection!]!`
+  """
+  connections_on_targetTrend: Connection_ListFilter
+  """
+  ✨ Generated from Field `Trend`.`stories_on_focalTrend` of type `[Story!]!`
+  """
+  stories_on_focalTrend: Story_ListFilter
+  """
+  ✨ Generated from Field `Trend`.`trendValues_on_trend` of type `[TrendValue!]!`
+  """
+  trendValues_on_trend: TrendValue_ListFilter
+  """
+  ✨ Generated from Field `Trend`.`variants_on_trend` of type `[Variant!]!`
+  """
+  variants_on_trend: Variant_ListFilter
+}
+"""
+✨ Generated first-row input type for table 'Trend'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input Trend_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [Trend_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: Trend_Filter
+}
+"""
+✨ Generated having input type for table 'Trend'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Trend_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [Trend_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: Trend_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [Trend_Having!]
+  """
+  ✨ Generated from Field `Trend`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `Trend`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: Int_Filter
+  """
+  ✨ Generated from Field `Trend`.`createdBy_count` of type `Int!`
+  """
+  createdBy_count: Int_Filter
+  """
+  ✨ Generated from Field `Trend`.`description_count` of type `Int!`
+  """
+  description_count: Int_Filter
+  """
+  ✨ Generated from Field `Trend`.`externalId_count` of type `Int!`
+  """
+  externalId_count: Int_Filter
+  """
+  ✨ Generated from Field `Trend`.`frequency_count` of type `Int!`
+  """
+  frequency_count: Int_Filter
+  """
+  ✨ Generated from Field `Trend`.`id_count` of type `Int!`
+  """
+  id_count: Int_Filter
+  """
+  ✨ Generated from Field `Trend`.`name_count` of type `Int!`
+  """
+  name_count: Int_Filter
+  """
+  ✨ Generated from Field `Trend`.`source_count` of type `Int!`
+  """
+  source_count: Int_Filter
+  """
+  ✨ Generated from Field `Trend`.`unit_count` of type `Int!`
+  """
+  unit_count: Int_Filter
+  """
+  ✨ Generated from Field `Trend`.`updatedAt_count` of type `Int!`
+  """
+  updatedAt_count: Int_Filter
+  """
+  ✨ Generated from Field `Trend`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `Trend`.`updatedAt_min` of type `Timestamp`
+  """
+  updatedAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `Trend`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `Trend`.`updatedAt_max` of type `Timestamp`
+  """
+  updatedAt_max: Timestamp_Filter
+}
+"""
+✨ Generated key input type for table 'Trend'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input Trend_Key {
+  """
+  ✨ Generated from Field `Trend`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Trend`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr
+}
+"""
+✨ Generated list filter input type for table 'Trend'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input Trend_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: Trend_Filter
+}
+"""
+✨ Generated order input type for table 'Trend'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input Trend_Order {
+  """
+  ✨ Generated from Field `Trend`.`id` of type `UUID!`
+  """
+  id: OrderDirection
+  """
+  ✨ Generated from Field `Trend`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `Trend`.`createdBy` of type `String!`
+  """
+  createdBy: OrderDirection
+  """
+  ✨ Generated from Field `Trend`.`description` of type `String`
+  """
+  description: OrderDirection
+  """
+  ✨ Generated from Field `Trend`.`externalId` of type `String`
+  """
+  externalId: OrderDirection
+  """
+  ✨ Generated from Field `Trend`.`frequency` of type `String!`
+  """
+  frequency: OrderDirection
+  """
+  ✨ Generated from Field `Trend`.`name` of type `String!`
+  """
+  name: OrderDirection
+  """
+  ✨ Generated from Field `Trend`.`source` of type `String!`
+  """
+  source: OrderDirection
+  """
+  ✨ Generated from Field `Trend`.`unit` of type `String`
+  """
+  unit: OrderDirection
+  """
+  ✨ Generated from Field `Trend`.`updatedAt` of type `Timestamp!`
+  """
+  updatedAt: OrderDirection
+  """
+  ✨ Generated from Field `Trend`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `Trend`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: OrderDirection
+  """
+  ✨ Generated from Field `Trend`.`createdBy_count` of type `Int!`
+  """
+  createdBy_count: OrderDirection
+  """
+  ✨ Generated from Field `Trend`.`description_count` of type `Int!`
+  """
+  description_count: OrderDirection
+  """
+  ✨ Generated from Field `Trend`.`externalId_count` of type `Int!`
+  """
+  externalId_count: OrderDirection
+  """
+  ✨ Generated from Field `Trend`.`frequency_count` of type `Int!`
+  """
+  frequency_count: OrderDirection
+  """
+  ✨ Generated from Field `Trend`.`id_count` of type `Int!`
+  """
+  id_count: OrderDirection
+  """
+  ✨ Generated from Field `Trend`.`name_count` of type `Int!`
+  """
+  name_count: OrderDirection
+  """
+  ✨ Generated from Field `Trend`.`source_count` of type `Int!`
+  """
+  source_count: OrderDirection
+  """
+  ✨ Generated from Field `Trend`.`unit_count` of type `Int!`
+  """
+  unit_count: OrderDirection
+  """
+  ✨ Generated from Field `Trend`.`updatedAt_count` of type `Int!`
+  """
+  updatedAt_count: OrderDirection
+  """
+  ✨ Generated from Field `Trend`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: OrderDirection
+  """
+  ✨ Generated from Field `Trend`.`updatedAt_min` of type `Timestamp`
+  """
+  updatedAt_min: OrderDirection
+  """
+  ✨ Generated from Field `Trend`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: OrderDirection
+  """
+  ✨ Generated from Field `Trend`.`updatedAt_max` of type `Timestamp`
+  """
+  updatedAt_max: OrderDirection
+}
+"""
+✨ Generated data input type for table 'TrendValue'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input TrendValue_Data {
+  """
+  ✨ Generated from Field `TrendValue`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `TrendValue`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr
+  """
+  ✨ Generated from Field `TrendValue`.`trendId` of type `UUID!`
+  """
+  trendId: UUID
+  """
+  ✨ `_expr` server value variant of `trendId` (✨ Generated from Field `TrendValue`.`trendId` of type `UUID!`)
+  """
+  trendId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `TrendValue`.`trend` of type `Trend!`
+  """
+  trend: Trend_Key
+  """
+  ✨ Generated from Field `TrendValue`.`index` of type `Int!`
+  """
+  index: Int
+  """
+  ✨ `_expr` server value variant of `index` (✨ Generated from Field `TrendValue`.`index` of type `Int!`)
+  """
+  index_expr: Int_Expr
+  """
+  ✨ `_update` server value variant of `index` (✨ Generated from Field `TrendValue`.`index` of type `Int!`)
+  """
+  index_update: [Int_Update!]
+  """
+  ✨ Generated from Field `TrendValue`.`timestamp` of type `Timestamp!`
+  """
+  timestamp: Timestamp
+  """
+  ✨ `_expr` server value variant of `timestamp` (✨ Generated from Field `TrendValue`.`timestamp` of type `Timestamp!`)
+  """
+  timestamp_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `timestamp` (✨ Generated from Field `TrendValue`.`timestamp` of type `Timestamp!`)
+  """
+  timestamp_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `timestamp` (✨ Generated from Field `TrendValue`.`timestamp` of type `Timestamp!`)
+  """
+  timestamp_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `TrendValue`.`value` of type `Float!`
+  """
+  value: Float
+  """
+  ✨ `_expr` server value variant of `value` (✨ Generated from Field `TrendValue`.`value` of type `Float!`)
+  """
+  value_expr: Float_Expr
+  """
+  ✨ `_update` server value variant of `value` (✨ Generated from Field `TrendValue`.`value` of type `Float!`)
+  """
+  value_update: [Float_Update!]
+}
+"""
+✨ Generated filter input type for table 'TrendValue'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input TrendValue_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [TrendValue_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: TrendValue_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [TrendValue_Filter!]
+  """
+  ✨ Generated from Field `TrendValue`.`id` of type `UUID!`
+  """
+  id: UUID_Filter
+  """
+  ✨ Generated from Field `TrendValue`.`trendId` of type `UUID!`
+  """
+  trendId: UUID_Filter
+  """
+  ✨ Generated from Field `TrendValue`.`trend` of type `Trend!`
+  """
+  trend: Trend_Filter
+  """
+  ✨ Generated from Field `TrendValue`.`index` of type `Int!`
+  """
+  index: Int_Filter
+  """
+  ✨ Generated from Field `TrendValue`.`timestamp` of type `Timestamp!`
+  """
+  timestamp: Timestamp_Filter
+  """
+  ✨ Generated from Field `TrendValue`.`value` of type `Float!`
+  """
+  value: Float_Filter
+}
+"""
+✨ Generated first-row input type for table 'TrendValue'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input TrendValue_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [TrendValue_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: TrendValue_Filter
+}
+"""
+✨ Generated having input type for table 'TrendValue'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input TrendValue_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [TrendValue_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: TrendValue_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [TrendValue_Having!]
+  """
+  ✨ Generated from Field `TrendValue`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `TrendValue`.`id_count` of type `Int!`
+  """
+  id_count: Int_Filter
+  """
+  ✨ Generated from Field `TrendValue`.`index_count` of type `Int!`
+  """
+  index_count: Int_Filter
+  """
+  ✨ Generated from Field `TrendValue`.`timestamp_count` of type `Int!`
+  """
+  timestamp_count: Int_Filter
+  """
+  ✨ Generated from Field `TrendValue`.`trendId_count` of type `Int!`
+  """
+  trendId_count: Int_Filter
+  """
+  ✨ Generated from Field `TrendValue`.`value_count` of type `Int!`
+  """
+  value_count: Int_Filter
+  """
+  ✨ Generated from Field `TrendValue`.`index_sum` of type `Int`
+  """
+  index_sum: Int_Filter
+  """
+  ✨ Generated from Field `TrendValue`.`value_sum` of type `Float`
+  """
+  value_sum: Float_Filter
+  """
+  ✨ Generated from Field `TrendValue`.`index_avg` of type `Float`
+  """
+  index_avg: Float_Filter
+  """
+  ✨ Generated from Field `TrendValue`.`value_avg` of type `Float`
+  """
+  value_avg: Float_Filter
+  """
+  ✨ Generated from Field `TrendValue`.`index_min` of type `Int`
+  """
+  index_min: Int_Filter
+  """
+  ✨ Generated from Field `TrendValue`.`timestamp_min` of type `Timestamp`
+  """
+  timestamp_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `TrendValue`.`value_min` of type `Float`
+  """
+  value_min: Float_Filter
+  """
+  ✨ Generated from Field `TrendValue`.`index_max` of type `Int`
+  """
+  index_max: Int_Filter
+  """
+  ✨ Generated from Field `TrendValue`.`timestamp_max` of type `Timestamp`
+  """
+  timestamp_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `TrendValue`.`value_max` of type `Float`
+  """
+  value_max: Float_Filter
+}
+"""
+✨ Generated key input type for table 'TrendValue'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input TrendValue_Key {
+  """
+  ✨ Generated from Field `TrendValue`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `TrendValue`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr
+}
+"""
+✨ Generated list filter input type for table 'TrendValue'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input TrendValue_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: TrendValue_Filter
+}
+"""
+✨ Generated order input type for table 'TrendValue'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input TrendValue_Order {
+  """
+  ✨ Generated from Field `TrendValue`.`id` of type `UUID!`
+  """
+  id: OrderDirection
+  """
+  ✨ Generated from Field `TrendValue`.`trendId` of type `UUID!`
+  """
+  trendId: OrderDirection
+  """
+  ✨ Generated from Field `TrendValue`.`trend` of type `Trend!`
+  """
+  trend: Trend_Order
+  """
+  ✨ Generated from Field `TrendValue`.`index` of type `Int!`
+  """
+  index: OrderDirection
+  """
+  ✨ Generated from Field `TrendValue`.`timestamp` of type `Timestamp!`
+  """
+  timestamp: OrderDirection
+  """
+  ✨ Generated from Field `TrendValue`.`value` of type `Float!`
+  """
+  value: OrderDirection
+  """
+  ✨ Generated from Field `TrendValue`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `TrendValue`.`id_count` of type `Int!`
+  """
+  id_count: OrderDirection
+  """
+  ✨ Generated from Field `TrendValue`.`index_count` of type `Int!`
+  """
+  index_count: OrderDirection
+  """
+  ✨ Generated from Field `TrendValue`.`timestamp_count` of type `Int!`
+  """
+  timestamp_count: OrderDirection
+  """
+  ✨ Generated from Field `TrendValue`.`trendId_count` of type `Int!`
+  """
+  trendId_count: OrderDirection
+  """
+  ✨ Generated from Field `TrendValue`.`value_count` of type `Int!`
+  """
+  value_count: OrderDirection
+  """
+  ✨ Generated from Field `TrendValue`.`index_sum` of type `Int`
+  """
+  index_sum: OrderDirection
+  """
+  ✨ Generated from Field `TrendValue`.`value_sum` of type `Float`
+  """
+  value_sum: OrderDirection
+  """
+  ✨ Generated from Field `TrendValue`.`index_avg` of type `Float`
+  """
+  index_avg: OrderDirection
+  """
+  ✨ Generated from Field `TrendValue`.`value_avg` of type `Float`
+  """
+  value_avg: OrderDirection
+  """
+  ✨ Generated from Field `TrendValue`.`index_min` of type `Int`
+  """
+  index_min: OrderDirection
+  """
+  ✨ Generated from Field `TrendValue`.`timestamp_min` of type `Timestamp`
+  """
+  timestamp_min: OrderDirection
+  """
+  ✨ Generated from Field `TrendValue`.`value_min` of type `Float`
+  """
+  value_min: OrderDirection
+  """
+  ✨ Generated from Field `TrendValue`.`index_max` of type `Int`
+  """
+  index_max: OrderDirection
+  """
+  ✨ Generated from Field `TrendValue`.`timestamp_max` of type `Timestamp`
+  """
+  timestamp_max: OrderDirection
+  """
+  ✨ Generated from Field `TrendValue`.`value_max` of type `Float`
+  """
+  value_max: OrderDirection
+}
+"""
+✨ Generated data input type for table 'Variant'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input Variant_Data {
+  """
+  ✨ Generated from Field `Variant`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Variant`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Variant`.`storyId` of type `UUID!`
+  """
+  storyId: UUID
+  """
+  ✨ `_expr` server value variant of `storyId` (✨ Generated from Field `Variant`.`storyId` of type `UUID!`)
+  """
+  storyId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Variant`.`trendId` of type `UUID!`
+  """
+  trendId: UUID
+  """
+  ✨ `_expr` server value variant of `trendId` (✨ Generated from Field `Variant`.`trendId` of type `UUID!`)
+  """
+  trendId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `Variant`.`story` of type `Story!`
+  """
+  story: Story_Key
+  """
+  ✨ Generated from Field `Variant`.`trend` of type `Trend!`
+  """
+  trend: Trend_Key
+  """
+  ✨ Generated from Field `Variant`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `Variant`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `Variant`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `Variant`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `Variant`.`createdBy` of type `String!`
+  """
+  createdBy: String
+  """
+  ✨ `_expr` server value variant of `createdBy` (✨ Generated from Field `Variant`.`createdBy` of type `String!`)
+  """
+  createdBy_expr: String_Expr
+  """
+  ✨ Generated from Field `Variant`.`name` of type `String`
+  """
+  name: String
+  """
+  ✨ `_expr` server value variant of `name` (✨ Generated from Field `Variant`.`name` of type `String`)
+  """
+  name_expr: String_Expr
+}
+"""
+✨ Generated filter input type for table 'Variant'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Variant_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [Variant_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: Variant_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [Variant_Filter!]
+  """
+  ✨ Generated from Field `Variant`.`id` of type `UUID!`
+  """
+  id: UUID_Filter
+  """
+  ✨ Generated from Field `Variant`.`storyId` of type `UUID!`
+  """
+  storyId: UUID_Filter
+  """
+  ✨ Generated from Field `Variant`.`trendId` of type `UUID!`
+  """
+  trendId: UUID_Filter
+  """
+  ✨ Generated from Field `Variant`.`story` of type `Story!`
+  """
+  story: Story_Filter
+  """
+  ✨ Generated from Field `Variant`.`trend` of type `Trend!`
+  """
+  trend: Trend_Filter
+  """
+  ✨ Generated from Field `Variant`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `Variant`.`createdBy` of type `String!`
+  """
+  createdBy: String_Filter
+  """
+  ✨ Generated from Field `Variant`.`name` of type `String`
+  """
+  name: String_Filter
+  """
+  ✨ Generated from Field `Variant`.`variantValues_on_variant` of type `[VariantValue!]!`
+  """
+  variantValues_on_variant: VariantValue_ListFilter
+}
+"""
+✨ Generated first-row input type for table 'Variant'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input Variant_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [Variant_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: Variant_Filter
+}
+"""
+✨ Generated having input type for table 'Variant'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Variant_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [Variant_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: Variant_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [Variant_Having!]
+  """
+  ✨ Generated from Field `Variant`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `Variant`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: Int_Filter
+  """
+  ✨ Generated from Field `Variant`.`createdBy_count` of type `Int!`
+  """
+  createdBy_count: Int_Filter
+  """
+  ✨ Generated from Field `Variant`.`id_count` of type `Int!`
+  """
+  id_count: Int_Filter
+  """
+  ✨ Generated from Field `Variant`.`name_count` of type `Int!`
+  """
+  name_count: Int_Filter
+  """
+  ✨ Generated from Field `Variant`.`storyId_count` of type `Int!`
+  """
+  storyId_count: Int_Filter
+  """
+  ✨ Generated from Field `Variant`.`trendId_count` of type `Int!`
+  """
+  trendId_count: Int_Filter
+  """
+  ✨ Generated from Field `Variant`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `Variant`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: Timestamp_Filter
+}
+"""
+✨ Generated key input type for table 'Variant'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input Variant_Key {
+  """
+  ✨ Generated from Field `Variant`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Variant`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr
+}
+"""
+✨ Generated list filter input type for table 'Variant'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input Variant_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: Variant_Filter
+}
+"""
+✨ Generated order input type for table 'Variant'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input Variant_Order {
+  """
+  ✨ Generated from Field `Variant`.`id` of type `UUID!`
+  """
+  id: OrderDirection
+  """
+  ✨ Generated from Field `Variant`.`storyId` of type `UUID!`
+  """
+  storyId: OrderDirection
+  """
+  ✨ Generated from Field `Variant`.`trendId` of type `UUID!`
+  """
+  trendId: OrderDirection
+  """
+  ✨ Generated from Field `Variant`.`story` of type `Story!`
+  """
+  story: Story_Order
+  """
+  ✨ Generated from Field `Variant`.`trend` of type `Trend!`
+  """
+  trend: Trend_Order
+  """
+  ✨ Generated from Field `Variant`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `Variant`.`createdBy` of type `String!`
+  """
+  createdBy: OrderDirection
+  """
+  ✨ Generated from Field `Variant`.`name` of type `String`
+  """
+  name: OrderDirection
+  """
+  ✨ Generated from Field `Variant`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `Variant`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: OrderDirection
+  """
+  ✨ Generated from Field `Variant`.`createdBy_count` of type `Int!`
+  """
+  createdBy_count: OrderDirection
+  """
+  ✨ Generated from Field `Variant`.`id_count` of type `Int!`
+  """
+  id_count: OrderDirection
+  """
+  ✨ Generated from Field `Variant`.`name_count` of type `Int!`
+  """
+  name_count: OrderDirection
+  """
+  ✨ Generated from Field `Variant`.`storyId_count` of type `Int!`
+  """
+  storyId_count: OrderDirection
+  """
+  ✨ Generated from Field `Variant`.`trendId_count` of type `Int!`
+  """
+  trendId_count: OrderDirection
+  """
+  ✨ Generated from Field `Variant`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: OrderDirection
+  """
+  ✨ Generated from Field `Variant`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: OrderDirection
+}
+"""
+✨ Generated data input type for table 'VariantValue'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input VariantValue_Data {
+  """
+  ✨ Generated from Field `VariantValue`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `VariantValue`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr
+  """
+  ✨ Generated from Field `VariantValue`.`variantId` of type `UUID!`
+  """
+  variantId: UUID
+  """
+  ✨ `_expr` server value variant of `variantId` (✨ Generated from Field `VariantValue`.`variantId` of type `UUID!`)
+  """
+  variantId_expr: UUID_Expr
+  """
+  ✨ Generated from Field `VariantValue`.`variant` of type `Variant!`
+  """
+  variant: Variant_Key
+  """
+  ✨ Generated from Field `VariantValue`.`index` of type `Int!`
+  """
+  index: Int
+  """
+  ✨ `_expr` server value variant of `index` (✨ Generated from Field `VariantValue`.`index` of type `Int!`)
+  """
+  index_expr: Int_Expr
+  """
+  ✨ `_update` server value variant of `index` (✨ Generated from Field `VariantValue`.`index` of type `Int!`)
+  """
+  index_update: [Int_Update!]
+  """
+  ✨ Generated from Field `VariantValue`.`timestamp` of type `Timestamp!`
+  """
+  timestamp: Timestamp
+  """
+  ✨ `_expr` server value variant of `timestamp` (✨ Generated from Field `VariantValue`.`timestamp` of type `Timestamp!`)
+  """
+  timestamp_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `timestamp` (✨ Generated from Field `VariantValue`.`timestamp` of type `Timestamp!`)
+  """
+  timestamp_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `timestamp` (✨ Generated from Field `VariantValue`.`timestamp` of type `Timestamp!`)
+  """
+  timestamp_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `VariantValue`.`value` of type `Float!`
+  """
+  value: Float
+  """
+  ✨ `_expr` server value variant of `value` (✨ Generated from Field `VariantValue`.`value` of type `Float!`)
+  """
+  value_expr: Float_Expr
+  """
+  ✨ `_update` server value variant of `value` (✨ Generated from Field `VariantValue`.`value` of type `Float!`)
+  """
+  value_update: [Float_Update!]
+}
+"""
+✨ Generated filter input type for table 'VariantValue'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input VariantValue_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [VariantValue_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: VariantValue_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [VariantValue_Filter!]
+  """
+  ✨ Generated from Field `VariantValue`.`id` of type `UUID!`
+  """
+  id: UUID_Filter
+  """
+  ✨ Generated from Field `VariantValue`.`variantId` of type `UUID!`
+  """
+  variantId: UUID_Filter
+  """
+  ✨ Generated from Field `VariantValue`.`variant` of type `Variant!`
+  """
+  variant: Variant_Filter
+  """
+  ✨ Generated from Field `VariantValue`.`index` of type `Int!`
+  """
+  index: Int_Filter
+  """
+  ✨ Generated from Field `VariantValue`.`timestamp` of type `Timestamp!`
+  """
+  timestamp: Timestamp_Filter
+  """
+  ✨ Generated from Field `VariantValue`.`value` of type `Float!`
+  """
+  value: Float_Filter
+}
+"""
+✨ Generated first-row input type for table 'VariantValue'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input VariantValue_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [VariantValue_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: VariantValue_Filter
+}
+"""
+✨ Generated having input type for table 'VariantValue'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input VariantValue_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [VariantValue_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: VariantValue_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [VariantValue_Having!]
+  """
+  ✨ Generated from Field `VariantValue`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `VariantValue`.`id_count` of type `Int!`
+  """
+  id_count: Int_Filter
+  """
+  ✨ Generated from Field `VariantValue`.`index_count` of type `Int!`
+  """
+  index_count: Int_Filter
+  """
+  ✨ Generated from Field `VariantValue`.`timestamp_count` of type `Int!`
+  """
+  timestamp_count: Int_Filter
+  """
+  ✨ Generated from Field `VariantValue`.`value_count` of type `Int!`
+  """
+  value_count: Int_Filter
+  """
+  ✨ Generated from Field `VariantValue`.`variantId_count` of type `Int!`
+  """
+  variantId_count: Int_Filter
+  """
+  ✨ Generated from Field `VariantValue`.`index_sum` of type `Int`
+  """
+  index_sum: Int_Filter
+  """
+  ✨ Generated from Field `VariantValue`.`value_sum` of type `Float`
+  """
+  value_sum: Float_Filter
+  """
+  ✨ Generated from Field `VariantValue`.`index_avg` of type `Float`
+  """
+  index_avg: Float_Filter
+  """
+  ✨ Generated from Field `VariantValue`.`value_avg` of type `Float`
+  """
+  value_avg: Float_Filter
+  """
+  ✨ Generated from Field `VariantValue`.`index_min` of type `Int`
+  """
+  index_min: Int_Filter
+  """
+  ✨ Generated from Field `VariantValue`.`timestamp_min` of type `Timestamp`
+  """
+  timestamp_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `VariantValue`.`value_min` of type `Float`
+  """
+  value_min: Float_Filter
+  """
+  ✨ Generated from Field `VariantValue`.`index_max` of type `Int`
+  """
+  index_max: Int_Filter
+  """
+  ✨ Generated from Field `VariantValue`.`timestamp_max` of type `Timestamp`
+  """
+  timestamp_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `VariantValue`.`value_max` of type `Float`
+  """
+  value_max: Float_Filter
+}
+"""
+✨ Generated key input type for table 'VariantValue'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input VariantValue_Key {
+  """
+  ✨ Generated from Field `VariantValue`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `VariantValue`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr
+}
+"""
+✨ Generated list filter input type for table 'VariantValue'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input VariantValue_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: VariantValue_Filter
+}
+"""
+✨ Generated order input type for table 'VariantValue'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input VariantValue_Order {
+  """
+  ✨ Generated from Field `VariantValue`.`id` of type `UUID!`
+  """
+  id: OrderDirection
+  """
+  ✨ Generated from Field `VariantValue`.`variantId` of type `UUID!`
+  """
+  variantId: OrderDirection
+  """
+  ✨ Generated from Field `VariantValue`.`variant` of type `Variant!`
+  """
+  variant: Variant_Order
+  """
+  ✨ Generated from Field `VariantValue`.`index` of type `Int!`
+  """
+  index: OrderDirection
+  """
+  ✨ Generated from Field `VariantValue`.`timestamp` of type `Timestamp!`
+  """
+  timestamp: OrderDirection
+  """
+  ✨ Generated from Field `VariantValue`.`value` of type `Float!`
+  """
+  value: OrderDirection
+  """
+  ✨ Generated from Field `VariantValue`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `VariantValue`.`id_count` of type `Int!`
+  """
+  id_count: OrderDirection
+  """
+  ✨ Generated from Field `VariantValue`.`index_count` of type `Int!`
+  """
+  index_count: OrderDirection
+  """
+  ✨ Generated from Field `VariantValue`.`timestamp_count` of type `Int!`
+  """
+  timestamp_count: OrderDirection
+  """
+  ✨ Generated from Field `VariantValue`.`value_count` of type `Int!`
+  """
+  value_count: OrderDirection
+  """
+  ✨ Generated from Field `VariantValue`.`variantId_count` of type `Int!`
+  """
+  variantId_count: OrderDirection
+  """
+  ✨ Generated from Field `VariantValue`.`index_sum` of type `Int`
+  """
+  index_sum: OrderDirection
+  """
+  ✨ Generated from Field `VariantValue`.`value_sum` of type `Float`
+  """
+  value_sum: OrderDirection
+  """
+  ✨ Generated from Field `VariantValue`.`index_avg` of type `Float`
+  """
+  index_avg: OrderDirection
+  """
+  ✨ Generated from Field `VariantValue`.`value_avg` of type `Float`
+  """
+  value_avg: OrderDirection
+  """
+  ✨ Generated from Field `VariantValue`.`index_min` of type `Int`
+  """
+  index_min: OrderDirection
+  """
+  ✨ Generated from Field `VariantValue`.`timestamp_min` of type `Timestamp`
+  """
+  timestamp_min: OrderDirection
+  """
+  ✨ Generated from Field `VariantValue`.`value_min` of type `Float`
+  """
+  value_min: OrderDirection
+  """
+  ✨ Generated from Field `VariantValue`.`index_max` of type `Int`
+  """
+  index_max: OrderDirection
+  """
+  ✨ Generated from Field `VariantValue`.`timestamp_max` of type `Timestamp`
+  """
+  timestamp_max: OrderDirection
+  """
+  ✨ Generated from Field `VariantValue`.`value_max` of type `Float`
+  """
+  value_max: OrderDirection
+}

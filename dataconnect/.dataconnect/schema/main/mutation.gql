@@ -1,0 +1,898 @@
+extend type Mutation {
+  """
+  ✨ Insert a single `Connection` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  connection_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Connection_Data!
+  ): Connection_KeyOutput! @fdc_generated(from: "Connection", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `Perspective` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  perspective_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Perspective_Data!
+  ): Perspective_KeyOutput! @fdc_generated(from: "Perspective", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `PerspectiveMember` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  perspectiveMember_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: PerspectiveMember_Data!
+  ): PerspectiveMember_KeyOutput! @fdc_generated(from: "PerspectiveMember", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `Story` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  story_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Story_Data!
+  ): Story_KeyOutput! @fdc_generated(from: "Story", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `Trend` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  trend_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Trend_Data!
+  ): Trend_KeyOutput! @fdc_generated(from: "Trend", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `TrendValue` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  trendValue_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: TrendValue_Data!
+  ): TrendValue_KeyOutput! @fdc_generated(from: "TrendValue", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `Variant` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  variant_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Variant_Data!
+  ): Variant_KeyOutput! @fdc_generated(from: "Variant", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `VariantValue` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  variantValue_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: VariantValue_Data!
+  ): VariantValue_KeyOutput! @fdc_generated(from: "VariantValue", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert `Connection` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  connection_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Connection_Data!]!
+  ): [Connection_KeyOutput!]! @fdc_generated(from: "Connection", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `Perspective` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  perspective_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Perspective_Data!]!
+  ): [Perspective_KeyOutput!]! @fdc_generated(from: "Perspective", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `PerspectiveMember` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  perspectiveMember_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [PerspectiveMember_Data!]!
+  ): [PerspectiveMember_KeyOutput!]! @fdc_generated(from: "PerspectiveMember", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `Story` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  story_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Story_Data!]!
+  ): [Story_KeyOutput!]! @fdc_generated(from: "Story", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `Trend` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  trend_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Trend_Data!]!
+  ): [Trend_KeyOutput!]! @fdc_generated(from: "Trend", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `TrendValue` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  trendValue_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [TrendValue_Data!]!
+  ): [TrendValue_KeyOutput!]! @fdc_generated(from: "TrendValue", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `Variant` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  variant_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Variant_Data!]!
+  ): [Variant_KeyOutput!]! @fdc_generated(from: "Variant", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `VariantValue` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  variantValue_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [VariantValue_Data!]!
+  ): [VariantValue_KeyOutput!]! @fdc_generated(from: "VariantValue", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert or update a single `Connection` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Connection`.
+  """
+  connection_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Connection_Data!
+  ): Connection_KeyOutput! @fdc_generated(from: "Connection", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `Perspective` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Perspective`.
+  """
+  perspective_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Perspective_Data!
+  ): Perspective_KeyOutput! @fdc_generated(from: "Perspective", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `PerspectiveMember` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `PerspectiveMember`.
+  """
+  perspectiveMember_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: PerspectiveMember_Data!
+  ): PerspectiveMember_KeyOutput! @fdc_generated(from: "PerspectiveMember", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `Story` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Story`.
+  """
+  story_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Story_Data!
+  ): Story_KeyOutput! @fdc_generated(from: "Story", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `Trend` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Trend`.
+  """
+  trend_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Trend_Data!
+  ): Trend_KeyOutput! @fdc_generated(from: "Trend", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `TrendValue` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `TrendValue`.
+  """
+  trendValue_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: TrendValue_Data!
+  ): TrendValue_KeyOutput! @fdc_generated(from: "TrendValue", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `Variant` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Variant`.
+  """
+  variant_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Variant_Data!
+  ): Variant_KeyOutput! @fdc_generated(from: "Variant", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `VariantValue` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `VariantValue`.
+  """
+  variantValue_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: VariantValue_Data!
+  ): VariantValue_KeyOutput! @fdc_generated(from: "VariantValue", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update `Connection` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Connection`.
+  """
+  connection_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Connection_Data!]!
+  ): [Connection_KeyOutput!]! @fdc_generated(from: "Connection", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `Perspective` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Perspective`.
+  """
+  perspective_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Perspective_Data!]!
+  ): [Perspective_KeyOutput!]! @fdc_generated(from: "Perspective", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `PerspectiveMember` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `PerspectiveMember`.
+  """
+  perspectiveMember_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [PerspectiveMember_Data!]!
+  ): [PerspectiveMember_KeyOutput!]! @fdc_generated(from: "PerspectiveMember", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `Story` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Story`.
+  """
+  story_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Story_Data!]!
+  ): [Story_KeyOutput!]! @fdc_generated(from: "Story", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `Trend` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Trend`.
+  """
+  trend_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Trend_Data!]!
+  ): [Trend_KeyOutput!]! @fdc_generated(from: "Trend", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `TrendValue` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `TrendValue`.
+  """
+  trendValue_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [TrendValue_Data!]!
+  ): [TrendValue_KeyOutput!]! @fdc_generated(from: "TrendValue", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `Variant` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Variant`.
+  """
+  variant_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Variant_Data!]!
+  ): [Variant_KeyOutput!]! @fdc_generated(from: "Variant", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `VariantValue` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `VariantValue`.
+  """
+  variantValue_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [VariantValue_Data!]!
+  ): [VariantValue_KeyOutput!]! @fdc_generated(from: "VariantValue", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Update a single `Connection` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Connection` or `null` if not found.
+  """
+  connection_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Connection_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Connection_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Connection_Data!
+  ): Connection_KeyOutput @fdc_generated(from: "Connection", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `Perspective` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Perspective` or `null` if not found.
+  """
+  perspective_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Perspective_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Perspective_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Perspective_Data!
+  ): Perspective_KeyOutput @fdc_generated(from: "Perspective", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `PerspectiveMember` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `PerspectiveMember` or `null` if not found.
+  """
+  perspectiveMember_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: PerspectiveMember_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: PerspectiveMember_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: PerspectiveMember_Data!
+  ): PerspectiveMember_KeyOutput @fdc_generated(from: "PerspectiveMember", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `Story` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Story` or `null` if not found.
+  """
+  story_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Story_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Story_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Story_Data!
+  ): Story_KeyOutput @fdc_generated(from: "Story", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `Trend` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Trend` or `null` if not found.
+  """
+  trend_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Trend_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Trend_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Trend_Data!
+  ): Trend_KeyOutput @fdc_generated(from: "Trend", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `TrendValue` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `TrendValue` or `null` if not found.
+  """
+  trendValue_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: TrendValue_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: TrendValue_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: TrendValue_Data!
+  ): TrendValue_KeyOutput @fdc_generated(from: "TrendValue", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `Variant` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Variant` or `null` if not found.
+  """
+  variant_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Variant_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Variant_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Variant_Data!
+  ): Variant_KeyOutput @fdc_generated(from: "Variant", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `VariantValue` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `VariantValue` or `null` if not found.
+  """
+  variantValue_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: VariantValue_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: VariantValue_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: VariantValue_Data!
+  ): VariantValue_KeyOutput @fdc_generated(from: "VariantValue", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update `Connection` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  connection_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Connection_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Connection_Data!
+  ): Int! @fdc_generated(from: "Connection", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `Perspective` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  perspective_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Perspective_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Perspective_Data!
+  ): Int! @fdc_generated(from: "Perspective", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `PerspectiveMember` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  perspectiveMember_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: PerspectiveMember_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: PerspectiveMember_Data!
+  ): Int! @fdc_generated(from: "PerspectiveMember", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `Story` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  story_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Story_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Story_Data!
+  ): Int! @fdc_generated(from: "Story", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `Trend` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  trend_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Trend_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Trend_Data!
+  ): Int! @fdc_generated(from: "Trend", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `TrendValue` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  trendValue_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: TrendValue_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: TrendValue_Data!
+  ): Int! @fdc_generated(from: "TrendValue", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `Variant` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  variant_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Variant_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Variant_Data!
+  ): Int! @fdc_generated(from: "Variant", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `VariantValue` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  variantValue_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: VariantValue_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: VariantValue_Data!
+  ): Int! @fdc_generated(from: "VariantValue", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Delete a single `Connection` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  connection_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Connection_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Connection_FirstRow
+  ): Connection_KeyOutput @fdc_generated(from: "Connection", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `Perspective` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  perspective_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Perspective_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Perspective_FirstRow
+  ): Perspective_KeyOutput @fdc_generated(from: "Perspective", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `PerspectiveMember` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  perspectiveMember_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: PerspectiveMember_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: PerspectiveMember_FirstRow
+  ): PerspectiveMember_KeyOutput @fdc_generated(from: "PerspectiveMember", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `Story` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  story_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Story_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Story_FirstRow
+  ): Story_KeyOutput @fdc_generated(from: "Story", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `Trend` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  trend_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Trend_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Trend_FirstRow
+  ): Trend_KeyOutput @fdc_generated(from: "Trend", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `TrendValue` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  trendValue_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: TrendValue_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: TrendValue_FirstRow
+  ): TrendValue_KeyOutput @fdc_generated(from: "TrendValue", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `Variant` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  variant_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Variant_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Variant_FirstRow
+  ): Variant_KeyOutput @fdc_generated(from: "Variant", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `VariantValue` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  variantValue_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: VariantValue_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: VariantValue_FirstRow
+  ): VariantValue_KeyOutput @fdc_generated(from: "VariantValue", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete `Connection` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  connection_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Connection_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Connection", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `Perspective` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  perspective_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Perspective_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Perspective", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `PerspectiveMember` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  perspectiveMember_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: PerspectiveMember_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "PerspectiveMember", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `Story` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  story_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Story_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Story", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `Trend` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  trend_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Trend_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Trend", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `TrendValue` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  trendValue_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: TrendValue_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "TrendValue", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `Variant` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  variant_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Variant_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Variant", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `VariantValue` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  variantValue_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: VariantValue_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "VariantValue", purpose: DELETE_MULTIPLE)
+}

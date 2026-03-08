@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"       # your machine:container
+    volumes:
+      - .:/app            # mirrors your local files into the container live
+      - /app/node_modules # keeps container's node_modules isolated
+    environment:
+      - NODE_ENV=development
