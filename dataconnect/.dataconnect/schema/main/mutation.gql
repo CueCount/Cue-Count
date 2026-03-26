@@ -1,13 +1,13 @@
 extend type Mutation {
   """
-  ✨ Insert a single `Connection` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  ✨ Insert a single `LagValue` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
   """
-  connection_insert(
+  lagValue_insert(
     """
     Data object to insert into the table.
     """
-    data: Connection_Data!
-  ): Connection_KeyOutput! @fdc_generated(from: "Connection", purpose: INSERT_SINGLE)
+    data: LagValue_Data!
+  ): LagValue_KeyOutput! @fdc_generated(from: "LagValue", purpose: INSERT_SINGLE)
   """
   ✨ Insert a single `Perspective` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
   """
@@ -26,6 +26,24 @@ extend type Mutation {
     """
     data: PerspectiveMember_Data!
   ): PerspectiveMember_KeyOutput! @fdc_generated(from: "PerspectiveMember", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `Relationship` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  relationship_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Relationship_Data!
+  ): Relationship_KeyOutput! @fdc_generated(from: "Relationship", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `RelationshipValue` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  relationshipValue_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: RelationshipValue_Data!
+  ): RelationshipValue_KeyOutput! @fdc_generated(from: "RelationshipValue", purpose: INSERT_SINGLE)
   """
   ✨ Insert a single `Story` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
   """
@@ -63,23 +81,23 @@ extend type Mutation {
     data: Variant_Data!
   ): Variant_KeyOutput! @fdc_generated(from: "Variant", purpose: INSERT_SINGLE)
   """
-  ✨ Insert a single `VariantValue` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  ✨ Insert a single `Weight` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
   """
-  variantValue_insert(
+  weight_insert(
     """
     Data object to insert into the table.
     """
-    data: VariantValue_Data!
-  ): VariantValue_KeyOutput! @fdc_generated(from: "VariantValue", purpose: INSERT_SINGLE)
+    data: Weight_Data!
+  ): Weight_KeyOutput! @fdc_generated(from: "Weight", purpose: INSERT_SINGLE)
   """
-  ✨ Insert `Connection` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  ✨ Insert `LagValue` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
   """
-  connection_insertMany(
+  lagValue_insertMany(
     """
     List of data objects to insert into the table.
     """
-    data: [Connection_Data!]!
-  ): [Connection_KeyOutput!]! @fdc_generated(from: "Connection", purpose: INSERT_MULTIPLE)
+    data: [LagValue_Data!]!
+  ): [LagValue_KeyOutput!]! @fdc_generated(from: "LagValue", purpose: INSERT_MULTIPLE)
   """
   ✨ Insert `Perspective` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
   """
@@ -98,6 +116,24 @@ extend type Mutation {
     """
     data: [PerspectiveMember_Data!]!
   ): [PerspectiveMember_KeyOutput!]! @fdc_generated(from: "PerspectiveMember", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `Relationship` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  relationship_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Relationship_Data!]!
+  ): [Relationship_KeyOutput!]! @fdc_generated(from: "Relationship", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `RelationshipValue` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  relationshipValue_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [RelationshipValue_Data!]!
+  ): [RelationshipValue_KeyOutput!]! @fdc_generated(from: "RelationshipValue", purpose: INSERT_MULTIPLE)
   """
   ✨ Insert `Story` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
   """
@@ -135,23 +171,23 @@ extend type Mutation {
     data: [Variant_Data!]!
   ): [Variant_KeyOutput!]! @fdc_generated(from: "Variant", purpose: INSERT_MULTIPLE)
   """
-  ✨ Insert `VariantValue` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  ✨ Insert `Weight` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
   """
-  variantValue_insertMany(
+  weight_insertMany(
     """
     List of data objects to insert into the table.
     """
-    data: [VariantValue_Data!]!
-  ): [VariantValue_KeyOutput!]! @fdc_generated(from: "VariantValue", purpose: INSERT_MULTIPLE)
+    data: [Weight_Data!]!
+  ): [Weight_KeyOutput!]! @fdc_generated(from: "Weight", purpose: INSERT_MULTIPLE)
   """
-  ✨ Insert or update a single `Connection` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Connection`.
+  ✨ Insert or update a single `LagValue` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `LagValue`.
   """
-  connection_upsert(
+  lagValue_upsert(
     """
     Data object to insert or update if it already exists.
     """
-    data: Connection_Data!
-  ): Connection_KeyOutput! @fdc_generated(from: "Connection", purpose: UPSERT_SINGLE)
+    data: LagValue_Data!
+  ): LagValue_KeyOutput! @fdc_generated(from: "LagValue", purpose: UPSERT_SINGLE)
   """
   ✨ Insert or update a single `Perspective` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Perspective`.
   """
@@ -170,6 +206,24 @@ extend type Mutation {
     """
     data: PerspectiveMember_Data!
   ): PerspectiveMember_KeyOutput! @fdc_generated(from: "PerspectiveMember", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `Relationship` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Relationship`.
+  """
+  relationship_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Relationship_Data!
+  ): Relationship_KeyOutput! @fdc_generated(from: "Relationship", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `RelationshipValue` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `RelationshipValue`.
+  """
+  relationshipValue_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: RelationshipValue_Data!
+  ): RelationshipValue_KeyOutput! @fdc_generated(from: "RelationshipValue", purpose: UPSERT_SINGLE)
   """
   ✨ Insert or update a single `Story` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Story`.
   """
@@ -207,23 +261,23 @@ extend type Mutation {
     data: Variant_Data!
   ): Variant_KeyOutput! @fdc_generated(from: "Variant", purpose: UPSERT_SINGLE)
   """
-  ✨ Insert or update a single `VariantValue` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `VariantValue`.
+  ✨ Insert or update a single `Weight` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Weight`.
   """
-  variantValue_upsert(
+  weight_upsert(
     """
     Data object to insert or update if it already exists.
     """
-    data: VariantValue_Data!
-  ): VariantValue_KeyOutput! @fdc_generated(from: "VariantValue", purpose: UPSERT_SINGLE)
+    data: Weight_Data!
+  ): Weight_KeyOutput! @fdc_generated(from: "Weight", purpose: UPSERT_SINGLE)
   """
-  ✨ Insert or update `Connection` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Connection`.
+  ✨ Insert or update `LagValue` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `LagValue`.
   """
-  connection_upsertMany(
+  lagValue_upsertMany(
     """
     List of data objects to insert or update if it already exists.
     """
-    data: [Connection_Data!]!
-  ): [Connection_KeyOutput!]! @fdc_generated(from: "Connection", purpose: UPSERT_MULTIPLE)
+    data: [LagValue_Data!]!
+  ): [LagValue_KeyOutput!]! @fdc_generated(from: "LagValue", purpose: UPSERT_MULTIPLE)
   """
   ✨ Insert or update `Perspective` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Perspective`.
   """
@@ -242,6 +296,24 @@ extend type Mutation {
     """
     data: [PerspectiveMember_Data!]!
   ): [PerspectiveMember_KeyOutput!]! @fdc_generated(from: "PerspectiveMember", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `Relationship` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Relationship`.
+  """
+  relationship_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Relationship_Data!]!
+  ): [Relationship_KeyOutput!]! @fdc_generated(from: "Relationship", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `RelationshipValue` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `RelationshipValue`.
+  """
+  relationshipValue_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [RelationshipValue_Data!]!
+  ): [RelationshipValue_KeyOutput!]! @fdc_generated(from: "RelationshipValue", purpose: UPSERT_MULTIPLE)
   """
   ✨ Insert or update `Story` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Story`.
   """
@@ -279,18 +351,18 @@ extend type Mutation {
     data: [Variant_Data!]!
   ): [Variant_KeyOutput!]! @fdc_generated(from: "Variant", purpose: UPSERT_MULTIPLE)
   """
-  ✨ Insert or update `VariantValue` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `VariantValue`.
+  ✨ Insert or update `Weight` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Weight`.
   """
-  variantValue_upsertMany(
+  weight_upsertMany(
     """
     List of data objects to insert or update if it already exists.
     """
-    data: [VariantValue_Data!]!
-  ): [VariantValue_KeyOutput!]! @fdc_generated(from: "VariantValue", purpose: UPSERT_MULTIPLE)
+    data: [Weight_Data!]!
+  ): [Weight_KeyOutput!]! @fdc_generated(from: "Weight", purpose: UPSERT_MULTIPLE)
   """
-  ✨ Update a single `Connection` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Connection` or `null` if not found.
+  ✨ Update a single `LagValue` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `LagValue` or `null` if not found.
   """
-  connection_update(
+  lagValue_update(
     """
     The unique ID of the object.
     """
@@ -299,18 +371,18 @@ extend type Mutation {
     """
     The key used to identify the object.
     """
-    key: Connection_Key
+    key: LagValue_Key
 
     """
     Fetch the first row based on the filters and ordering.
     """
-    first: Connection_FirstRow
+    first: LagValue_FirstRow
 
     """
     Data object containing fields to be updated.
     """
-    data: Connection_Data!
-  ): Connection_KeyOutput @fdc_generated(from: "Connection", purpose: UPDATE_SINGLE)
+    data: LagValue_Data!
+  ): LagValue_KeyOutput @fdc_generated(from: "LagValue", purpose: UPDATE_SINGLE)
   """
   ✨ Update a single `Perspective` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Perspective` or `null` if not found.
   """
@@ -359,6 +431,54 @@ extend type Mutation {
     """
     data: PerspectiveMember_Data!
   ): PerspectiveMember_KeyOutput @fdc_generated(from: "PerspectiveMember", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `Relationship` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Relationship` or `null` if not found.
+  """
+  relationship_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Relationship_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Relationship_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Relationship_Data!
+  ): Relationship_KeyOutput @fdc_generated(from: "Relationship", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `RelationshipValue` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `RelationshipValue` or `null` if not found.
+  """
+  relationshipValue_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: RelationshipValue_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: RelationshipValue_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: RelationshipValue_Data!
+  ): RelationshipValue_KeyOutput @fdc_generated(from: "RelationshipValue", purpose: UPDATE_SINGLE)
   """
   ✨ Update a single `Story` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Story` or `null` if not found.
   """
@@ -456,9 +576,9 @@ extend type Mutation {
     data: Variant_Data!
   ): Variant_KeyOutput @fdc_generated(from: "Variant", purpose: UPDATE_SINGLE)
   """
-  ✨ Update a single `VariantValue` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `VariantValue` or `null` if not found.
+  ✨ Update a single `Weight` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Weight` or `null` if not found.
   """
-  variantValue_update(
+  weight_update(
     """
     The unique ID of the object.
     """
@@ -467,26 +587,26 @@ extend type Mutation {
     """
     The key used to identify the object.
     """
-    key: VariantValue_Key
+    key: Weight_Key
 
     """
     Fetch the first row based on the filters and ordering.
     """
-    first: VariantValue_FirstRow
+    first: Weight_FirstRow
 
     """
     Data object containing fields to be updated.
     """
-    data: VariantValue_Data!
-  ): VariantValue_KeyOutput @fdc_generated(from: "VariantValue", purpose: UPDATE_SINGLE)
+    data: Weight_Data!
+  ): Weight_KeyOutput @fdc_generated(from: "Weight", purpose: UPDATE_SINGLE)
   """
-  ✨ Update `Connection` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  ✨ Update `LagValue` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
   """
-  connection_updateMany(
+  lagValue_updateMany(
     """
     Filter condition to specify which rows to update.
     """
-    where: Connection_Filter
+    where: LagValue_Filter
 
     """
     Set to true to update all rows.
@@ -496,8 +616,8 @@ extend type Mutation {
     """
     Data object containing fields to update.
     """
-    data: Connection_Data!
-  ): Int! @fdc_generated(from: "Connection", purpose: UPDATE_MULTIPLE)
+    data: LagValue_Data!
+  ): Int! @fdc_generated(from: "LagValue", purpose: UPDATE_MULTIPLE)
   """
   ✨ Update `Perspective` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
   """
@@ -536,6 +656,44 @@ extend type Mutation {
     """
     data: PerspectiveMember_Data!
   ): Int! @fdc_generated(from: "PerspectiveMember", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `Relationship` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  relationship_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Relationship_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Relationship_Data!
+  ): Int! @fdc_generated(from: "Relationship", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `RelationshipValue` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  relationshipValue_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: RelationshipValue_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: RelationshipValue_Data!
+  ): Int! @fdc_generated(from: "RelationshipValue", purpose: UPDATE_MULTIPLE)
   """
   ✨ Update `Story` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
   """
@@ -613,13 +771,13 @@ extend type Mutation {
     data: Variant_Data!
   ): Int! @fdc_generated(from: "Variant", purpose: UPDATE_MULTIPLE)
   """
-  ✨ Update `VariantValue` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  ✨ Update `Weight` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
   """
-  variantValue_updateMany(
+  weight_updateMany(
     """
     Filter condition to specify which rows to update.
     """
-    where: VariantValue_Filter
+    where: Weight_Filter
 
     """
     Set to true to update all rows.
@@ -629,12 +787,12 @@ extend type Mutation {
     """
     Data object containing fields to update.
     """
-    data: VariantValue_Data!
-  ): Int! @fdc_generated(from: "VariantValue", purpose: UPDATE_MULTIPLE)
+    data: Weight_Data!
+  ): Int! @fdc_generated(from: "Weight", purpose: UPDATE_MULTIPLE)
   """
-  ✨ Delete a single `Connection` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  ✨ Delete a single `LagValue` based on `id`, `key` or `first` and return its key (or `null` if not found).
   """
-  connection_delete(
+  lagValue_delete(
     """
     The unique ID of the object.
     """
@@ -643,13 +801,13 @@ extend type Mutation {
     """
     The key used to identify the object.
     """
-    key: Connection_Key
+    key: LagValue_Key
 
     """
     Fetch the first row based on the filters and ordering.
     """
-    first: Connection_FirstRow
-  ): Connection_KeyOutput @fdc_generated(from: "Connection", purpose: DELETE_SINGLE)
+    first: LagValue_FirstRow
+  ): LagValue_KeyOutput @fdc_generated(from: "LagValue", purpose: DELETE_SINGLE)
   """
   ✨ Delete a single `Perspective` based on `id`, `key` or `first` and return its key (or `null` if not found).
   """
@@ -688,6 +846,44 @@ extend type Mutation {
     """
     first: PerspectiveMember_FirstRow
   ): PerspectiveMember_KeyOutput @fdc_generated(from: "PerspectiveMember", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `Relationship` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  relationship_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Relationship_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Relationship_FirstRow
+  ): Relationship_KeyOutput @fdc_generated(from: "Relationship", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `RelationshipValue` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  relationshipValue_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: RelationshipValue_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: RelationshipValue_FirstRow
+  ): RelationshipValue_KeyOutput @fdc_generated(from: "RelationshipValue", purpose: DELETE_SINGLE)
   """
   ✨ Delete a single `Story` based on `id`, `key` or `first` and return its key (or `null` if not found).
   """
@@ -765,9 +961,9 @@ extend type Mutation {
     first: Variant_FirstRow
   ): Variant_KeyOutput @fdc_generated(from: "Variant", purpose: DELETE_SINGLE)
   """
-  ✨ Delete a single `VariantValue` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  ✨ Delete a single `Weight` based on `id`, `key` or `first` and return its key (or `null` if not found).
   """
-  variantValue_delete(
+  weight_delete(
     """
     The unique ID of the object.
     """
@@ -776,27 +972,27 @@ extend type Mutation {
     """
     The key used to identify the object.
     """
-    key: VariantValue_Key
+    key: Weight_Key
 
     """
     Fetch the first row based on the filters and ordering.
     """
-    first: VariantValue_FirstRow
-  ): VariantValue_KeyOutput @fdc_generated(from: "VariantValue", purpose: DELETE_SINGLE)
+    first: Weight_FirstRow
+  ): Weight_KeyOutput @fdc_generated(from: "Weight", purpose: DELETE_SINGLE)
   """
-  ✨ Delete `Connection` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  ✨ Delete `LagValue` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
   """
-  connection_deleteMany(
+  lagValue_deleteMany(
     """
     Filter condition to specify which rows to delete.
     """
-    where: Connection_Filter
+    where: LagValue_Filter
 
     """
     Set to true to delete all rows.
     """
     all: Boolean = false
-  ): Int! @fdc_generated(from: "Connection", purpose: DELETE_MULTIPLE)
+  ): Int! @fdc_generated(from: "LagValue", purpose: DELETE_MULTIPLE)
   """
   ✨ Delete `Perspective` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
   """
@@ -825,6 +1021,34 @@ extend type Mutation {
     """
     all: Boolean = false
   ): Int! @fdc_generated(from: "PerspectiveMember", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `Relationship` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  relationship_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Relationship_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Relationship", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `RelationshipValue` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  relationshipValue_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: RelationshipValue_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "RelationshipValue", purpose: DELETE_MULTIPLE)
   """
   ✨ Delete `Story` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
   """
@@ -882,17 +1106,17 @@ extend type Mutation {
     all: Boolean = false
   ): Int! @fdc_generated(from: "Variant", purpose: DELETE_MULTIPLE)
   """
-  ✨ Delete `VariantValue` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  ✨ Delete `Weight` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
   """
-  variantValue_deleteMany(
+  weight_deleteMany(
     """
     Filter condition to specify which rows to delete.
     """
-    where: VariantValue_Filter
+    where: Weight_Filter
 
     """
     Set to true to delete all rows.
     """
     all: Boolean = false
-  ): Int! @fdc_generated(from: "VariantValue", purpose: DELETE_MULTIPLE)
+  ): Int! @fdc_generated(from: "Weight", purpose: DELETE_MULTIPLE)
 }

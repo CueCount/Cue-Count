@@ -5,23 +5,42 @@ import { useParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { getStoryWithTrends } from "@/lib/db/trends";
 import { getStoryById } from "@/lib/db/stories";
-import WorkspaceGraphSidebar, { getTrendColor } from "@/components/WorkspaceGraphSidebar";
+import StorySidebar, { getTrendColor } from "@/components/StorySidebar";
+import { UIProvider, useUI } from "@/contexts/UIState";
+import { DataProvider } from "@/contexts/DataState";
 import type { EChartsOption, SeriesOption } from "echarts";
 import Breadcrumb from "@/components/Breadcrumb";
 import mockPerspectives from "@/data/mock/perspectives.json";
-import type { StoryWithTrends, PerspectiveRow } from "@/types/db";
+import type { StoryWithContributors, PerspectiveRow } from "@/types/db";
 
 const ReactECharts = dynamic(() => import("echarts-for-react"), { ssr: false });
 
+// ── Outer shell ────────────────────────────────────────────────────────
+// Renders UIProvider so the inner component can call useUI()
 export default function StoryPage() {
-  const params = useParams();
+  return (
+    <DataProvider>
+      <UIProvider>
+        <StoryPageInner />
+      </UIProvider>
+    </DataProvider>
+  );
+}
+
+// ── Inner component ────────────────────────────────────────────────────
+// Lives inside UIProvider so it can read hiddenTrendIds and pass it
+// into chartOptions — this is what makes the eye icons affect the graph.
+function StoryPageInner() {
+  const params  = useParams();
   const storyId = params.id as string;
 
-  const [storyData, setStoryData] = useState<StoryWithTrends | null>(null);
+  const [storyData, setStoryData]     = useState<StoryWithContributors | null>(null);
   const [activeTrendId, setActiveTrendId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading]         = useState(true);
 
-  // Load story + all trend data from lib/db/trends.ts
+  // Graph visibility state — toggled by the eye icons in the sidebar
+  const { hiddenTrendIds } = useUI();
+
   useEffect(() => {
     async function load() {
       setLoading(true);
@@ -34,37 +53,38 @@ export default function StoryPage() {
     load();
   }, [storyId]);
 
-  // Look up parent perspective for breadcrumb
   const perspective = (mockPerspectives as PerspectiveRow[]).find(
     (p) => p.id === storyData?.perspectiveId
   );
 
-  // Build ECharts series from focal trend + variants
   const chartOptions: EChartsOption = useMemo(() => {
     if (!storyData) return {};
 
     const allTrends = [
       storyData.focalTrend,
-      ...storyData.variants.map((v) => v.trend),
+      ...storyData.contributors.map((c) => c.contributorStory.focalTrend),
     ];
 
     const series: SeriesOption[] = allTrends.map((trend, index) => {
       const isPrimary = trend.id === storyData.focalTrendId;
       const isHovered = activeTrendId === trend.id;
-      const isDimmed = activeTrendId !== null && !isPrimary && activeTrendId !== trend.id;
-      const color = getTrendColor(index);
+      const isDimmed  = activeTrendId !== null && !isPrimary && activeTrendId !== trend.id;
+      const isHidden  = hiddenTrendIds.has(trend.id); // ← reads from UIProvider
+      const color     = getTrendColor(index);
 
       return {
         name: trend.name,
         type: "line" as const,
         smooth: true,
         data: trend.values.map((v) => v.value),
-        symbol: isPrimary ? "circle" : "none",
+        symbol: "none",
         symbolSize: 8,
         lineStyle: {
           color,
-          width: isPrimary ? 3 : isHovered ? 2.5 : 1.5,
-          opacity: isDimmed ? 0.15 : isPrimary ? 1 : 0.5,
+          width: isHovered ? 3 : 2,
+          // Hidden = fully transparent. Series stays in the array so
+          // tooltip indices stay stable — the line just disappears visually.
+          opacity: isHidden ? 0 : isDimmed ? 0.5 : 1,
         },
         itemStyle: { color },
         emphasis: {
@@ -74,14 +94,13 @@ export default function StoryPage() {
       } as SeriesOption;
     });
 
-    // X axis labels from the focal trend's timestamps
     const xLabels = storyData.focalTrend.values.map((v) =>
-      v.timestamp.slice(0, 7) // "YYYY-MM"
+      v.timestamp.slice(0, 7)
     );
 
     return {
       backgroundColor: "transparent",
-      grid: { top: 10, right: 10, bottom: 10, left: 10 },
+      grid: { top: 10, right: 10, bottom: 60, left: 10 },
       xAxis: {
         type: "category",
         data: xLabels,
@@ -114,6 +133,8 @@ export default function StoryPage() {
         formatter: (params: any) => {
           const date = params[0]?.axisValue;
           const rows = params
+            // Also filter hidden trends out of the tooltip
+            .filter((p: any) => !hiddenTrendIds.has(allTrends[p.seriesIndex]?.id))
             .map((p: any) => {
               const isPrimary = allTrends[p.seriesIndex]?.id === storyData.focalTrendId;
               const val = Number(p.value).toLocaleString();
@@ -137,8 +158,24 @@ export default function StoryPage() {
         },
       },
       series,
+      dataZoom: [
+        {
+          type: "slider",
+          xAxisIndex: 0,
+          start: 0,
+          end: 100,
+          height: 24,
+          bottom: 8,
+          borderColor: "transparent",
+          backgroundColor: "#f4f4f5",
+          fillerColor: "rgba(192, 38, 211, 0.08)",
+          handleStyle: { color: "#c026d3", borderColor: "#c026d3" },
+          textStyle: { color: "#a1a1aa", fontSize: 10 },
+        },
+        { type: "inside", xAxisIndex: 0, start: 0, end: 100 },
+      ],
     };
-  }, [storyData, activeTrendId]);
+  }, [storyData, activeTrendId, hiddenTrendIds]); // ← hiddenTrendIds in deps array
 
   if (loading) {
     return (
@@ -157,28 +194,27 @@ export default function StoryPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-white">
+    <div className="flex min-h-screen w-full">
 
-      <Breadcrumb items={[
-        { label: "Home", href: "/" },
-        { label: "Perspectives", href: "/" },
-        { label: perspective?.name ?? "Perspective", href: `/perspective/${storyData.perspectiveId}` },
-        { label: storyData.name },
-      ]} />
+      <aside className="w-96 shrink-0 border-r border-zinc-100 px-5 py-6 overflow-y-auto">
+        <div className="flex items-center gap-2 mb-4">
+          <Breadcrumb items={[
+            { label: "Home", href: "/" },
+            { label: "Perspectives", href: "/" },
+            { label: perspective?.name ?? "Perspective", href: `/perspective/${storyData.perspectiveId}` },
+            { label: storyData.name },
+          ]} />
+        </div>
+        <StorySidebar
+          title={storyData.name}
+          storyId={storyData.id}
+          focalTrend={storyData.focalTrend}
+          contributors={storyData.contributors}
+        />
+      </aside>
 
-      <div className="flex flex-1 overflow-hidden">
-        <aside className="w-64 shrink-0 border-r border-zinc-100 px-5 py-6 overflow-y-auto">
-          <WorkspaceGraphSidebar
-            title={storyData.name}
-            yesPercent={0}
-            projections={0}
-            contributors={0}
-            focalTrend={storyData.focalTrend}
-            variantTrends={storyData.variants.map((v) => v.trend)}
-            activeTrendId={activeTrendId}
-            onTrendHover={setActiveTrendId}
-          />
-        </aside>
+      <div className="flex flex-col flex-1">
+
         <main className="flex-1 overflow-hidden">
           <ReactECharts
             option={chartOptions}
@@ -187,6 +223,7 @@ export default function StoryPage() {
           />
         </main>
       </div>
+
     </div>
   );
 }

@@ -1,3 +1,13 @@
+# schema.gql — Firebase Data Connect
+# ─────────────────────────────────────────────────────────────────────────────
+# Structural decisions reflected here:
+#   - Relationship IS the contributor link (no StoryContributor table)
+#   - variantId on Relationship and Trend is nullable — null = base/canonical
+#   - Variant.story always references the ROOT focal story
+#   - Trend overrides carry variantId + baseTrend reference
+#   - No VariantValue table — variant data lives in override Trend rows
+# ─────────────────────────────────────────────────────────────────────────────
+
 type Perspective @table {
   id: UUID! @default(expr: "uuidV4()")
   name: String!
@@ -14,14 +24,21 @@ type PerspectiveMember @table {
   createdAt: Timestamp! @default(expr: "request.time")
 }
 
+# Trend — base or variant override.
+# variantId = null + baseTrend = null → canonical/API-sourced trend
+# variantId set + baseTrend set       → override trend, active only when
+#                                        the referenced variant is selected
 type Trend @table {
   id: UUID! @default(expr: "uuidV4()")
   name: String!
   unit: String
+  denomination: Float
   description: String
   source: String!
   frequency: String!
   externalId: String
+  variant: Variant            # null = base trend
+  baseTrend: Trend            # null if this IS the base; set if this is an override
   createdBy: String!
   createdAt: Timestamp! @default(expr: "request.time")
   updatedAt: Timestamp! @default(expr: "request.time")
@@ -30,7 +47,6 @@ type Trend @table {
 type TrendValue @table {
   id: UUID! @default(expr: "uuidV4()")
   trend: Trend!
-  index: Int!
   value: Float!
   timestamp: Timestamp!
 }
@@ -45,33 +61,59 @@ type Story @table {
   updatedAt: Timestamp! @default(expr: "request.time")
 }
 
+# Variant — a named scenario scoped to a root focal story.
+# story must always reference the top-level focal story in the hierarchy.
+# The variant carries no data itself — relationship rows and override trends
+# reference it to declare which scenario they belong to.
 type Variant @table {
   id: UUID! @default(expr: "uuidV4()")
-  story: Story!
-  trend: Trend!
+  story: Story!               # always the ROOT focal story
   name: String
   createdBy: String!
   createdAt: Timestamp! @default(expr: "request.time")
 }
 
-type VariantValue @table {
+# Relationship — contributor link AND relationship descriptor.
+# Replaces the old StoryContributor + Relationship pair.
+# One row per (focalStory, contributorStory, variant) combination.
+#   variant = null  → base/canonical, always shown by default
+#   variant set     → only active when that variant is selected in the UI
+type Relationship @table {
   id: UUID! @default(expr: "uuidV4()")
-  variant: Variant!
-  index: Int!
+  focalStory: Story!
+  contributorStory: Story!
+  variant: Variant            # null = base relationship
+  type: String!               # "direct" | "inverse" | "correlated" | "lagged"
+  createdBy: String!
+  createdAt: Timestamp! @default(expr: "request.time")
+}
+
+# Weight — correlation strength time series, scoped to a Relationship.
+# Variant weights are automatically isolated because each variant gets
+# its own Relationship row with its own Weight series.
+type Weight @table {
+  id: UUID! @default(expr: "uuidV4()")
+  relationship: Relationship!
   value: Float!
   timestamp: Timestamp!
 }
 
-type Connection @table {
+# RelationshipValue — type-specific quantitative modifier time series.
+# e.g. number of lag days for a "lagged" relationship.
+# Empty until the UI populates it for relevant relationship types.
+type RelationshipValue @table {
   id: UUID! @default(expr: "uuidV4()")
-  story: Story!
-  sourceType: String!
-  sourceTrend: Trend
-  sourceConnection: Connection
-  targetType: String!
-  targetTrend: Trend
-  targetConnection: Connection
-  direction: String!
-  weight: Float!
-  createdAt: Timestamp! @default(expr: "request.time")
+  relationship: Relationship!
+  value: Float!
+  timestamp: Timestamp!
+}
+
+# LagValue — time-series of lag offset (in days) for "lagged" relationships.
+# Parallel to RelationshipValue but semantically distinct — stores how many
+# days behind the contributor trend lags the focal trend at each point in time.
+type LagValue @table {
+  id: UUID! @default(expr: "uuidV4()")
+  relationship: Relationship!
+  value: Float!               # number of days of lag
+  timestamp: Timestamp!
 }

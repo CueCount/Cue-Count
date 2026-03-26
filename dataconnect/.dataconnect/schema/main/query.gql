@@ -1,8 +1,8 @@
 extend type Query {
   """
-  ✨ Look up a single `Connection` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  ✨ Look up a single `LagValue` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
   """
-  connection(
+  lagValue(
     """
     The unique ID of the object.
     """
@@ -11,13 +11,13 @@ extend type Query {
     """
     The key used to identify the object.
     """
-    key: Connection_Key
+    key: LagValue_Key
 
     """
     Fetch the first row based on the filters and ordering.
     """
-    first: Connection_FirstRow
-  ): Connection @fdc_generated(from: "Connection", purpose: QUERY_SINGLE)
+    first: LagValue_FirstRow
+  ): LagValue @fdc_generated(from: "LagValue", purpose: QUERY_SINGLE)
   """
   ✨ Look up a single `Perspective` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
   """
@@ -56,6 +56,44 @@ extend type Query {
     """
     first: PerspectiveMember_FirstRow
   ): PerspectiveMember @fdc_generated(from: "PerspectiveMember", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `Relationship` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  relationship(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Relationship_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Relationship_FirstRow
+  ): Relationship @fdc_generated(from: "Relationship", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `RelationshipValue` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  relationshipValue(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: RelationshipValue_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: RelationshipValue_FirstRow
+  ): RelationshipValue @fdc_generated(from: "RelationshipValue", purpose: QUERY_SINGLE)
   """
   ✨ Look up a single `Story` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
   """
@@ -133,9 +171,9 @@ extend type Query {
     first: Variant_FirstRow
   ): Variant @fdc_generated(from: "Variant", purpose: QUERY_SINGLE)
   """
-  ✨ Look up a single `VariantValue` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  ✨ Look up a single `Weight` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
   """
-  variantValue(
+  weight(
     """
     The unique ID of the object.
     """
@@ -144,26 +182,26 @@ extend type Query {
     """
     The key used to identify the object.
     """
-    key: VariantValue_Key
+    key: Weight_Key
 
     """
     Fetch the first row based on the filters and ordering.
     """
-    first: VariantValue_FirstRow
-  ): VariantValue @fdc_generated(from: "VariantValue", purpose: QUERY_SINGLE)
+    first: Weight_FirstRow
+  ): Weight @fdc_generated(from: "Weight", purpose: QUERY_SINGLE)
   """
-  ✨ List `Connection` objects in the table and return selected fields, optionally filtered by `where` conditions
+  ✨ List `LagValue` objects in the table and return selected fields, optionally filtered by `where` conditions
   """
-  connections(
+  lagValues(
     """
     Filter condition to narrow down the query results.
     """
-    where: Connection_Filter
+    where: LagValue_Filter
 
     """
     Order the query results by specific fields.
     """
-    orderBy: [Connection_Order!]
+    orderBy: [LagValue_Order!]
 
     """
     Number of rows to skip before starting to return the results.
@@ -183,8 +221,8 @@ extend type Query {
     """
     Filter condition to apply to the groups of aggregate queries.
     """
-    having: Connection_Having
-  ): [Connection!]! @fdc_generated(from: "Connection", purpose: QUERY_MULTIPLE)
+    having: LagValue_Having
+  ): [LagValue!]! @fdc_generated(from: "LagValue", purpose: QUERY_MULTIPLE)
   """
   ✨ List `Perspective` objects in the table and return selected fields, optionally filtered by `where` conditions
   """
@@ -253,6 +291,74 @@ extend type Query {
     """
     having: PerspectiveMember_Having
   ): [PerspectiveMember!]! @fdc_generated(from: "PerspectiveMember", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `Relationship` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  relationships(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Relationship_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Relationship_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Relationship_Having
+  ): [Relationship!]! @fdc_generated(from: "Relationship", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `RelationshipValue` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  relationshipValues(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: RelationshipValue_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [RelationshipValue_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: RelationshipValue_Having
+  ): [RelationshipValue!]! @fdc_generated(from: "RelationshipValue", purpose: QUERY_MULTIPLE)
   """
   ✨ List `Story` objects in the table and return selected fields, optionally filtered by `where` conditions
   """
@@ -390,18 +496,18 @@ extend type Query {
     having: Variant_Having
   ): [Variant!]! @fdc_generated(from: "Variant", purpose: QUERY_MULTIPLE)
   """
-  ✨ List `VariantValue` objects in the table and return selected fields, optionally filtered by `where` conditions
+  ✨ List `Weight` objects in the table and return selected fields, optionally filtered by `where` conditions
   """
-  variantValues(
+  weights(
     """
     Filter condition to narrow down the query results.
     """
-    where: VariantValue_Filter
+    where: Weight_Filter
 
     """
     Order the query results by specific fields.
     """
-    orderBy: [VariantValue_Order!]
+    orderBy: [Weight_Order!]
 
     """
     Number of rows to skip before starting to return the results.
@@ -421,6 +527,6 @@ extend type Query {
     """
     Filter condition to apply to the groups of aggregate queries.
     """
-    having: VariantValue_Having
-  ): [VariantValue!]! @fdc_generated(from: "VariantValue", purpose: QUERY_MULTIPLE)
+    having: Weight_Having
+  ): [Weight!]! @fdc_generated(from: "Weight", purpose: QUERY_MULTIPLE)
 }

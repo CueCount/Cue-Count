@@ -237,78 +237,6 @@ export interface Variant_Key {
   __typename?: 'Variant_Key';
 }
 
-interface CreatePerspectiveRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: CreatePerspectiveVariables): MutationRef<CreatePerspectiveData, CreatePerspectiveVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: CreatePerspectiveVariables): MutationRef<CreatePerspectiveData, CreatePerspectiveVariables>;
-  operationName: string;
-}
-export const createPerspectiveRef: CreatePerspectiveRef;
-
-export function createPerspective(vars: CreatePerspectiveVariables): MutationPromise<CreatePerspectiveData, CreatePerspectiveVariables>;
-export function createPerspective(dc: DataConnect, vars: CreatePerspectiveVariables): MutationPromise<CreatePerspectiveData, CreatePerspectiveVariables>;
-
-interface AddPerspectiveMemberRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: AddPerspectiveMemberVariables): MutationRef<AddPerspectiveMemberData, AddPerspectiveMemberVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: AddPerspectiveMemberVariables): MutationRef<AddPerspectiveMemberData, AddPerspectiveMemberVariables>;
-  operationName: string;
-}
-export const addPerspectiveMemberRef: AddPerspectiveMemberRef;
-
-export function addPerspectiveMember(vars: AddPerspectiveMemberVariables): MutationPromise<AddPerspectiveMemberData, AddPerspectiveMemberVariables>;
-export function addPerspectiveMember(dc: DataConnect, vars: AddPerspectiveMemberVariables): MutationPromise<AddPerspectiveMemberData, AddPerspectiveMemberVariables>;
-
-interface CreateTrendRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: CreateTrendVariables): MutationRef<CreateTrendData, CreateTrendVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: CreateTrendVariables): MutationRef<CreateTrendData, CreateTrendVariables>;
-  operationName: string;
-}
-export const createTrendRef: CreateTrendRef;
-
-export function createTrend(vars: CreateTrendVariables): MutationPromise<CreateTrendData, CreateTrendVariables>;
-export function createTrend(dc: DataConnect, vars: CreateTrendVariables): MutationPromise<CreateTrendData, CreateTrendVariables>;
-
-interface CreateStoryRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: CreateStoryVariables): MutationRef<CreateStoryData, CreateStoryVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: CreateStoryVariables): MutationRef<CreateStoryData, CreateStoryVariables>;
-  operationName: string;
-}
-export const createStoryRef: CreateStoryRef;
-
-export function createStory(vars: CreateStoryVariables): MutationPromise<CreateStoryData, CreateStoryVariables>;
-export function createStory(dc: DataConnect, vars: CreateStoryVariables): MutationPromise<CreateStoryData, CreateStoryVariables>;
-
-interface CreateConnectionRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: CreateConnectionVariables): MutationRef<CreateConnectionData, CreateConnectionVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: CreateConnectionVariables): MutationRef<CreateConnectionData, CreateConnectionVariables>;
-  operationName: string;
-}
-export const createConnectionRef: CreateConnectionRef;
-
-export function createConnection(vars: CreateConnectionVariables): MutationPromise<CreateConnectionData, CreateConnectionVariables>;
-export function createConnection(dc: DataConnect, vars: CreateConnectionVariables): MutationPromise<CreateConnectionData, CreateConnectionVariables>;
-
-interface CreateVariantRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: CreateVariantVariables): MutationRef<CreateVariantData, CreateVariantVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: CreateVariantVariables): MutationRef<CreateVariantData, CreateVariantVariables>;
-  operationName: string;
-}
-export const createVariantRef: CreateVariantRef;
-
-export function createVariant(vars: CreateVariantVariables): MutationPromise<CreateVariantData, CreateVariantVariables>;
-export function createVariant(dc: DataConnect, vars: CreateVariantVariables): MutationPromise<CreateVariantData, CreateVariantVariables>;
-
 interface GetPerspectiveRef {
   /* Allow users to create refs without passing in DataConnect */
   (vars: GetPerspectiveVariables): QueryRef<GetPerspectiveData, GetPerspectiveVariables>;
@@ -380,4 +308,76 @@ export const searchTrendsRef: SearchTrendsRef;
 
 export function searchTrends(vars: SearchTrendsVariables): QueryPromise<SearchTrendsData, SearchTrendsVariables>;
 export function searchTrends(dc: DataConnect, vars: SearchTrendsVariables): QueryPromise<SearchTrendsData, SearchTrendsVariables>;
+
+interface CreatePerspectiveRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: CreatePerspectiveVariables): MutationRef<CreatePerspectiveData, CreatePerspectiveVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: CreatePerspectiveVariables): MutationRef<CreatePerspectiveData, CreatePerspectiveVariables>;
+  operationName: string;
+}
+export const createPerspectiveRef: CreatePerspectiveRef;
+
+export function createPerspective(vars: CreatePerspectiveVariables): MutationPromise<CreatePerspectiveData, CreatePerspectiveVariables>;
+export function createPerspective(dc: DataConnect, vars: CreatePerspectiveVariables): MutationPromise<CreatePerspectiveData, CreatePerspectiveVariables>;
+
+interface AddPerspectiveMemberRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: AddPerspectiveMemberVariables): MutationRef<AddPerspectiveMemberData, AddPerspectiveMemberVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: AddPerspectiveMemberVariables): MutationRef<AddPerspectiveMemberData, AddPerspectiveMemberVariables>;
+  operationName: string;
+}
+export const addPerspectiveMemberRef: AddPerspectiveMemberRef;
+
+export function addPerspectiveMember(vars: AddPerspectiveMemberVariables): MutationPromise<AddPerspectiveMemberData, AddPerspectiveMemberVariables>;
+export function addPerspectiveMember(dc: DataConnect, vars: AddPerspectiveMemberVariables): MutationPromise<AddPerspectiveMemberData, AddPerspectiveMemberVariables>;
+
+interface CreateTrendRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: CreateTrendVariables): MutationRef<CreateTrendData, CreateTrendVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: CreateTrendVariables): MutationRef<CreateTrendData, CreateTrendVariables>;
+  operationName: string;
+}
+export const createTrendRef: CreateTrendRef;
+
+export function createTrend(vars: CreateTrendVariables): MutationPromise<CreateTrendData, CreateTrendVariables>;
+export function createTrend(dc: DataConnect, vars: CreateTrendVariables): MutationPromise<CreateTrendData, CreateTrendVariables>;
+
+interface CreateStoryRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: CreateStoryVariables): MutationRef<CreateStoryData, CreateStoryVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: CreateStoryVariables): MutationRef<CreateStoryData, CreateStoryVariables>;
+  operationName: string;
+}
+export const createStoryRef: CreateStoryRef;
+
+export function createStory(vars: CreateStoryVariables): MutationPromise<CreateStoryData, CreateStoryVariables>;
+export function createStory(dc: DataConnect, vars: CreateStoryVariables): MutationPromise<CreateStoryData, CreateStoryVariables>;
+
+interface CreateConnectionRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: CreateConnectionVariables): MutationRef<CreateConnectionData, CreateConnectionVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: CreateConnectionVariables): MutationRef<CreateConnectionData, CreateConnectionVariables>;
+  operationName: string;
+}
+export const createConnectionRef: CreateConnectionRef;
+
+export function createConnection(vars: CreateConnectionVariables): MutationPromise<CreateConnectionData, CreateConnectionVariables>;
+export function createConnection(dc: DataConnect, vars: CreateConnectionVariables): MutationPromise<CreateConnectionData, CreateConnectionVariables>;
+
+interface CreateVariantRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: CreateVariantVariables): MutationRef<CreateVariantData, CreateVariantVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: CreateVariantVariables): MutationRef<CreateVariantData, CreateVariantVariables>;
+  operationName: string;
+}
+export const createVariantRef: CreateVariantRef;
+
+export function createVariant(vars: CreateVariantVariables): MutationPromise<CreateVariantData, CreateVariantVariables>;
+export function createVariant(dc: DataConnect, vars: CreateVariantVariables): MutationPromise<CreateVariantData, CreateVariantVariables>;
 

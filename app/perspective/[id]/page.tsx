@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useParams } from "next/navigation";
-import WorkspaceCard from "@/components/WorkspaceCard";
+import HorizontalCard from "@/components/HorizontalCard";
 import WorkspaceSidebar from "@/components/WorkspaceSidebar";
 import Breadcrumb from "@/components/Breadcrumb";
 import mockPerspectives from "@/data/mock/perspectives.json";
@@ -26,38 +26,35 @@ export default function PerspectivePage() {
   );
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex min-h-screen w-full">
 
-      <Breadcrumb items={[
-        { label: "Home", href: "/" },
-        { label: "Perspectives", href: "/" },
-        { label: perspective?.name ?? "Perspective" },
-      ]} />
+      {/* Sidebar */}
+      <aside className="w-96 shrink-0 border-r border-zinc-100 bg-white px-4 py-6">
+        <div className="flex items-center gap-2 mb-4">
+          <Breadcrumb items={[
+            { label: "Home", href: "/" },
+            { label: "Perspectives", href: "/" },
+            { label: perspective?.name ?? "Perspective" },
+          ]} />
+          {/* rest of your existing sidebar header content */}
+        </div>
+        <WorkspaceSidebar
+          selectedTag={selectedTag}
+          onTagSelect={setSelectedTag}
+        />
+      </aside>
 
-      <div className="flex flex-1">
-
-        <aside className="w-56 shrink-0 border-r border-zinc-100 bg-white px-4 py-6">
-          <WorkspaceSidebar
-            selectedTag={selectedTag}
-            onTagSelect={setSelectedTag}
-          />
-        </aside>
+      {/* Main content */}
+      <div className="flex flex-col flex-1">
 
         <main className="flex-1 px-8 py-6 flex flex-col gap-6">
           {allStories.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-              {allStories.map((story, index) => (
-                <WorkspaceCard
+            <div className="flex flex-col">
+              {allStories.map((story) => (
+                <HorizontalCard
                   key={story.id}
-                  workspace={{
-                    id: story.id,
-                    title: story.name,
-                    projections: 0,
-                    contributors: 0,
-                    hasNewData: false,
-                    tags: [],
-                  }}
-                  index={index}
+                  type="story"
+                  data={story}
                   href={`/story/${story.id}`}
                 />
               ))}
@@ -70,6 +67,7 @@ export default function PerspectivePage() {
         </main>
 
       </div>
+
     </div>
   );
 }

@@ -1,217 +1,86 @@
-extend type Connection {
-  """
-  ✨ List `Connection` objects in a one-to-many relationship (where `Connection`.`sourceConnection` is this object).
-  """
-  connections_on_sourceConnection(
-    """
-    Filter condition to narrow down the query results.
-    """
-    where: Connection_Filter
-
-    """
-    Order the query results by specific fields.
-    """
-    orderBy: [Connection_Order!]
-
-    """
-    Number of rows to skip before starting to return the results.
-    """
-    offset: Int
-
-    """
-    Maximum number of rows to return (defaults to 100 rows).
-    """
-    limit: Int = 100
-
-    """
-    Set to true to return distinct results.
-    """
-    distinct: Boolean = false
-
-    """
-    Filter condition to apply to the groups of aggregate queries.
-    """
-    having: Connection_Having
-  ): [Connection!]! @fdc_generated(from: "Connection.sourceConnection", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
-  """
-  ✨ List `Connection` objects in a one-to-many relationship (where `Connection`.`targetConnection` is this object).
-  """
-  connections_on_targetConnection(
-    """
-    Filter condition to narrow down the query results.
-    """
-    where: Connection_Filter
-
-    """
-    Order the query results by specific fields.
-    """
-    orderBy: [Connection_Order!]
-
-    """
-    Number of rows to skip before starting to return the results.
-    """
-    offset: Int
-
-    """
-    Maximum number of rows to return (defaults to 100 rows).
-    """
-    limit: Int = 100
-
-    """
-    Set to true to return distinct results.
-    """
-    distinct: Boolean = false
-
-    """
-    Filter condition to apply to the groups of aggregate queries.
-    """
-    having: Connection_Having
-  ): [Connection!]! @fdc_generated(from: "Connection.targetConnection", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+extend type LagValue {
   """
   Implicit metadata field that cannot be written. It provides extra information about query results.
   """
-  _metadata: _Metadata @fdc_generated(from: "Connection", purpose: METADATA_FIELD)
+  _metadata: _Metadata @fdc_generated(from: "LagValue", purpose: METADATA_FIELD)
   """
-  ✨ Count the number of rows in the `Connection` table.
+  ✨ Count the number of rows in the `LagValue` table.
   """
-  _count: Int! @fdc_generated(from: "Connection.", purpose: QUERY_COUNT)
+  _count: Int! @fdc_generated(from: "LagValue.", purpose: QUERY_COUNT)
   """
-  ✨ Count the number of rows in the `Connection` table where the `createdAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
-  """
-  createdAt_count(
-    """
-    Set to true to count the number of distinct values.
-    """
-    distinct: Boolean = false
-  ): Int! @fdc_generated(from: "Connection.createdAt", purpose: QUERY_COUNT)
-  """
-  ✨ Count the number of rows in the `Connection` table where the `direction` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
-  """
-  direction_count(
-    """
-    Set to true to count the number of distinct values.
-    """
-    distinct: Boolean = false
-  ): Int! @fdc_generated(from: "Connection.direction", purpose: QUERY_COUNT)
-  """
-  ✨ Count the number of rows in the `Connection` table where the `id` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  ✨ Count the number of rows in the `LagValue` table where the `id` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """
   id_count(
     """
     Set to true to count the number of distinct values.
     """
     distinct: Boolean = false
-  ): Int! @fdc_generated(from: "Connection.id", purpose: QUERY_COUNT)
+  ): Int! @fdc_generated(from: "LagValue.id", purpose: QUERY_COUNT)
   """
-  ✨ Count the number of rows in the `Connection` table where the `sourceConnectionId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  ✨ Count the number of rows in the `LagValue` table where the `relationshipId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """
-  sourceConnectionId_count(
+  relationshipId_count(
     """
     Set to true to count the number of distinct values.
     """
     distinct: Boolean = false
-  ): Int! @fdc_generated(from: "Connection.sourceConnectionId", purpose: QUERY_COUNT)
+  ): Int! @fdc_generated(from: "LagValue.relationshipId", purpose: QUERY_COUNT)
   """
-  ✨ Count the number of rows in the `Connection` table where the `sourceTrendId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  ✨ Count the number of rows in the `LagValue` table where the `timestamp` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """
-  sourceTrendId_count(
+  timestamp_count(
     """
     Set to true to count the number of distinct values.
     """
     distinct: Boolean = false
-  ): Int! @fdc_generated(from: "Connection.sourceTrendId", purpose: QUERY_COUNT)
+  ): Int! @fdc_generated(from: "LagValue.timestamp", purpose: QUERY_COUNT)
   """
-  ✨ Count the number of rows in the `Connection` table where the `sourceType` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  ✨ Count the number of rows in the `LagValue` table where the `value` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """
-  sourceType_count(
+  value_count(
     """
     Set to true to count the number of distinct values.
     """
     distinct: Boolean = false
-  ): Int! @fdc_generated(from: "Connection.sourceType", purpose: QUERY_COUNT)
+  ): Int! @fdc_generated(from: "LagValue.value", purpose: QUERY_COUNT)
   """
-  ✨ Count the number of rows in the `Connection` table where the `storyId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  ✨ Sum the `value` field in the `LagValue` table.
   """
-  storyId_count(
-    """
-    Set to true to count the number of distinct values.
-    """
-    distinct: Boolean = false
-  ): Int! @fdc_generated(from: "Connection.storyId", purpose: QUERY_COUNT)
-  """
-  ✨ Count the number of rows in the `Connection` table where the `targetConnectionId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
-  """
-  targetConnectionId_count(
-    """
-    Set to true to count the number of distinct values.
-    """
-    distinct: Boolean = false
-  ): Int! @fdc_generated(from: "Connection.targetConnectionId", purpose: QUERY_COUNT)
-  """
-  ✨ Count the number of rows in the `Connection` table where the `targetTrendId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
-  """
-  targetTrendId_count(
-    """
-    Set to true to count the number of distinct values.
-    """
-    distinct: Boolean = false
-  ): Int! @fdc_generated(from: "Connection.targetTrendId", purpose: QUERY_COUNT)
-  """
-  ✨ Count the number of rows in the `Connection` table where the `targetType` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
-  """
-  targetType_count(
-    """
-    Set to true to count the number of distinct values.
-    """
-    distinct: Boolean = false
-  ): Int! @fdc_generated(from: "Connection.targetType", purpose: QUERY_COUNT)
-  """
-  ✨ Count the number of rows in the `Connection` table where the `weight` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
-  """
-  weight_count(
-    """
-    Set to true to count the number of distinct values.
-    """
-    distinct: Boolean = false
-  ): Int! @fdc_generated(from: "Connection.weight", purpose: QUERY_COUNT)
-  """
-  ✨ Sum the `weight` field in the `Connection` table.
-  """
-  weight_sum(
+  value_sum(
     """
     Set to true to sum the distinct values.
     """
     distinct: Boolean = false
-  ): Float @fdc_generated(from: "Connection.weight", purpose: QUERY_SUM)
+  ): Float @fdc_generated(from: "LagValue.value", purpose: QUERY_SUM)
   """
-  ✨ Average the `weight` field in the `Connection` table.
+  ✨ Average the `value` field in the `LagValue` table.
   """
-  weight_avg(
+  value_avg(
     """
     Set to true to average the distinct values.
     """
     distinct: Boolean = false
-  ): Float @fdc_generated(from: "Connection.weight", purpose: QUERY_AVG)
+  ): Float @fdc_generated(from: "LagValue.value", purpose: QUERY_AVG)
   """
-  ✨ Minimum of the `createdAt` field in the `Connection` table.
+  ✨ Minimum of the `timestamp` field in the `LagValue` table.
   """
-  createdAt_min: Timestamp @fdc_generated(from: "Connection.createdAt", purpose: QUERY_MIN)
+  timestamp_min: Timestamp @fdc_generated(from: "LagValue.timestamp", purpose: QUERY_MIN)
   """
-  ✨ Minimum of the `weight` field in the `Connection` table.
+  ✨ Minimum of the `value` field in the `LagValue` table.
   """
-  weight_min: Float @fdc_generated(from: "Connection.weight", purpose: QUERY_MIN)
+  value_min: Float @fdc_generated(from: "LagValue.value", purpose: QUERY_MIN)
   """
-  ✨ Maximum of the `createdAt` field in the `Connection` table.
+  ✨ Maximum of the `timestamp` field in the `LagValue` table.
   """
-  createdAt_max: Timestamp @fdc_generated(from: "Connection.createdAt", purpose: QUERY_MAX)
+  timestamp_max: Timestamp @fdc_generated(from: "LagValue.timestamp", purpose: QUERY_MAX)
   """
-  ✨ Maximum of the `weight` field in the `Connection` table.
+  ✨ Maximum of the `value` field in the `LagValue` table.
   """
-  weight_max: Float @fdc_generated(from: "Connection.weight", purpose: QUERY_MAX)
+  value_max: Float @fdc_generated(from: "LagValue.value", purpose: QUERY_MAX)
   """
   A generated field that is used for caching results in SDKs.
   """
-  _id: ID! @fdc_generated(from: "Connection.id", purpose: GLOBAL_ID)
+  _id: ID! @fdc_generated(from: "LagValue.id", purpose: GLOBAL_ID)
 }
 extend type Perspective {
   """
@@ -424,20 +293,20 @@ extend type PerspectiveMember {
   """
   _id: ID! @fdc_generated(from: "PerspectiveMember.id", purpose: GLOBAL_ID)
 }
-extend type Story {
+extend type Relationship {
   """
-  ✨ List `Connection` objects in a one-to-many relationship (where `Connection`.`story` is this object).
+  ✨ List `LagValue` objects in a one-to-many relationship (where `LagValue`.`relationship` is this object).
   """
-  connections_on_story(
+  lagValues_on_relationship(
     """
     Filter condition to narrow down the query results.
     """
-    where: Connection_Filter
+    where: LagValue_Filter
 
     """
     Order the query results by specific fields.
     """
-    orderBy: [Connection_Order!]
+    orderBy: [LagValue_Order!]
 
     """
     Number of rows to skip before starting to return the results.
@@ -457,8 +326,313 @@ extend type Story {
     """
     Filter condition to apply to the groups of aggregate queries.
     """
-    having: Connection_Having
-  ): [Connection!]! @fdc_generated(from: "Connection.story", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+    having: LagValue_Having
+  ): [LagValue!]! @fdc_generated(from: "LagValue.relationship", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  ✨ List `RelationshipValue` objects in a one-to-many relationship (where `RelationshipValue`.`relationship` is this object).
+  """
+  relationshipValues_on_relationship(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: RelationshipValue_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [RelationshipValue_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: RelationshipValue_Having
+  ): [RelationshipValue!]! @fdc_generated(from: "RelationshipValue.relationship", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  ✨ List `Weight` objects in a one-to-many relationship (where `Weight`.`relationship` is this object).
+  """
+  weights_on_relationship(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Weight_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Weight_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Weight_Having
+  ): [Weight!]! @fdc_generated(from: "Weight.relationship", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "Relationship", purpose: METADATA_FIELD)
+  """
+  ✨ Count the number of rows in the `Relationship` table.
+  """
+  _count: Int! @fdc_generated(from: "Relationship.", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Relationship` table where the `contributorStoryId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  contributorStoryId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Relationship.contributorStoryId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Relationship` table where the `createdAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Relationship.createdAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Relationship` table where the `createdBy` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdBy_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Relationship.createdBy", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Relationship` table where the `focalStoryId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  focalStoryId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Relationship.focalStoryId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Relationship` table where the `id` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  id_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Relationship.id", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Relationship` table where the `type` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  type_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Relationship.type", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Relationship` table where the `variantId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  variantId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Relationship.variantId", purpose: QUERY_COUNT)
+  """
+  ✨ Minimum of the `createdAt` field in the `Relationship` table.
+  """
+  createdAt_min: Timestamp @fdc_generated(from: "Relationship.createdAt", purpose: QUERY_MIN)
+  """
+  ✨ Maximum of the `createdAt` field in the `Relationship` table.
+  """
+  createdAt_max: Timestamp @fdc_generated(from: "Relationship.createdAt", purpose: QUERY_MAX)
+  """
+  A generated field that is used for caching results in SDKs.
+  """
+  _id: ID! @fdc_generated(from: "Relationship.id", purpose: GLOBAL_ID)
+}
+extend type RelationshipValue {
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "RelationshipValue", purpose: METADATA_FIELD)
+  """
+  ✨ Count the number of rows in the `RelationshipValue` table.
+  """
+  _count: Int! @fdc_generated(from: "RelationshipValue.", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `RelationshipValue` table where the `id` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  id_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "RelationshipValue.id", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `RelationshipValue` table where the `relationshipId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  relationshipId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "RelationshipValue.relationshipId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `RelationshipValue` table where the `timestamp` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  timestamp_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "RelationshipValue.timestamp", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `RelationshipValue` table where the `value` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  value_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "RelationshipValue.value", purpose: QUERY_COUNT)
+  """
+  ✨ Sum the `value` field in the `RelationshipValue` table.
+  """
+  value_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "RelationshipValue.value", purpose: QUERY_SUM)
+  """
+  ✨ Average the `value` field in the `RelationshipValue` table.
+  """
+  value_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "RelationshipValue.value", purpose: QUERY_AVG)
+  """
+  ✨ Minimum of the `timestamp` field in the `RelationshipValue` table.
+  """
+  timestamp_min: Timestamp @fdc_generated(from: "RelationshipValue.timestamp", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `value` field in the `RelationshipValue` table.
+  """
+  value_min: Float @fdc_generated(from: "RelationshipValue.value", purpose: QUERY_MIN)
+  """
+  ✨ Maximum of the `timestamp` field in the `RelationshipValue` table.
+  """
+  timestamp_max: Timestamp @fdc_generated(from: "RelationshipValue.timestamp", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `value` field in the `RelationshipValue` table.
+  """
+  value_max: Float @fdc_generated(from: "RelationshipValue.value", purpose: QUERY_MAX)
+  """
+  A generated field that is used for caching results in SDKs.
+  """
+  _id: ID! @fdc_generated(from: "RelationshipValue.id", purpose: GLOBAL_ID)
+}
+extend type Story {
+  """
+  ✨ List `Relationship` objects in a one-to-many relationship (where `Relationship`.`contributorStory` is this object).
+  """
+  relationships_on_contributorStory(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Relationship_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Relationship_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Relationship_Having
+  ): [Relationship!]! @fdc_generated(from: "Relationship.contributorStory", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  ✨ List `Relationship` objects in a one-to-many relationship (where `Relationship`.`focalStory` is this object).
+  """
+  relationships_on_focalStory(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Relationship_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Relationship_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Relationship_Having
+  ): [Relationship!]! @fdc_generated(from: "Relationship.focalStory", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
   """
   ✨ List `Variant` objects in a one-to-many relationship (where `Variant`.`story` is this object).
   """
@@ -587,74 +761,6 @@ extend type Story {
 }
 extend type Trend {
   """
-  ✨ List `Connection` objects in a one-to-many relationship (where `Connection`.`sourceTrend` is this object).
-  """
-  connections_on_sourceTrend(
-    """
-    Filter condition to narrow down the query results.
-    """
-    where: Connection_Filter
-
-    """
-    Order the query results by specific fields.
-    """
-    orderBy: [Connection_Order!]
-
-    """
-    Number of rows to skip before starting to return the results.
-    """
-    offset: Int
-
-    """
-    Maximum number of rows to return (defaults to 100 rows).
-    """
-    limit: Int = 100
-
-    """
-    Set to true to return distinct results.
-    """
-    distinct: Boolean = false
-
-    """
-    Filter condition to apply to the groups of aggregate queries.
-    """
-    having: Connection_Having
-  ): [Connection!]! @fdc_generated(from: "Connection.sourceTrend", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
-  """
-  ✨ List `Connection` objects in a one-to-many relationship (where `Connection`.`targetTrend` is this object).
-  """
-  connections_on_targetTrend(
-    """
-    Filter condition to narrow down the query results.
-    """
-    where: Connection_Filter
-
-    """
-    Order the query results by specific fields.
-    """
-    orderBy: [Connection_Order!]
-
-    """
-    Number of rows to skip before starting to return the results.
-    """
-    offset: Int
-
-    """
-    Maximum number of rows to return (defaults to 100 rows).
-    """
-    limit: Int = 100
-
-    """
-    Set to true to return distinct results.
-    """
-    distinct: Boolean = false
-
-    """
-    Filter condition to apply to the groups of aggregate queries.
-    """
-    having: Connection_Having
-  ): [Connection!]! @fdc_generated(from: "Connection.targetTrend", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
-  """
   ✨ List `Story` objects in a one-to-many relationship (where `Story`.`focalTrend` is this object).
   """
   stories_on_focalTrend(
@@ -688,6 +794,40 @@ extend type Trend {
     """
     having: Story_Having
   ): [Story!]! @fdc_generated(from: "Story.focalTrend", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  ✨ List `Trend` objects in a one-to-many relationship (where `Trend`.`baseTrend` is this object).
+  """
+  trends_on_baseTrend(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Trend_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Trend_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Trend_Having
+  ): [Trend!]! @fdc_generated(from: "Trend.baseTrend", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
   """
   ✨ List `TrendValue` objects in a one-to-many relationship (where `TrendValue`.`trend` is this object).
   """
@@ -723,40 +863,6 @@ extend type Trend {
     having: TrendValue_Having
   ): [TrendValue!]! @fdc_generated(from: "TrendValue.trend", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
   """
-  ✨ List `Variant` objects in a one-to-many relationship (where `Variant`.`trend` is this object).
-  """
-  variants_on_trend(
-    """
-    Filter condition to narrow down the query results.
-    """
-    where: Variant_Filter
-
-    """
-    Order the query results by specific fields.
-    """
-    orderBy: [Variant_Order!]
-
-    """
-    Number of rows to skip before starting to return the results.
-    """
-    offset: Int
-
-    """
-    Maximum number of rows to return (defaults to 100 rows).
-    """
-    limit: Int = 100
-
-    """
-    Set to true to return distinct results.
-    """
-    distinct: Boolean = false
-
-    """
-    Filter condition to apply to the groups of aggregate queries.
-    """
-    having: Variant_Having
-  ): [Variant!]! @fdc_generated(from: "Variant.trend", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
-  """
   Implicit metadata field that cannot be written. It provides extra information about query results.
   """
   _metadata: _Metadata @fdc_generated(from: "Trend", purpose: METADATA_FIELD)
@@ -764,6 +870,15 @@ extend type Trend {
   ✨ Count the number of rows in the `Trend` table.
   """
   _count: Int! @fdc_generated(from: "Trend.", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Trend` table where the `baseTrendId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  baseTrendId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Trend.baseTrendId", purpose: QUERY_COUNT)
   """
   ✨ Count the number of rows in the `Trend` table where the `createdAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """
@@ -782,6 +897,15 @@ extend type Trend {
     """
     distinct: Boolean = false
   ): Int! @fdc_generated(from: "Trend.createdBy", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Trend` table where the `denomination` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  denomination_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Trend.denomination", purpose: QUERY_COUNT)
   """
   ✨ Count the number of rows in the `Trend` table where the `description` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """
@@ -855,9 +979,40 @@ extend type Trend {
     distinct: Boolean = false
   ): Int! @fdc_generated(from: "Trend.updatedAt", purpose: QUERY_COUNT)
   """
+  ✨ Count the number of rows in the `Trend` table where the `variantId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  variantId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Trend.variantId", purpose: QUERY_COUNT)
+  """
+  ✨ Sum the `denomination` field in the `Trend` table.
+  """
+  denomination_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "Trend.denomination", purpose: QUERY_SUM)
+  """
+  ✨ Average the `denomination` field in the `Trend` table.
+  """
+  denomination_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "Trend.denomination", purpose: QUERY_AVG)
+  """
   ✨ Minimum of the `createdAt` field in the `Trend` table.
   """
   createdAt_min: Timestamp @fdc_generated(from: "Trend.createdAt", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `denomination` field in the `Trend` table.
+  """
+  denomination_min: Float @fdc_generated(from: "Trend.denomination", purpose: QUERY_MIN)
   """
   ✨ Minimum of the `updatedAt` field in the `Trend` table.
   """
@@ -866,6 +1021,10 @@ extend type Trend {
   ✨ Maximum of the `createdAt` field in the `Trend` table.
   """
   createdAt_max: Timestamp @fdc_generated(from: "Trend.createdAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `denomination` field in the `Trend` table.
+  """
+  denomination_max: Float @fdc_generated(from: "Trend.denomination", purpose: QUERY_MAX)
   """
   ✨ Maximum of the `updatedAt` field in the `Trend` table.
   """
@@ -894,15 +1053,6 @@ extend type TrendValue {
     distinct: Boolean = false
   ): Int! @fdc_generated(from: "TrendValue.id", purpose: QUERY_COUNT)
   """
-  ✨ Count the number of rows in the `TrendValue` table where the `index` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
-  """
-  index_count(
-    """
-    Set to true to count the number of distinct values.
-    """
-    distinct: Boolean = false
-  ): Int! @fdc_generated(from: "TrendValue.index", purpose: QUERY_COUNT)
-  """
   ✨ Count the number of rows in the `TrendValue` table where the `timestamp` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """
   timestamp_count(
@@ -930,15 +1080,6 @@ extend type TrendValue {
     distinct: Boolean = false
   ): Int! @fdc_generated(from: "TrendValue.value", purpose: QUERY_COUNT)
   """
-  ✨ Sum the `index` field in the `TrendValue` table.
-  """
-  index_sum(
-    """
-    Set to true to sum the distinct values.
-    """
-    distinct: Boolean = false
-  ): Int @fdc_generated(from: "TrendValue.index", purpose: QUERY_SUM)
-  """
   ✨ Sum the `value` field in the `TrendValue` table.
   """
   value_sum(
@@ -947,15 +1088,6 @@ extend type TrendValue {
     """
     distinct: Boolean = false
   ): Float @fdc_generated(from: "TrendValue.value", purpose: QUERY_SUM)
-  """
-  ✨ Average the `index` field in the `TrendValue` table.
-  """
-  index_avg(
-    """
-    Set to true to average the distinct values.
-    """
-    distinct: Boolean = false
-  ): Float @fdc_generated(from: "TrendValue.index", purpose: QUERY_AVG)
   """
   ✨ Average the `value` field in the `TrendValue` table.
   """
@@ -966,10 +1098,6 @@ extend type TrendValue {
     distinct: Boolean = false
   ): Float @fdc_generated(from: "TrendValue.value", purpose: QUERY_AVG)
   """
-  ✨ Minimum of the `index` field in the `TrendValue` table.
-  """
-  index_min: Int @fdc_generated(from: "TrendValue.index", purpose: QUERY_MIN)
-  """
   ✨ Minimum of the `timestamp` field in the `TrendValue` table.
   """
   timestamp_min: Timestamp @fdc_generated(from: "TrendValue.timestamp", purpose: QUERY_MIN)
@@ -977,10 +1105,6 @@ extend type TrendValue {
   ✨ Minimum of the `value` field in the `TrendValue` table.
   """
   value_min: Float @fdc_generated(from: "TrendValue.value", purpose: QUERY_MIN)
-  """
-  ✨ Maximum of the `index` field in the `TrendValue` table.
-  """
-  index_max: Int @fdc_generated(from: "TrendValue.index", purpose: QUERY_MAX)
   """
   ✨ Maximum of the `timestamp` field in the `TrendValue` table.
   """
@@ -996,18 +1120,18 @@ extend type TrendValue {
 }
 extend type Variant {
   """
-  ✨ List `VariantValue` objects in a one-to-many relationship (where `VariantValue`.`variant` is this object).
+  ✨ List `Relationship` objects in a one-to-many relationship (where `Relationship`.`variant` is this object).
   """
-  variantValues_on_variant(
+  relationships_on_variant(
     """
     Filter condition to narrow down the query results.
     """
-    where: VariantValue_Filter
+    where: Relationship_Filter
 
     """
     Order the query results by specific fields.
     """
-    orderBy: [VariantValue_Order!]
+    orderBy: [Relationship_Order!]
 
     """
     Number of rows to skip before starting to return the results.
@@ -1027,8 +1151,42 @@ extend type Variant {
     """
     Filter condition to apply to the groups of aggregate queries.
     """
-    having: VariantValue_Having
-  ): [VariantValue!]! @fdc_generated(from: "VariantValue.variant", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+    having: Relationship_Having
+  ): [Relationship!]! @fdc_generated(from: "Relationship.variant", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  ✨ List `Trend` objects in a one-to-many relationship (where `Trend`.`variant` is this object).
+  """
+  trends_on_variant(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Trend_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Trend_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Trend_Having
+  ): [Trend!]! @fdc_generated(from: "Trend.variant", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
   """
   Implicit metadata field that cannot be written. It provides extra information about query results.
   """
@@ -1083,15 +1241,6 @@ extend type Variant {
     distinct: Boolean = false
   ): Int! @fdc_generated(from: "Variant.storyId", purpose: QUERY_COUNT)
   """
-  ✨ Count the number of rows in the `Variant` table where the `trendId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
-  """
-  trendId_count(
-    """
-    Set to true to count the number of distinct values.
-    """
-    distinct: Boolean = false
-  ): Int! @fdc_generated(from: "Variant.trendId", purpose: QUERY_COUNT)
-  """
   ✨ Minimum of the `createdAt` field in the `Variant` table.
   """
   createdAt_min: Timestamp @fdc_generated(from: "Variant.createdAt", purpose: QUERY_MIN)
@@ -1104,122 +1253,87 @@ extend type Variant {
   """
   _id: ID! @fdc_generated(from: "Variant.id", purpose: GLOBAL_ID)
 }
-extend type VariantValue {
+extend type Weight {
   """
   Implicit metadata field that cannot be written. It provides extra information about query results.
   """
-  _metadata: _Metadata @fdc_generated(from: "VariantValue", purpose: METADATA_FIELD)
+  _metadata: _Metadata @fdc_generated(from: "Weight", purpose: METADATA_FIELD)
   """
-  ✨ Count the number of rows in the `VariantValue` table.
+  ✨ Count the number of rows in the `Weight` table.
   """
-  _count: Int! @fdc_generated(from: "VariantValue.", purpose: QUERY_COUNT)
+  _count: Int! @fdc_generated(from: "Weight.", purpose: QUERY_COUNT)
   """
-  ✨ Count the number of rows in the `VariantValue` table where the `id` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  ✨ Count the number of rows in the `Weight` table where the `id` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """
   id_count(
     """
     Set to true to count the number of distinct values.
     """
     distinct: Boolean = false
-  ): Int! @fdc_generated(from: "VariantValue.id", purpose: QUERY_COUNT)
+  ): Int! @fdc_generated(from: "Weight.id", purpose: QUERY_COUNT)
   """
-  ✨ Count the number of rows in the `VariantValue` table where the `index` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  ✨ Count the number of rows in the `Weight` table where the `relationshipId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """
-  index_count(
+  relationshipId_count(
     """
     Set to true to count the number of distinct values.
     """
     distinct: Boolean = false
-  ): Int! @fdc_generated(from: "VariantValue.index", purpose: QUERY_COUNT)
+  ): Int! @fdc_generated(from: "Weight.relationshipId", purpose: QUERY_COUNT)
   """
-  ✨ Count the number of rows in the `VariantValue` table where the `timestamp` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  ✨ Count the number of rows in the `Weight` table where the `timestamp` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """
   timestamp_count(
     """
     Set to true to count the number of distinct values.
     """
     distinct: Boolean = false
-  ): Int! @fdc_generated(from: "VariantValue.timestamp", purpose: QUERY_COUNT)
+  ): Int! @fdc_generated(from: "Weight.timestamp", purpose: QUERY_COUNT)
   """
-  ✨ Count the number of rows in the `VariantValue` table where the `value` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  ✨ Count the number of rows in the `Weight` table where the `value` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """
   value_count(
     """
     Set to true to count the number of distinct values.
     """
     distinct: Boolean = false
-  ): Int! @fdc_generated(from: "VariantValue.value", purpose: QUERY_COUNT)
+  ): Int! @fdc_generated(from: "Weight.value", purpose: QUERY_COUNT)
   """
-  ✨ Count the number of rows in the `VariantValue` table where the `variantId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
-  """
-  variantId_count(
-    """
-    Set to true to count the number of distinct values.
-    """
-    distinct: Boolean = false
-  ): Int! @fdc_generated(from: "VariantValue.variantId", purpose: QUERY_COUNT)
-  """
-  ✨ Sum the `index` field in the `VariantValue` table.
-  """
-  index_sum(
-    """
-    Set to true to sum the distinct values.
-    """
-    distinct: Boolean = false
-  ): Int @fdc_generated(from: "VariantValue.index", purpose: QUERY_SUM)
-  """
-  ✨ Sum the `value` field in the `VariantValue` table.
+  ✨ Sum the `value` field in the `Weight` table.
   """
   value_sum(
     """
     Set to true to sum the distinct values.
     """
     distinct: Boolean = false
-  ): Float @fdc_generated(from: "VariantValue.value", purpose: QUERY_SUM)
+  ): Float @fdc_generated(from: "Weight.value", purpose: QUERY_SUM)
   """
-  ✨ Average the `index` field in the `VariantValue` table.
-  """
-  index_avg(
-    """
-    Set to true to average the distinct values.
-    """
-    distinct: Boolean = false
-  ): Float @fdc_generated(from: "VariantValue.index", purpose: QUERY_AVG)
-  """
-  ✨ Average the `value` field in the `VariantValue` table.
+  ✨ Average the `value` field in the `Weight` table.
   """
   value_avg(
     """
     Set to true to average the distinct values.
     """
     distinct: Boolean = false
-  ): Float @fdc_generated(from: "VariantValue.value", purpose: QUERY_AVG)
+  ): Float @fdc_generated(from: "Weight.value", purpose: QUERY_AVG)
   """
-  ✨ Minimum of the `index` field in the `VariantValue` table.
+  ✨ Minimum of the `timestamp` field in the `Weight` table.
   """
-  index_min: Int @fdc_generated(from: "VariantValue.index", purpose: QUERY_MIN)
+  timestamp_min: Timestamp @fdc_generated(from: "Weight.timestamp", purpose: QUERY_MIN)
   """
-  ✨ Minimum of the `timestamp` field in the `VariantValue` table.
+  ✨ Minimum of the `value` field in the `Weight` table.
   """
-  timestamp_min: Timestamp @fdc_generated(from: "VariantValue.timestamp", purpose: QUERY_MIN)
+  value_min: Float @fdc_generated(from: "Weight.value", purpose: QUERY_MIN)
   """
-  ✨ Minimum of the `value` field in the `VariantValue` table.
+  ✨ Maximum of the `timestamp` field in the `Weight` table.
   """
-  value_min: Float @fdc_generated(from: "VariantValue.value", purpose: QUERY_MIN)
+  timestamp_max: Timestamp @fdc_generated(from: "Weight.timestamp", purpose: QUERY_MAX)
   """
-  ✨ Maximum of the `index` field in the `VariantValue` table.
+  ✨ Maximum of the `value` field in the `Weight` table.
   """
-  index_max: Int @fdc_generated(from: "VariantValue.index", purpose: QUERY_MAX)
-  """
-  ✨ Maximum of the `timestamp` field in the `VariantValue` table.
-  """
-  timestamp_max: Timestamp @fdc_generated(from: "VariantValue.timestamp", purpose: QUERY_MAX)
-  """
-  ✨ Maximum of the `value` field in the `VariantValue` table.
-  """
-  value_max: Float @fdc_generated(from: "VariantValue.value", purpose: QUERY_MAX)
+  value_max: Float @fdc_generated(from: "Weight.value", purpose: QUERY_MAX)
   """
   A generated field that is used for caching results in SDKs.
   """
-  _id: ID! @fdc_generated(from: "VariantValue.id", purpose: GLOBAL_ID)
+  _id: ID! @fdc_generated(from: "Weight.id", purpose: GLOBAL_ID)
 }

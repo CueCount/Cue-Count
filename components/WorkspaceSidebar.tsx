@@ -61,7 +61,6 @@ export default function WorkspaceSidebar({ onTagSelect, selectedTag }: Props) {
           <BarChartIcon />
           All Tags
         </button>
-
       
       </div>
     </div>

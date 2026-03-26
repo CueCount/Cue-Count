@@ -1,3 +1,14 @@
+# queries.gql — Firebase Data Connect
+# ─────────────────────────────────────────────────────────────────────────────
+# Query conventions:
+#   - GetStory fetches base data only (variantId = null relationships/trends)
+#   - GetStoryVariant fetches a single variant's overrides, merged in DataState
+#   - Variant trend overrides are fetched separately and resolved in DataState
+#     via getEffectiveTrend() — queries never pre-merge base + override
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── Perspective ───────────────────────────────────────────────────────────────
+
 query GetPerspective($id: UUID!) @auth(level: USER) {
   perspective(id: $id) {
     id
@@ -21,71 +32,197 @@ query GetStoriesByPerspective($perspectiveId: UUID!) @auth(level: USER) {
     id
     name
     createdAt
+    updatedAt
     focalTrend {
       id
       name
       unit
+      denomination
       frequency
     }
   }
 }
+
+# ── Trend ─────────────────────────────────────────────────────────────────────
 
 query GetTrend($id: UUID!) @auth(level: USER) {
   trend(id: $id) {
     id
     name
     unit
+    denomination
     description
     source
     frequency
+    externalId
+    variantId
+    baseTrendId
     createdAt
+    updatedAt
   }
 }
 
-query GetStory($id: UUID!) @auth(level: USER) {
-  story(id: $id) {
+# Fetch all values for a single trend (base or override)
+query GetTrendValues($trendId: UUID!) @auth(level: USER) {
+  trendValues(
+    where: { trendId: { eq: $trendId } }
+    orderBy: { timestamp: ASC }
+  ) {
     id
-    name
-    createdAt
-    focalTrend {
-      id
-      name
-      unit
-      frequency
-    }
-    connections: connections_on_story {
-      id
-      sourceType
-      sourceTrend {
-        id
-        name
-      }
-      targetType
-      targetTrend {
-        id
-        name
-      }
-      direction
-      weight
-    }
-    variants: variants_on_story {
-      id
-      name
-      trend {
-        id
-        name
-      }
-    }
+    value
+    timestamp
   }
 }
 
 query SearchTrends($name: String!) @auth(level: USER) {
-  trends(where: { name: { contains: $name } }) {
+  trends(
+    where: {
+      name: { contains: $name }
+      variantId: { isNull: true }   # search base trends only
+    }
+  ) {
     id
     name
     unit
+    denomination
     description
     frequency
     source
+  }
+}
+
+# ── Story ─────────────────────────────────────────────────────────────────────
+
+# Fetches a story with its focal trend values and all BASE contributors
+# (variantId = null relationships only). Variant data is loaded separately
+# via GetStoryVariants + GetVariantRelationships.
+query GetStory($id: UUID!) @auth(level: USER) {
+  story(id: $id) {
+    id
+    name
+    perspectiveId
+    createdAt
+    updatedAt
+    focalTrend {
+      id
+      name
+      unit
+      denomination
+      description
+      source
+      frequency
+      variantId
+      baseTrendId
+      trendValues_on_trend(orderBy: { timestamp: ASC }) {
+        id
+        value
+        timestamp
+      }
+    }
+    # Base relationships only — variant = null
+    relationships_on_focalStory(
+      where: { variantId: { isNull: true } }
+    ) {
+      id
+      type
+      createdAt
+      contributorStory {
+        id
+        name
+        focalTrend {
+          id
+          name
+          unit
+          denomination
+          frequency
+          variantId
+          baseTrendId
+          trendValues_on_trend(orderBy: { timestamp: ASC }) {
+            id
+            value
+            timestamp
+          }
+        }
+      }
+      weights_on_relationship(orderBy: { timestamp: ASC }) {
+        id
+        value
+        timestamp
+      }
+      relationshipValues_on_relationship(orderBy: { timestamp: ASC }) {
+        id
+        value
+        timestamp
+      }
+      lagValues_on_relationship(orderBy: { timestamp: ASC }) {
+        id
+        value
+        timestamp
+      }
+    }
+  }
+}
+
+# ── Variants ──────────────────────────────────────────────────────────────────
+
+# Load all variants for a root story — populates the variant list in the sidebar.
+# storyId must always be the ROOT focal story ID.
+query GetStoryVariants($storyId: UUID!) @auth(level: USER) {
+  variants(
+    where: { storyId: { eq: $storyId } }
+    orderBy: { createdAt: ASC }
+  ) {
+    id
+    name
+    createdAt
+  }
+}
+
+# Load all relationship rows for a specific variant.
+# DataState merges these on top of base relationships via getEffectiveRelationships().
+query GetVariantRelationships($variantId: UUID!) @auth(level: USER) {
+  relationships(where: { variantId: { eq: $variantId } }) {
+    id
+    focalStoryId
+    contributorStoryId
+    variantId
+    type
+    createdAt
+    weights_on_relationship(orderBy: { timestamp: ASC }) {
+      id
+      value
+      timestamp
+    }
+    relationshipValues_on_relationship(orderBy: { timestamp: ASC }) {
+      id
+      value
+      timestamp
+    }
+    lagValues_on_relationship(orderBy: { timestamp: ASC }) {
+      id
+      value
+      timestamp
+    }
+  }
+}
+
+# Load all override trends for a specific variant (trend rows where variantId is set).
+# DataState resolves which to show via getEffectiveTrend(baseTrendId).
+query GetVariantTrends($variantId: UUID!) @auth(level: USER) {
+  trends(where: { variantId: { eq: $variantId } }) {
+    id
+    name
+    unit
+    denomination
+    description
+    source
+    frequency
+    variantId
+    baseTrendId
+    trendValues_on_trend(orderBy: { timestamp: ASC }) {
+      id
+      value
+      timestamp
+    }
   }
 }
