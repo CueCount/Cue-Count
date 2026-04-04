@@ -6,9 +6,15 @@
 //
 // Key structural decisions:
 //   - Relationship IS the contributor link (no separate StoryContributor table)
+//   - Relationship owns the contributor trend directly via trendId — there is
+//     no contributorStoryId. A trend becomes a contributor purely by being
+//     referenced from a Relationship row.
+//   - name on RelationshipRow is the display label for the contributor
 //   - variantId = null on any row means it belongs to the base/canonical state
 //   - Variants are always scoped to the root focal story (never a contributor)
 //   - Trends can be overridden per-variant via variantId + baseTrendId
+//   - Stories are now purely focal stories — no story exists solely to be a
+//     contributor. Contributor identity lives on the Relationship row.
 // ─────────────────────────────────────────────────────────────────────────────
 
 // Perspective — top-level container, like a folder for related stories
@@ -42,62 +48,87 @@ export type TrendRow = {
 };
 
 // TrendValue — one data point in a trend's time series.
-// Override trends (variantId set on their parent TrendRow) have their own
-// TrendValue rows — they don't mutate the base trend's values.
 export type TrendValueRow = {
   id: string;
   trendId: string;  // FK → Trend.id
   value: number;
-  timestamp: string; // ISO timestamp — the date this data point represents
+  timestamp: string;
 };
 
 // Story — a question or analysis inside a Perspective.
-// Every trend used as a contributor gets promoted into its own Story,
-// with that trend as focalTrendId.
+// Stories are purely focal — they represent the question being asked and
+// own the primary trend line on the graph. Contributors are not stories;
+// they are Relationship rows that point directly to a Trend.
 export type StoryRow = {
   id: string;
   perspectiveId: string; // FK → Perspective.id
   focalTrendId: string;  // FK → Trend.id — the primary line rendered on the graph
   name: string;
-  createdBy: string;
+  status: string;        // "active" | "archived" | "draft" — reserved for future use
   createdAt: string;
   updatedAt: string;
 };
 
-// Relationship — the link between a focal story and a contributor story.
-// This replaces the old StoryContributor + Relationship pair. Being a
-// contributor IS the relationship. One row per (focal, contributor, variant)
-// combination.
-//
-// variantId = null → base/canonical relationship, always present
-// variantId set   → this row only applies when that variant is active.
-//                   A variant only needs relationship rows for contributors
-//                   whose type or weights differ from the base — all others
-//                   fall through to their base row automatically.
-export type RelationshipRow = {
+// Contributor — the link between a focal story and a contributor trend.
+// Replaces the old Relationship table. Flat — every contributor belongs
+// directly to a focal story. The contributor owns its trend via trendId.
+export type ContributorRow = {
   id: string;
-  focalStoryId: string;       // FK → Story.id — the story being contributed to
-  contributorStoryId: string; // FK → Story.id — the story doing the contributing
-  variantId: string | null;   // FK → Variant.id — null = base
-  type: string;               // "direct" | "inverse" | "correlated" | "lagged"
-  createdBy: string;
+  focalStoryId: string; // FK → Story.id
+  trendId: string;      // FK → Trend.id
+  name: string;         // display label
+  type: string;         // "direct" | "inverse" | "correlated" | "lagged"
   createdAt: string;
 };
 
-// Weight — one data point in the weight time series for a relationship.
-// Represents how strongly a contributor relates to its focal story on a given date.
-// Lives under a specific RelationshipRow, so variant weights are automatically
-// separated (each variant's relationship row has its own weight series).
+// ── Weight ────────────────────────────────────────────────────────────────────
+
+// WeightRow — header that owns a weight series for a contributor.
+// analysisId = null → base weights, always shown by default.
+// analysisId set   → these weights only apply when that analysis is active.
 export type WeightRow = {
   id: string;
-  relationshipId: string; // FK → Relationship.id
-  value: number;          // 0.0–1.0 correlation strength
+  analysisId: string | null; // FK → Analysis.id — null = base
+  contributorId: string;     // FK → Contributor.id
+};
+
+// WeightValueRow — one data point in a weight series.
+export type WeightValueRow = {
+  id: string;
+  weightId: string;  // FK → Weight.id
+  value: number;     // 0.0–1.0 correlation strength
   timestamp: string;
 };
 
-// RelationshipValue — time-series modifier for a relationship.
-// Used for type-specific quantitative data, e.g. lag days for a "lagged"
-// relationship. Empty until the UI populates it for relevant relationship types.
+// ── Lag ───────────────────────────────────────────────────────────────────────
+
+// LagRow — header that owns a lag series for a contributor.
+// analysisId = null → base lag values.
+export type LagRow = {
+  id: string;
+  analysisId: string | null; // FK → Analysis.id — null = base
+  contributorId: string;     // FK → Contributor.id
+};
+
+// LagValueRow — one data point in a lag series.
+export type LagValueRow = {
+  id: string;
+  lagId: string;     // FK → Lag.id
+  value: number;     // periods offset — positive = contributor leads focal story
+  timestamp: string;
+};
+
+// ── RelationshipValue ─────────────────────────────────────────────────────────
+
+// RelationshipRow — header that owns a relationship-value series for a contributor.
+// analysisId = null → base relationship values.
+export type RelationshipRow = {
+  id: string;
+  analysisId: string | null; // FK → Analysis.id — null = base
+  contributorId: string;     // FK → Contributor.id
+};
+
+// RelationshipValueRow — one data point in a relationship-value series.
 export type RelationshipValueRow = {
   id: string;
   relationshipId: string; // FK → Relationship.id
@@ -105,33 +136,18 @@ export type RelationshipValueRow = {
   timestamp: string;
 };
 
-// LagValue — time-series lag offset for a relationship.
-// Tracks how many periods the contributor leads or lags the focal story.
-// Stored in its own table (not RelationshipValue) because lag is a distinct
-// concept with different units and display semantics.
-export type LagValueRow = {
-  id: string;
-  relationshipId: string; // FK → Relationship.id
-  value: number;          // periods offset — positive = contributor leads focal story
-  timestamp: string;
-};
-
-// Variant — a named alternative state for a root focal story.
-// storyId ALWAYS references the root story at the top of the hierarchy,
-// never a contributor story, regardless of how deep the edited relationship is.
-// A variant has no data of its own — it's just an ID and label that relationship
-// rows and override trends reference to declare which scenario they belong to.
-export type VariantRow = {
+// Analysis — a named alternative state for a root focal story.
+export type AnalysisRow = {
   id: string;
   storyId: string;      // FK → Story.id — always the ROOT focal story
-  name: string | null;  // e.g. "Bear case", "Stagflation scenario"
-  createdBy: string;
+  name: string | null;
+  isDefault: boolean;   // true = the story's permanent default analysis
   createdAt: string;
+  updatedAt: string;
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Composed types — assembled by query functions, NOT raw DB rows.
-// These are what the UI actually consumes after joining across tables.
 // ─────────────────────────────────────────────────────────────────────────────
 
 // A Trend with its value series attached — renders one line on the graph
@@ -144,24 +160,16 @@ export type StoryWithTrend = StoryRow & {
   focalTrend: TrendWithValues;
 };
 
-// A Relationship with its modifier value series attached
-export type RelationshipWithValues = RelationshipRow & {
-  values: RelationshipValueRow[];
-};
-
-// A fully assembled contributor — the relationship row itself carries the
-// contributor link, type, and variantId. Weights and modifier values hang
-// off the relationship ID.
-export type ContributorWithDetail = RelationshipRow & {
-  contributorStory: StoryWithTrend;
-  weights: WeightRow[];
-  relationshipValues: RelationshipValueRow[];
-  lagValues: RelationshipValueRow[];
+// A fully assembled contributor — ContributorRow with its trend values,
+// and all time series headers + their data points attached.
+export type ContributorWithDetail = ContributorRow & {
+  trend: TrendWithValues;
+  weights: (WeightRow & { values: WeightValueRow[] })[];
+  lags: (LagRow & { values: LagValueRow[] })[];
+  relationships: (RelationshipRow & { values: RelationshipValueRow[] })[];
 };
 
 // A full focal story with all base contributors assembled, ready to render.
-// DataState's selectors handle variant filtering before building this type —
-// components receive the already-resolved view, not raw mixed data.
 export type StoryWithContributors = StoryWithTrend & {
   contributors: ContributorWithDetail[];
 };

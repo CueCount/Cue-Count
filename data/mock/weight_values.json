@@ -1,0 +1,47 @@
+[
+  { "id": "wv-0001-01", "weightId": "wt-0001", "value": 0.7,  "timestamp": "2024-01-01T00:00:00Z" },
+  { "id": "wv-0001-02", "weightId": "wt-0001", "value": 0.7,  "timestamp": "2024-04-01T00:00:00Z" },
+  { "id": "wv-0001-03", "weightId": "wt-0001", "value": 0.6,  "timestamp": "2024-08-01T00:00:00Z" },
+  { "id": "wv-0001-04", "weightId": "wt-0001", "value": 0.6,  "timestamp": "2024-12-01T00:00:00Z" },
+
+  { "id": "wv-0002-01", "weightId": "wt-0002", "value": 0.8,  "timestamp": "2024-01-01T00:00:00Z" },
+  { "id": "wv-0002-02", "weightId": "wt-0002", "value": 0.8,  "timestamp": "2024-04-01T00:00:00Z" },
+  { "id": "wv-0002-03", "weightId": "wt-0002", "value": 0.9,  "timestamp": "2024-08-01T00:00:00Z" },
+  { "id": "wv-0002-04", "weightId": "wt-0002", "value": 0.9,  "timestamp": "2024-12-01T00:00:00Z" },
+
+  { "id": "wv-0003-01", "weightId": "wt-0003", "value": 0.9,  "timestamp": "2024-01-01T00:00:00Z" },
+  { "id": "wv-0003-02", "weightId": "wt-0003", "value": 0.9,  "timestamp": "2024-06-01T00:00:00Z" },
+  { "id": "wv-0003-03", "weightId": "wt-0003", "value": 0.85, "timestamp": "2024-12-01T00:00:00Z" },
+
+  { "id": "wv-0004-01", "weightId": "wt-0004", "value": 0.75, "timestamp": "2024-01-01T00:00:00Z" },
+  { "id": "wv-0004-02", "weightId": "wt-0004", "value": 0.8,  "timestamp": "2024-06-01T00:00:00Z" },
+  { "id": "wv-0004-03", "weightId": "wt-0004", "value": 0.85, "timestamp": "2024-12-01T00:00:00Z" },
+
+  { "id": "wv-0005-01", "weightId": "wt-0005", "value": 0.85, "timestamp": "2024-01-01T00:00:00Z" },
+  { "id": "wv-0005-02", "weightId": "wt-0005", "value": 0.9,  "timestamp": "2024-06-01T00:00:00Z" },
+  { "id": "wv-0005-03", "weightId": "wt-0005", "value": 0.88, "timestamp": "2024-12-01T00:00:00Z" },
+
+  { "id": "wv-0006-01", "weightId": "wt-0006", "value": 0.6,  "timestamp": "2024-01-01T00:00:00Z" },
+  { "id": "wv-0006-02", "weightId": "wt-0006", "value": 0.65, "timestamp": "2024-06-01T00:00:00Z" },
+  { "id": "wv-0006-03", "weightId": "wt-0006", "value": 0.7,  "timestamp": "2024-12-01T00:00:00Z" },
+
+  { "id": "wv-0009-01", "weightId": "wt-0009", "value": 0.8,  "timestamp": "2024-01-01T00:00:00Z" },
+  { "id": "wv-0009-02", "weightId": "wt-0009", "value": 0.82, "timestamp": "2024-06-01T00:00:00Z" },
+  { "id": "wv-0009-03", "weightId": "wt-0009", "value": 0.85, "timestamp": "2024-12-01T00:00:00Z" },
+
+  { "id": "wv-0010-01", "weightId": "wt-0010", "value": 0.7,  "timestamp": "2024-01-01T00:00:00Z" },
+  { "id": "wv-0010-02", "weightId": "wt-0010", "value": 0.72, "timestamp": "2024-06-01T00:00:00Z" },
+  { "id": "wv-0010-03", "weightId": "wt-0010", "value": 0.68, "timestamp": "2024-12-01T00:00:00Z" },
+
+  { "id": "wv-0013-01", "weightId": "wt-0013", "value": 0.4,  "timestamp": "2024-01-01T00:00:00Z" },
+  { "id": "wv-0013-02", "weightId": "wt-0013", "value": 0.35, "timestamp": "2024-12-01T00:00:00Z" },
+
+  { "id": "wv-0014-01", "weightId": "wt-0014", "value": 0.5,  "timestamp": "2024-01-01T00:00:00Z" },
+  { "id": "wv-0014-02", "weightId": "wt-0014", "value": 0.55, "timestamp": "2024-12-01T00:00:00Z" },
+
+  { "id": "wv-0017-01", "weightId": "wt-0017", "value": 0.5,  "timestamp": "2024-01-01T00:00:00Z" },
+  { "id": "wv-0017-02", "weightId": "wt-0017", "value": 0.45, "timestamp": "2024-12-01T00:00:00Z" },
+
+  { "id": "wv-0019-01", "weightId": "wt-0019", "value": 0.6,  "timestamp": "2024-01-01T00:00:00Z" },
+  { "id": "wv-0019-02", "weightId": "wt-0019", "value": 0.55, "timestamp": "2024-12-01T00:00:00Z" }
+]

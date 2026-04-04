@@ -1,0 +1,226 @@
+[
+  {
+    "id": "analysis-default-story-0001",
+    "storyId": "story-0001-0000-0000-000000000001",
+    "name": "Default",
+    "isDefault": true,
+    "createdAt": "2024-02-01T10:00:00Z",
+    "updatedAt": "2024-02-01T10:00:00Z"
+  },
+  {
+    "id": "analysis-0001-variant-01",
+    "storyId": "story-0001-0000-0000-000000000001",
+    "name": "Pessimistic Migration",
+    "isDefault": false,
+    "createdAt": "2024-06-01T10:00:00Z",
+    "updatedAt": "2024-06-01T10:00:00Z"
+  },
+  {
+    "id": "analysis-0001-variant-02",
+    "storyId": "story-0001-0000-0000-000000000001",
+    "name": "High Growth",
+    "isDefault": false,
+    "createdAt": "2024-06-15T10:00:00Z",
+    "updatedAt": "2024-06-15T10:00:00Z"
+  },
+
+  {
+    "id": "analysis-default-story-0002",
+    "storyId": "story-0002-0000-0000-000000000002",
+    "name": "Default",
+    "isDefault": true,
+    "createdAt": "2024-02-05T10:00:00Z",
+    "updatedAt": "2024-02-05T10:00:00Z"
+  },
+  {
+    "id": "analysis-0002-variant-01",
+    "storyId": "story-0002-0000-0000-000000000002",
+    "name": "Slow Recovery",
+    "isDefault": false,
+    "createdAt": "2024-06-01T10:00:00Z",
+    "updatedAt": "2024-06-01T10:00:00Z"
+  },
+  {
+    "id": "analysis-0002-variant-02",
+    "storyId": "story-0002-0000-0000-000000000002",
+    "name": "Accelerated Reentry",
+    "isDefault": false,
+    "createdAt": "2024-06-15T10:00:00Z",
+    "updatedAt": "2024-06-15T10:00:00Z"
+  },
+
+  {
+    "id": "analysis-default-story-0003",
+    "storyId": "story-0003-0000-0000-000000000003",
+    "name": "Default",
+    "isDefault": true,
+    "createdAt": "2024-02-10T10:00:00Z",
+    "updatedAt": "2024-02-10T10:00:00Z"
+  },
+  {
+    "id": "analysis-0003-variant-01",
+    "storyId": "story-0003-0000-0000-000000000003",
+    "name": "Rate Plateau Scenario",
+    "isDefault": false,
+    "createdAt": "2024-06-01T10:00:00Z",
+    "updatedAt": "2024-06-01T10:00:00Z"
+  },
+  {
+    "id": "analysis-0003-variant-02",
+    "storyId": "story-0003-0000-0000-000000000003",
+    "name": "Wage Catch-Up Case",
+    "isDefault": false,
+    "createdAt": "2024-06-15T10:00:00Z",
+    "updatedAt": "2024-06-15T10:00:00Z"
+  },
+
+  {
+    "id": "analysis-default-story-0004",
+    "storyId": "story-0004-0000-0000-000000000004",
+    "name": "Default",
+    "isDefault": true,
+    "createdAt": "2024-02-10T10:00:00Z",
+    "updatedAt": "2024-02-10T10:00:00Z"
+  },
+  {
+    "id": "analysis-0004-variant-01",
+    "storyId": "story-0004-0000-0000-000000000004",
+    "name": "OPEC Compliance Breakdown",
+    "isDefault": false,
+    "createdAt": "2024-06-01T10:00:00Z",
+    "updatedAt": "2024-06-01T10:00:00Z"
+  },
+  {
+    "id": "analysis-0004-variant-02",
+    "storyId": "story-0004-0000-0000-000000000004",
+    "name": "Shale Surge",
+    "isDefault": false,
+    "createdAt": "2024-06-15T10:00:00Z",
+    "updatedAt": "2024-06-15T10:00:00Z"
+  },
+
+  {
+    "id": "analysis-default-story-0009",
+    "storyId": "story-0009-0000-0000-000000000009",
+    "name": "Default",
+    "isDefault": true,
+    "createdAt": "2024-03-01T10:00:00Z",
+    "updatedAt": "2024-03-01T10:00:00Z"
+  },
+  {
+    "id": "analysis-0009-variant-01",
+    "storyId": "story-0009-0000-0000-000000000009",
+    "name": "Stagflation Scenario",
+    "isDefault": false,
+    "createdAt": "2024-07-01T10:00:00Z",
+    "updatedAt": "2024-07-01T10:00:00Z"
+  },
+  {
+    "id": "analysis-0009-variant-02",
+    "storyId": "story-0009-0000-0000-000000000009",
+    "name": "Soft Landing",
+    "isDefault": false,
+    "createdAt": "2024-07-15T10:00:00Z",
+    "updatedAt": "2024-07-15T10:00:00Z"
+  },
+
+  {
+    "id": "analysis-default-story-0012",
+    "storyId": "story-0012-0000-0000-000000000012",
+    "name": "Default",
+    "isDefault": true,
+    "createdAt": "2024-03-01T10:00:00Z",
+    "updatedAt": "2024-03-01T10:00:00Z"
+  },
+  {
+    "id": "analysis-0012-variant-01",
+    "storyId": "story-0012-0000-0000-000000000012",
+    "name": "Persistent Inflation",
+    "isDefault": false,
+    "createdAt": "2024-07-01T10:00:00Z",
+    "updatedAt": "2024-07-01T10:00:00Z"
+  },
+  {
+    "id": "analysis-0012-variant-02",
+    "storyId": "story-0012-0000-0000-000000000012",
+    "name": "Real Wage Recovery",
+    "isDefault": false,
+    "createdAt": "2024-07-15T10:00:00Z",
+    "updatedAt": "2024-07-15T10:00:00Z"
+  },
+
+  {
+    "id": "analysis-default-story-0013",
+    "storyId": "story-0013-0000-0000-000000000013",
+    "name": "Default",
+    "isDefault": true,
+    "createdAt": "2024-03-01T10:00:00Z",
+    "updatedAt": "2024-03-01T10:00:00Z"
+  },
+  {
+    "id": "analysis-0013-variant-01",
+    "storyId": "story-0013-0000-0000-000000000013",
+    "name": "Bear Market Case",
+    "isDefault": false,
+    "createdAt": "2024-07-01T10:00:00Z",
+    "updatedAt": "2024-07-01T10:00:00Z"
+  },
+  {
+    "id": "analysis-0013-variant-02",
+    "storyId": "story-0013-0000-0000-000000000013",
+    "name": "AI-Led Bull Run",
+    "isDefault": false,
+    "createdAt": "2024-07-15T10:00:00Z",
+    "updatedAt": "2024-07-15T10:00:00Z"
+  },
+
+  {
+    "id": "analysis-default-story-0014",
+    "storyId": "story-0014-0000-0000-000000000014",
+    "name": "Default",
+    "isDefault": true,
+    "createdAt": "2024-03-01T10:00:00Z",
+    "updatedAt": "2024-03-01T10:00:00Z"
+  },
+  {
+    "id": "analysis-0014-variant-01",
+    "storyId": "story-0014-0000-0000-000000000014",
+    "name": "Rate Cut Rebound",
+    "isDefault": false,
+    "createdAt": "2024-07-01T10:00:00Z",
+    "updatedAt": "2024-07-01T10:00:00Z"
+  },
+  {
+    "id": "analysis-0014-variant-02",
+    "storyId": "story-0014-0000-0000-000000000014",
+    "name": "Prolonged Freeze",
+    "isDefault": false,
+    "createdAt": "2024-07-15T10:00:00Z",
+    "updatedAt": "2024-07-15T10:00:00Z"
+  },
+
+  {
+    "id": "analysis-default-story-0015",
+    "storyId": "story-0015-0000-0000-000000000015",
+    "name": "Default",
+    "isDefault": true,
+    "createdAt": "2024-03-01T10:00:00Z",
+    "updatedAt": "2024-03-01T10:00:00Z"
+  },
+  {
+    "id": "analysis-0015-variant-01",
+    "storyId": "story-0015-0000-0000-000000000015",
+    "name": "Recession Risk",
+    "isDefault": false,
+    "createdAt": "2024-07-01T10:00:00Z",
+    "updatedAt": "2024-07-01T10:00:00Z"
+  },
+  {
+    "id": "analysis-0015-variant-02",
+    "storyId": "story-0015-0000-0000-000000000015",
+    "name": "Nominal Expansion",
+    "isDefault": false,
+    "createdAt": "2024-07-15T10:00:00Z",
+    "updatedAt": "2024-07-15T10:00:00Z"
+  }
+]

@@ -6,14 +6,14 @@
 // LATER: swap imports for real Postgres queries — callers stay the same.
 // ─────────────────────────────────────────────────────────────────────────────
 
-import type { StoryRow, VariantRow } from "@/types/db";
+import type { StoryRow, AnalysisRow } from "@/types/db";
 import mockStories  from "@/data/mock/stories.json";
-import mockVariants from "@/data/mock/variants.json";
+import mockAnalysis from "@/data/mock/analysis.json";
 
 const stories  = mockStories  as StoryRow[];
 // CHANGED: variants imported here because they are scoped to a root story —
 // loading them alongside the story is the natural fetch boundary.
-const variants = mockVariants as VariantRow[];
+const analyses = mockAnalysis as AnalysisRow[];
 
 // Get all stories belonging to a perspective — used on the perspective page
 export async function getStoriesByPerspectiveId(perspectiveId: string): Promise<StoryRow[]> {
@@ -25,12 +25,11 @@ export async function getStoryById(id: string): Promise<StoryRow | null> {
   return stories.find((s) => s.id === id) ?? null;
 }
 
-// ADDED: load all variants scoped to a root story.
-// storyId must always be the root focal story ID — variants are never
-// scoped to contributor stories. DataState enforces this on write;
-// this function just reads what's there.
-export async function getVariantsByStoryId(storyId: string): Promise<VariantRow[]> {
-  return variants
-    .filter((v) => v.storyId === storyId)
+// Returns all analyses scoped to a root story, sorted oldest-first.
+// storyId must always be the root focal story ID — analyses are never
+// scoped to contributors.
+export async function getAnalysesByStoryId(storyId: string): Promise<AnalysisRow[]> {
+  return analyses
+    .filter((a) => a.storyId === storyId)
     .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
 }

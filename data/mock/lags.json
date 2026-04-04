@@ -1,0 +1,27 @@
+[
+  {
+    "id": "lag-0005",
+    "analysisId": null,
+    "contributorId": "con-0005-0000-0000-000000000005"
+  },
+  {
+    "id": "lag-0006",
+    "analysisId": null,
+    "contributorId": "con-0006-0000-0000-000000000006"
+  },
+  {
+    "id": "lag-0011",
+    "analysisId": null,
+    "contributorId": "con-0011-0000-0000-000000000011"
+  },
+  {
+    "id": "lag-0009",
+    "analysisId": null,
+    "contributorId": "con-0009-0000-0000-000000000009"
+  },
+  {
+    "id": "lag-0005-var003",
+    "analysisId": "var-0003-0000-0000-000000000003",
+    "contributorId": "con-0005-0000-0000-000000000005"
+  }
+]

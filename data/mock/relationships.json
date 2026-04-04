@@ -1,182 +1,50 @@
 [
   {
-    "id": "rel-0001-0000-0000-000000000001",
-    "focalStoryId": "story-0001-0000-0000-000000000001",
-    "contributorStoryId": "story-0005-0000-0000-000000000005",
-    "variantId": null,
-    "type": "direct",
-    "createdBy": "user-firebase-uid-001",
-    "createdAt": "2024-02-01T10:00:00Z"
+    "id": "rel-0001",
+    "analysisId": null,
+    "contributorId": "con-0001-0000-0000-000000000001",
+    "type": "correlated"
   },
   {
-    "id": "rel-0002-0000-0000-000000000002",
-    "focalStoryId": "story-0001-0000-0000-000000000001",
-    "contributorStoryId": "story-0006-0000-0000-000000000006",
-    "variantId": null,
-    "type": "direct",
-    "createdBy": "user-firebase-uid-001",
-    "createdAt": "2024-02-01T10:00:00Z"
+    "id": "rel-0002",
+    "analysisId": null,
+    "contributorId": "con-0002-0000-0000-000000000002",
+    "type": "correlated"
   },
   {
-    "id": "rel-0003-0000-0000-000000000003",
-    "focalStoryId": "story-0002-0000-0000-000000000002",
-    "contributorStoryId": "story-0007-0000-0000-000000000007",
-    "variantId": null,
-    "type": "correlated",
-    "createdBy": "user-firebase-uid-001",
-    "createdAt": "2024-02-05T10:00:00Z"
+    "id": "rel-0005",
+    "analysisId": null,
+    "contributorId": "con-0005-0000-0000-000000000005",
+    "type": "inversely_correlated"
   },
   {
-    "id": "rel-0004-0000-0000-000000000004",
-    "focalStoryId": "story-0004-0000-0000-000000000004",
-    "contributorStoryId": "story-0008-0000-0000-000000000008",
-    "variantId": null,
-    "type": "inverse",
-    "createdBy": "user-firebase-uid-002",
-    "createdAt": "2024-02-10T10:00:00Z"
+    "id": "rel-0007",
+    "analysisId": null,
+    "contributorId": "con-0007-0000-0000-000000000007",
+    "type": "correlated"
   },
   {
-    "id": "rel-0005-0000-0000-000000000005",
-    "focalStoryId": "story-0009-0000-0000-000000000009",
-    "contributorStoryId": "story-0010-0000-0000-000000000010",
-    "variantId": null,
-    "type": "direct",
-    "createdBy": "user-firebase-uid-001",
-    "createdAt": "2024-03-01T10:00:00Z"
+    "id": "rel-0009",
+    "analysisId": null,
+    "contributorId": "con-0009-0000-0000-000000000009",
+    "type": "correlated"
   },
   {
-    "id": "rel-0006-0000-0000-000000000006",
-    "focalStoryId": "story-0009-0000-0000-000000000009",
-    "contributorStoryId": "story-0011-0000-0000-000000000011",
-    "variantId": null,
-    "type": "correlated",
-    "createdBy": "user-firebase-uid-001",
-    "createdAt": "2024-03-01T10:00:00Z"
+    "id": "rel-0010",
+    "analysisId": null,
+    "contributorId": "con-0010-0000-0000-000000000010",
+    "type": "correlated"
   },
   {
-    "id": "rel-0007-0000-0000-000000000007",
-    "focalStoryId": "story-0012-0000-0000-000000000012",
-    "contributorStoryId": "story-0009-0000-0000-000000000009",
-    "variantId": null,
-    "type": "direct",
-    "createdBy": "user-firebase-uid-001",
-    "createdAt": "2024-03-01T10:00:00Z"
+    "id": "rel-0011",
+    "analysisId": null,
+    "contributorId": "con-0011-0000-0000-000000000011",
+    "type": "inversely_correlated"
   },
   {
-    "id": "rel-0008-0000-0000-000000000008",
-    "focalStoryId": "story-0012-0000-0000-000000000012",
-    "contributorStoryId": "story-0002-0000-0000-000000000002",
-    "variantId": null,
-    "type": "correlated",
-    "createdBy": "user-firebase-uid-001",
-    "createdAt": "2024-03-01T10:00:00Z"
-  },
-  {
-    "id": "rel-0009-0000-0000-000000000009",
-    "focalStoryId": "story-0013-0000-0000-000000000013",
-    "contributorStoryId": "story-0015-0000-0000-000000000015",
-    "variantId": null,
-    "type": "direct",
-    "createdBy": "user-firebase-uid-001",
-    "createdAt": "2024-03-01T10:00:00Z"
-  },
-  {
-    "id": "rel-0010-0000-0000-000000000010",
-    "focalStoryId": "story-0013-0000-0000-000000000013",
-    "contributorStoryId": "story-0012-0000-0000-000000000012",
-    "variantId": null,
-    "type": "direct",
-    "createdBy": "user-firebase-uid-001",
-    "createdAt": "2024-03-01T10:00:00Z"
-  },
-  {
-    "id": "rel-0011-0000-0000-000000000011",
-    "focalStoryId": "story-0014-0000-0000-000000000014",
-    "contributorStoryId": "story-0010-0000-0000-000000000010",
-    "variantId": null,
-    "type": "inverse",
-    "createdBy": "user-firebase-uid-001",
-    "createdAt": "2024-03-01T10:00:00Z"
-  },
-  {
-    "id": "rel-0012-0000-0000-000000000012",
-    "focalStoryId": "story-0014-0000-0000-000000000014",
-    "contributorStoryId": "story-0003-0000-0000-000000000003",
-    "variantId": null,
-    "type": "direct",
-    "createdBy": "user-firebase-uid-001",
-    "createdAt": "2024-03-01T10:00:00Z"
-  },
-  {
-    "id": "rel-0013-0000-0000-000000000013",
-    "focalStoryId": "story-0001-0000-0000-000000000001",
-    "contributorStoryId": "story-0005-0000-0000-000000000005",
-    "variantId": "var-0001-0000-0000-000000000001",
-    "type": "inverse",
-    "createdBy": "user-firebase-uid-001",
-    "createdAt": "2024-06-01T10:00:00Z"
-  },
-  {
-    "id": "rel-0014-0000-0000-000000000014",
-    "focalStoryId": "story-0001-0000-0000-000000000001",
-    "contributorStoryId": "story-0006-0000-0000-000000000006",
-    "variantId": "var-0001-0000-0000-000000000001",
-    "type": "correlated",
-    "createdBy": "user-firebase-uid-001",
-    "createdAt": "2024-06-01T10:00:00Z"
-  },
-  {
-    "id": "rel-0015-0000-0000-000000000015",
-    "focalStoryId": "story-0001-0000-0000-000000000001",
-    "contributorStoryId": "story-0005-0000-0000-000000000005",
-    "variantId": "var-0002-0000-0000-000000000002",
-    "type": "direct",
-    "createdBy": "user-firebase-uid-001",
-    "createdAt": "2024-06-01T10:00:00Z"
-  },
-  {
-    "id": "rel-0016-0000-0000-000000000016",
-    "focalStoryId": "story-0001-0000-0000-000000000001",
-    "contributorStoryId": "story-0006-0000-0000-000000000006",
-    "variantId": "var-0002-0000-0000-000000000002",
-    "type": "lagged",
-    "createdBy": "user-firebase-uid-001",
-    "createdAt": "2024-06-01T10:00:00Z"
-  },
-  {
-    "id": "rel-0017-0000-0000-000000000017",
-    "focalStoryId": "story-0009-0000-0000-000000000009",
-    "contributorStoryId": "story-0010-0000-0000-000000000010",
-    "variantId": "var-0003-0000-0000-000000000003",
-    "type": "inverse",
-    "createdBy": "user-firebase-uid-001",
-    "createdAt": "2024-06-01T10:00:00Z"
-  },
-  {
-    "id": "rel-0018-0000-0000-000000000018",
-    "focalStoryId": "story-0009-0000-0000-000000000009",
-    "contributorStoryId": "story-0011-0000-0000-000000000011",
-    "variantId": "var-0003-0000-0000-000000000003",
-    "type": "lagged",
-    "createdBy": "user-firebase-uid-001",
-    "createdAt": "2024-06-01T10:00:00Z"
-  },
-  {
-    "id": "rel-0019-0000-0000-000000000019",
-    "focalStoryId": "story-0013-0000-0000-000000000013",
-    "contributorStoryId": "story-0015-0000-0000-000000000015",
-    "variantId": "var-0004-0000-0000-000000000004",
-    "type": "lagged",
-    "createdBy": "user-firebase-uid-001",
-    "createdAt": "2024-06-01T10:00:00Z"
-  },
-  {
-    "id": "rel-0020-0000-0000-000000000020",
-    "focalStoryId": "story-0013-0000-0000-000000000013",
-    "contributorStoryId": "story-0012-0000-0000-000000000012",
-    "variantId": "var-0004-0000-0000-000000000004",
-    "type": "inverse",
-    "createdBy": "user-firebase-uid-001",
-    "createdAt": "2024-06-01T10:00:00Z"
+    "id": "rel-0005-var003",
+    "analysisId": "var-0003-0000-0000-000000000003",
+    "contributorId": "con-0005-0000-0000-000000000005",
+    "type": "inversely_correlated"
   }
 ]

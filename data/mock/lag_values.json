@@ -1,1 +1,90 @@
-[]
+[
+  {
+    "id": "lagv-0005-01",
+    "lagId": "lag-0005",
+    "value": 180,
+    "timestamp": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "lagv-0005-02",
+    "lagId": "lag-0005",
+    "value": 180,
+    "timestamp": "2024-06-01T00:00:00Z"
+  },
+  {
+    "id": "lagv-0005-03",
+    "lagId": "lag-0005",
+    "value": 150,
+    "timestamp": "2024-12-01T00:00:00Z"
+  },
+
+  {
+    "id": "lagv-0006-01",
+    "lagId": "lag-0006",
+    "value": 90,
+    "timestamp": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "lagv-0006-02",
+    "lagId": "lag-0006",
+    "value": 90,
+    "timestamp": "2024-06-01T00:00:00Z"
+  },
+  {
+    "id": "lagv-0006-03",
+    "lagId": "lag-0006",
+    "value": 120,
+    "timestamp": "2024-12-01T00:00:00Z"
+  },
+
+  {
+    "id": "lagv-0011-01",
+    "lagId": "lag-0011",
+    "value": 270,
+    "timestamp": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "lagv-0011-02",
+    "lagId": "lag-0011",
+    "value": 270,
+    "timestamp": "2024-06-01T00:00:00Z"
+  },
+  {
+    "id": "lagv-0011-03",
+    "lagId": "lag-0011",
+    "value": 240,
+    "timestamp": "2024-12-01T00:00:00Z"
+  },
+
+  {
+    "id": "lagv-0009-01",
+    "lagId": "lag-0009",
+    "value": 60,
+    "timestamp": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "lagv-0009-02",
+    "lagId": "lag-0009",
+    "value": 60,
+    "timestamp": "2024-06-01T00:00:00Z"
+  },
+  {
+    "id": "lagv-0009-03",
+    "lagId": "lag-0009",
+    "value": 45,
+    "timestamp": "2024-12-01T00:00:00Z"
+  },
+
+  {
+    "id": "lagv-0005-var003-01",
+    "lagId": "lag-0005-var003",
+    "value": 240,
+    "timestamp": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "lagv-0005-var003-02",
+    "lagId": "lag-0005-var003",
+    "value": 210,
+    "timestamp": "2024-12-01T00:00:00Z"
+  }
+]

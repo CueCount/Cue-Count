@@ -4,124 +4,86 @@ import {
   createContext,
   useContext,
   useState,
+  useEffect,
   useCallback,
   useMemo,
   type ReactNode,
 } from "react";
 import type {
   StoryWithContributors,
+  ContributorRow,
+  ContributorWithDetail,
   TrendWithValues,
-  VariantRow,
+  AnalysisRow,
   WeightRow,
-  RelationshipValueRow,
+  WeightValueRow,
+  LagRow,
   LagValueRow,
+  RelationshipRow,
+  RelationshipValueRow,
 } from "@/types/db";
+import { getTrendWithValues }    from "@/lib/db/trends";
+import { getAnalysesByStoryId, getStoryById } from "@/lib/db/stories";
+import {
+  getContributorsByStoryId,
+  getWeightsByContributorIds,
+  getWeightValuesByWeightIds,
+  getLagsByContributorIds,
+  getLagValuesByLagIds,
+  getRelationshipHeadersByContributorIds,
+  getRelationshipValuesByRelationshipIds,
+} from "@/lib/db/contributors";
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Types
+// DataState shape
 // ─────────────────────────────────────────────────────────────────────────────
+//
+// Everything is stored flat. The assembled tree (ContributorWithDetail[] with
+// weights/lags/relationships filtered by the active analysis) is produced on
+// demand by getEffectiveContributors(). Switching analyses never re-fetches —
+// it just re-assembles from the flat slices already in memory.
 
-// A Trend extended with an optional variantId and baseTrendId.
-// When variantId is set, this trend is an override — its values replace
-// the base trend (identified by baseTrendId) when that variant is active.
-export type TrendWithVariant = TrendWithValues & {
-  variantId: string | null;   // null = base/canonical
-  baseTrendId: string | null; // null if this IS the base; set if this is an override
-};
-
-// A Relationship row as it lives in DataState — this IS the contributor link.
-// variantId = null means it belongs to the base state.
-export type RelationshipRow = {
-  id: string;
-  focalStoryId: string;
-  contributorStoryId: string;
-  variantId: string | null; // null = base
-  type: string;
-  createdBy: string;
-  createdAt: string;
-};
-
-// The full DataState shape exposed to consumers via useData()
 type DataState = {
-  // ── Core story data ───────────────────────────────────────────────────────
-  // The root focal story with all its contributors, loaded once on page mount.
-  // This is the raw base data — do not read it directly in UI components.
-  // Instead, use the selectors below so variant overrides are applied.
+  // ── Core ──────────────────────────────────────────────────────────────────
+  // rootStory holds the story + focal trend + base contributors (assembled at
+  // load time with analysisId = null data). Use getEffectiveContributors() for
+  // the analysis-aware version.
   rootStory: StoryWithContributors | null;
-
-  // The root story's ID is surfaced directly so any deeply nested component
-  // can stamp it onto new variant rows without traversing the tree.
   rootStoryId: string | null;
 
-  // ── Variants ──────────────────────────────────────────────────────────────
-  // All variants belonging to the root story (VARIANT.storyId = rootStoryId).
-  variants: VariantRow[];
+  // ── Analyses ──────────────────────────────────────────────────────────────
+  analyses: AnalysisRow[];
+  activeAnalysisId: string | null;
+  setActiveAnalysisId: (id: string | null) => void;
 
-  // The currently active variant. null = show base state.
-  activeVariantId: string | null;
-  setActiveVariantId: (id: string | null) => void;
+  // ── Flat contributor rows ─────────────────────────────────────────────────
+  allContributors: ContributorRow[];
 
-  // ── All relationships (base + all variants) ───────────────────────────────
-  // Stored flat. Selectors filter by variantId to get the right slice.
-  allRelationships: RelationshipRow[];
-
-  // ── Weight / lag / relationship-value time series ─────────────────────────
-  // Each is a flat array of data-point rows keyed by relationshipId.
-  // Variant separation is implicit — variant relationship rows have their own
-  // IDs, so their weight/lag/value series are naturally isolated.
+  // ── Flat time series headers (base + all analyses) ────────────────────────
   allWeights: WeightRow[];
+  allWeightValues: WeightValueRow[];
+  allLags: LagRow[];
   allLagValues: LagValueRow[];
+  allRelationships: RelationshipRow[];
   allRelationshipValues: RelationshipValueRow[];
 
-  // ── All trends (base + variant overrides) ────────────────────────────────
-  // Stored flat. Selectors resolve which one to use at render time.
-  allTrends: TrendWithVariant[];
-
-  // ── Setters (called by load functions or mutation handlers) ───────────────
+  // ── Setters ───────────────────────────────────────────────────────────────
   setRootStory: (story: StoryWithContributors) => void;
-  setVariants: (variants: VariantRow[]) => void;
-  setAllRelationships: (rels: RelationshipRow[]) => void;
+  setAnalyses: (analyses: AnalysisRow[]) => void;
+  setAllContributors: (contributors: ContributorRow[]) => void;
   setAllWeights: (weights: WeightRow[]) => void;
-  setAllLagValues: (lags: LagValueRow[]) => void;
+  setAllWeightValues: (values: WeightValueRow[]) => void;
+  setAllLags: (lags: LagRow[]) => void;
+  setAllLagValues: (values: LagValueRow[]) => void;
+  setAllRelationships: (relationships: RelationshipRow[]) => void;
   setAllRelationshipValues: (values: RelationshipValueRow[]) => void;
-  setAllTrends: (trends: TrendWithVariant[]) => void;
 
-  // ── Variant mutations ─────────────────────────────────────────────────────
-  // Creates a new variant scoped to the root story.
-  createVariant: (name: string, createdBy: string) => VariantRow;
-
-  // Adds a relationship row for a specific variant (or base if variantId = null).
-  // Always stamps rootStoryId onto any created variant — callers don't need to
-  // know where in the tree the edit originated.
-  addRelationship: (rel: Omit<RelationshipRow, "id" | "createdAt">) => void;
-
-  // ── Weight / lag / relationship-value mutations ────────────────────────────
-  // Each pair follows the same pattern: add a new data-point row, or update
-  // the value on an existing one by its row ID. Timestamps are owned by the
-  // caller (they represent the period the data point belongs to, not wall-clock
-  // time of the edit).
-
-  addWeightPoint: (point: Omit<WeightRow, "id">) => void;
-  updateWeightPoint: (id: string, value: number) => void;
-
-  addLagValuePoint: (point: Omit<LagValueRow, "id">) => void;
-  updateLagValuePoint: (id: string, value: number) => void;
-
-  addRelationshipValuePoint: (point: Omit<RelationshipValueRow, "id">) => void;
-  updateRelationshipValuePoint: (id: string, value: number) => void;
-
-  // ── Selectors ─────────────────────────────────────────────────────────────
-  // These are the only things UI components should read. They apply the active
-  // variant on top of base data automatically.
-
-  // Returns relationships for a given focal story filtered by the active variant.
-  // Falls back to base (variantId = null) for any contributor not overridden.
-  getEffectiveRelationships: (focalStoryId: string) => RelationshipRow[];
-
-  // Returns the correct trend values for a given base trend ID.
-  // If the active variant has an override trend (baseTrendId = trendId), that
-  // override's values are returned. Otherwise the base trend values are returned.
-  getEffectiveTrend: (baseTrendId: string) => TrendWithValues;
+  // ── Selector ──────────────────────────────────────────────────────────────
+  // Returns ContributorWithDetail[] filtered by the active analysis.
+  // For each series (weights/lags/relationships), prefers analysis-scoped rows
+  // where analysisId = activeAnalysisId; falls back to base (null) if no
+  // analysis-specific row exists for that contributor.
+  getEffectiveContributors: () => ContributorWithDetail[];
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -133,260 +95,222 @@ const DataContext = createContext<DataState | null>(null);
 // ─────────────────────────────────────────────────────────────────────────────
 // Provider
 // ─────────────────────────────────────────────────────────────────────────────
-// Wrap the story page (outside UIProvider) with this.
-// Load order: DataProvider loads first → UIProvider sits inside it →
-// components read from both.
-//
-//   <DataProvider>
-//     <UIProvider>
-//       <StoryPage />
-//     </UIProvider>
-//   </DataProvider>
 
-export function DataProvider({ children }: { children: ReactNode }) {
-  const [rootStory, setRootStory]               = useState<StoryWithContributors | null>(null);
-  const [variants, setVariants]                 = useState<VariantRow[]>([]);
-  const [activeVariantId, setActiveVariantId]   = useState<string | null>(null);
-  const [allRelationships, setAllRelationships] = useState<RelationshipRow[]>([]);
-  const [allWeights, setAllWeights]             = useState<WeightRow[]>([]);
-  const [allLagValues, setAllLagValues]         = useState<LagValueRow[]>([]);
+export function DataProvider({ storyId, children }: { storyId: string; children: ReactNode }) {
+  const [rootStory,             setRootStory]             = useState<StoryWithContributors | null>(null);
+  const [analyses,              setAnalyses]              = useState<AnalysisRow[]>([]);
+  const [activeAnalysisId,      setActiveAnalysisId]      = useState<string | null>(null);
+  const [allContributors,       setAllContributors]       = useState<ContributorRow[]>([]);
+  const [allWeights,            setAllWeights]            = useState<WeightRow[]>([]);
+  const [allWeightValues,       setAllWeightValues]       = useState<WeightValueRow[]>([]);
+  const [allLags,               setAllLags]               = useState<LagRow[]>([]);
+  const [allLagValues,          setAllLagValues]          = useState<LagValueRow[]>([]);
+  const [allRelationships,      setAllRelationships]      = useState<RelationshipRow[]>([]);
   const [allRelationshipValues, setAllRelationshipValues] = useState<RelationshipValueRow[]>([]);
-  const [allTrends, setAllTrends]               = useState<TrendWithVariant[]>([]);
 
   const rootStoryId = rootStory?.id ?? null;
 
-  // ── createVariant ─────────────────────────────────────────────────────────
-  // Always scoped to the root story. Returns the new variant so the caller
-  // can immediately set it as active or start adding relationship rows to it.
-  const createVariant = useCallback(
-    (name: string, createdBy: string): VariantRow => {
-      if (!rootStoryId) throw new Error("Cannot create variant before root story is loaded");
-      const variant: VariantRow = {
-        id: crypto.randomUUID(),
-        storyId: rootStoryId, // always the root — never a contributor story
-        name,
-        createdBy,
-        createdAt: new Date().toISOString(),
-      };
-      setVariants((prev) => [...prev, variant]);
-      return variant;
-    },
-    [rootStoryId]
-  );
+  // ── Data loading ──────────────────────────────────────────────────────────
+  //
+  //   Step 1 — getStoryById
+  //   Step 2 — getTrendWithValues (focal trend)
+  //   Step 3+4 — parallel: getContributorsByStoryId, getAnalysesByStoryId
+  //   Step 5 — parallel: getTrendWithValues for each contributor
+  //   Step 6 — parallel: all time series headers by contributor IDs
+  //   Step 7 — parallel: all value rows by header IDs
+  //
+  // All flat slices committed to state in one shot at the end.
+  useEffect(() => {
+    if (!storyId) return;
+    let cancelled = false;
 
-  // ── addRelationship ───────────────────────────────────────────────────────
-  // Adds one relationship row. If variantId is provided it must reference a
-  // variant that belongs to rootStoryId — enforced here so callers deep in
-  // the contributor tree can't accidentally stamp the wrong story.
-  const addRelationship = useCallback(
-    (rel: Omit<RelationshipRow, "id" | "createdAt">) => {
-      if (rel.variantId) {
-        const variant = variants.find((v) => v.id === rel.variantId);
-        if (!variant) throw new Error(`Variant ${rel.variantId} not found`);
-        if (variant.storyId !== rootStoryId) {
-          throw new Error("Variant does not belong to the root story");
-        }
+    async function load() {
+      console.log(`[DataState] ▶ load() — storyId: ${storyId}`);
+
+      const storyRow = await getStoryById(storyId);
+      if (cancelled || !storyRow) {
+        console.warn(`[DataState] ✗ getStoryById — no result for ${storyId}`);
+        return;
       }
-      const full: RelationshipRow = {
-        ...rel,
-        id: crypto.randomUUID(),
-        createdAt: new Date().toISOString(),
-      };
-      setAllRelationships((prev) => [...prev, full]);
-    },
-    [variants, rootStoryId]
-  );
+      console.log(`[DataState] ✓ story: "${storyRow.name}"`);
 
-  // ── addWeightPoint ────────────────────────────────────────────────────────
-  // Appends one data point to the weight time series for a relationship.
-  // The relationshipId on the point naturally scopes it to base or variant —
-  // variant relationship rows have their own IDs, so no extra filtering needed.
-  const addWeightPoint = useCallback(
-    (point: Omit<WeightRow, "id">) => {
-      const full: WeightRow = { ...point, id: crypto.randomUUID() };
-      setAllWeights((prev) => [...prev, full]);
-    },
-    []
-  );
+      const focalTrend = await getTrendWithValues(storyRow.focalTrendId);
+      if (cancelled || !focalTrend) {
+        console.warn(`[DataState] ✗ getTrendWithValues — no result for ${storyRow.focalTrendId}`);
+        return;
+      }
+      console.log(`[DataState] ✓ focalTrend: "${focalTrend.name}" (${focalTrend.values.length} pts)`);
 
-  // Updates the numeric value of an existing weight data point by its row ID.
-  // Does not touch relationshipId or timestamp — only the value changes.
-  const updateWeightPoint = useCallback(
-    (id: string, value: number) => {
-      setAllWeights((prev) =>
-        prev.map((w) => (w.id === id ? { ...w, value } : w))
-      );
-    },
-    []
-  );
+      const [contributorRows, analysisData]: [ContributorRow[], AnalysisRow[]] = await Promise.all([
+        getContributorsByStoryId(storyId),
+        getAnalysesByStoryId(storyId),
+        ]);
+      if (cancelled) return;
+      console.log(`[DataState] ✓ contributors: ${contributorRows.length}, analyses: ${analysisData.length}`);
 
-  // ── addLagValuePoint ──────────────────────────────────────────────────────
-  // Appends one data point to the lag time series for a relationship.
-  const addLagValuePoint = useCallback(
-    (point: Omit<LagValueRow, "id">) => {
-      const full: LagValueRow = { ...point, id: crypto.randomUUID() };
-      setAllLagValues((prev) => [...prev, full]);
-    },
-    []
-  );
+      const contributorIds = contributorRows.map((c) => c.id);
 
-  // Updates the numeric value of an existing lag data point by its row ID.
-  const updateLagValuePoint = useCallback(
-    (id: string, value: number) => {
-      setAllLagValues((prev) =>
-        prev.map((l) => (l.id === id ? { ...l, value } : l))
-      );
-    },
-    []
-  );
+      const [contributorTrends, weightHeaders, lagHeaders, relationshipHeaders] = await Promise.all([
+        Promise.all(contributorRows.map((c) => getTrendWithValues(c.trendId))),
+        getWeightsByContributorIds(contributorIds),
+        getLagsByContributorIds(contributorIds),
+        getRelationshipHeadersByContributorIds(contributorIds),
+      ]);
+      if (cancelled) return;
+      console.log(`[DataState] ✓ contributor trends, weight headers: ${weightHeaders.length}, lag headers: ${lagHeaders.length}, relationship headers: ${relationshipHeaders.length}`);
 
-  // ── addRelationshipValuePoint ─────────────────────────────────────────────
-  // Appends one data point to the relationship-value time series.
-  const addRelationshipValuePoint = useCallback(
-    (point: Omit<RelationshipValueRow, "id">) => {
-      const full: RelationshipValueRow = { ...point, id: crypto.randomUUID() };
-      setAllRelationshipValues((prev) => [...prev, full]);
-    },
-    []
-  );
+      const [weightVals, lagVals, relationshipVals] = await Promise.all([
+        getWeightValuesByWeightIds(weightHeaders.map((w) => w.id)),
+        getLagValuesByLagIds(lagHeaders.map((l) => l.id)),
+        getRelationshipValuesByRelationshipIds(relationshipHeaders.map((r) => r.id)),
+      ]);
+      if (cancelled) return;
+      console.log(`[DataState] ✓ values — weight: ${weightVals.length}, lag: ${lagVals.length}, relationship: ${relationshipVals.length}`);
 
-  // Updates the numeric value of an existing relationship-value data point by its row ID.
-  const updateRelationshipValuePoint = useCallback(
-    (id: string, value: number) => {
-      setAllRelationshipValues((prev) =>
-        prev.map((v) => (v.id === id ? { ...v, value } : v))
-      );
-    },
-    []
-  );
+      // Assemble base ContributorWithDetail (analysisId = null only) for rootStory.
+      // getEffectiveContributors() handles analysis-filtered assembly later.
+      const baseContributors: ContributorWithDetail[] = contributorRows.map((c, i) => {
+        const trend = contributorTrends[i];
+        if (!trend) throw new Error(`Trend not found for contributor "${c.name}" (trendId: ${c.trendId})`);
 
-  // ── addTrendOverride ──────────────────────────────────────────────────────
-  // Adds a trend whose values will replace the base trend when the variant
-  // is active. baseTrendId must point to an existing base trend.
-  const addTrendOverride = useCallback(
-    (trend: Omit<TrendWithVariant, "id" | "createdAt">) => {
-      const full: TrendWithVariant = {
-        ...trend,
-        id: crypto.randomUUID(),
-        createdAt: new Date().toISOString(),
-      };
-      setAllTrends((prev) => [...prev, full]);
-    },
-    []
-  );
+        const baseWeights = weightHeaders
+          .filter((w) => w.contributorId === c.id && w.analysisId === null)
+          .map((w) => ({ ...w, values: weightVals.filter((v) => v.weightId === w.id) }));
 
-  // ── getEffectiveRelationships ─────────────────────────────────────────────
-  // For a given focal story, returns the right set of relationship rows for
-  // the current variant. Logic:
-  //   1. If a variant is active, prefer rows where variantId = activeVariantId
-  //   2. For contributors NOT overridden in the variant, fall back to base rows
-  //      (variantId = null) so the tree stays complete
-  //   3. If no variant is active, return only base rows
-  const getEffectiveRelationships = useCallback(
-    (focalStoryId: string): RelationshipRow[] => {
-      const base = allRelationships.filter(
-        (r) => r.focalStoryId === focalStoryId && r.variantId === null
-      );
+        const baseLags = lagHeaders
+          .filter((l) => l.contributorId === c.id && l.analysisId === null)
+          .map((l) => ({ ...l, values: lagVals.filter((v) => v.lagId === l.id) }));
 
-      if (!activeVariantId) return base;
+        const baseRelationships = relationshipHeaders
+          .filter((r) => r.contributorId === c.id && r.analysisId === null)
+          .map((r) => ({ ...r, values: relationshipVals.filter((v) => v.relationshipId === r.id) }));
 
-      const variantRows = allRelationships.filter(
-        (r) => r.focalStoryId === focalStoryId && r.variantId === activeVariantId
-      );
+        console.log(`[DataState]   • "${c.name}" — trend: "${trend.name}", weights: ${baseWeights.length}, lags: ${baseLags.length}, relationships: ${baseRelationships.length}`);
 
-      // Which contributor stories have a variant-specific override?
-      const overriddenContributorIds = new Set(
-        variantRows.map((r) => r.contributorStoryId)
-      );
+        return { ...c, trend, weights: baseWeights, lags: baseLags, relationships: baseRelationships };
+      });
 
-      // Base rows for contributors not touched by this variant
-      const basePassthrough = base.filter(
-        (r) => !overriddenContributorIds.has(r.contributorStoryId)
-      );
-
-      return [...variantRows, ...basePassthrough];
-    },
-    [allRelationships, activeVariantId]
-  );
-
-  // ── getEffectiveTrend ─────────────────────────────────────────────────────
-  // For a given base trend ID, returns the trend + values to actually render.
-  // If the active variant has an override (baseTrendId = trendId), that
-  // override is returned. Otherwise the base trend is returned unchanged.
-  const getEffectiveTrend = useCallback(
-    (baseTrendId: string): TrendWithValues => {
-      // Try to find a variant override first
-      if (activeVariantId) {
-        const override = allTrends.find(
-          (t) => t.baseTrendId === baseTrendId && t.variantId === activeVariantId
-        );
-        if (override) return override;
+      const defaultAnalysis = analysisData.find((a) => a.isDefault);
+      if (defaultAnalysis) {
+        setActiveAnalysisId(defaultAnalysis.id);
+        console.log(`[DataState] ✓ activeAnalysisId seeded to default: "${defaultAnalysis.name}" (${defaultAnalysis.id})`);
+      } else {
+        console.warn(`[DataState] ✗ No default analysis found for story "${storyId}" — activeAnalysisId remains null`);
       }
 
-      // Fall back to the base trend
-      const base = allTrends.find(
-        (t) => t.id === baseTrendId && t.variantId === null
-      );
-      if (!base) throw new Error(`Base trend ${baseTrendId} not found in DataState`);
-      return base;
-    },
-    [allTrends, activeVariantId]
-  );
+      setRootStory({ ...storyRow, focalTrend, contributors: baseContributors });
+      setAnalyses(analysisData);
+      setAllContributors(contributorRows);
+      setAllWeights(weightHeaders);
+      setAllWeightValues(weightVals);
+      setAllLags(lagHeaders);
+      setAllLagValues(lagVals);
+      setAllRelationships(relationshipHeaders);
+      setAllRelationshipValues(relationshipVals);
 
-  // ── Context value ─────────────────────────────────────────────────────────
-  // Memoised so consumers only re-render when the specific slice they read changes.
+      console.log(`[DataState] ✓ State committed`);
+    }
+
+    load();
+    return () => { cancelled = true; };
+  }, [storyId]);
+
+  // ── getEffectiveContributors ───────────────────────────────────────────────
+  // Assembles ContributorWithDetail[] for the currently active analysis.
+  // For each series header type, prefers analysis-specific rows and falls
+  // back to base for any contributor not covered by the active analysis.
+  const getEffectiveContributors = useCallback((): ContributorWithDetail[] => {
+    if (!rootStory) return [];
+
+    const resolveHeaders = <T extends { contributorId: string; analysisId: string | null }>(
+      headers: T[],
+      contributorId: string
+    ): T[] => {
+      const forContributor = headers.filter((h) => h.contributorId === contributorId);
+      if (!activeAnalysisId) return forContributor.filter((h) => h.analysisId === null);
+      const analysisSpecific = forContributor.filter((h) => h.analysisId === activeAnalysisId);
+      return analysisSpecific.length > 0
+        ? analysisSpecific
+        : forContributor.filter((h) => h.analysisId === null);
+    };
+
+    return allContributors.map((c) => {
+      const baseDetail = rootStory.contributors.find((rc) => rc.id === c.id);
+      if (!baseDetail) return null;
+
+      const effectiveWeights = resolveHeaders(allWeights, c.id).map((w) => ({
+        ...w,
+        values: allWeightValues.filter((v) => v.weightId === w.id),
+      }));
+
+      const effectiveLags = resolveHeaders(allLags, c.id).map((l) => ({
+        ...l,
+        values: allLagValues.filter((v) => v.lagId === l.id),
+      }));
+
+      const effectiveRelationships = resolveHeaders(allRelationships, c.id).map((r) => ({
+        ...r,
+        values: allRelationshipValues.filter((v) => v.relationshipId === r.id),
+      }));
+
+      return {
+        ...baseDetail,
+        weights:       effectiveWeights,
+        lags:          effectiveLags,
+        relationships: effectiveRelationships,
+      };
+    }).filter(Boolean) as ContributorWithDetail[];
+  }, [
+    rootStory,
+    allContributors,
+    allWeights,
+    allWeightValues,
+    allLags,
+    allLagValues,
+    allRelationships,
+    allRelationshipValues,
+    activeAnalysisId,
+  ]);
+
+  // ── Context value ──────────────────────────────────────────────────────────
   const value = useMemo<DataState>(
     () => ({
       rootStory,
       rootStoryId,
-      variants,
-      activeVariantId,
-      setActiveVariantId,
-      allRelationships,
+      analyses,
+      activeAnalysisId,
+      setActiveAnalysisId,
+      allContributors,
       allWeights,
+      allWeightValues,
+      allLags,
       allLagValues,
+      allRelationships,
       allRelationshipValues,
-      allTrends,
       setRootStory,
-      setVariants,
-      setAllRelationships,
+      setAnalyses,
+      setAllContributors,
       setAllWeights,
+      setAllWeightValues,
+      setAllLags,
       setAllLagValues,
+      setAllRelationships,
       setAllRelationshipValues,
-      setAllTrends,
-      createVariant,
-      addRelationship,
-      addWeightPoint,
-      updateWeightPoint,
-      addLagValuePoint,
-      updateLagValuePoint,
-      addRelationshipValuePoint,
-      updateRelationshipValuePoint,
-      addTrendOverride,
-      getEffectiveRelationships,
-      getEffectiveTrend,
+      getEffectiveContributors,
     }),
     [
       rootStory,
       rootStoryId,
-      variants,
-      activeVariantId,
-      allRelationships,
+      analyses,
+      activeAnalysisId,
+      allContributors,
       allWeights,
+      allWeightValues,
+      allLags,
       allLagValues,
+      allRelationships,
       allRelationshipValues,
-      allTrends,
-      createVariant,
-      addRelationship,
-      addWeightPoint,
-      updateWeightPoint,
-      addLagValuePoint,
-      updateLagValuePoint,
-      addRelationshipValuePoint,
-      updateRelationshipValuePoint,
-      addTrendOverride,
-      getEffectiveRelationships,
-      getEffectiveTrend,
+      getEffectiveContributors,
     ]
   );
 

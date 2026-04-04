@@ -80,7 +80,7 @@ extend type LagValue {
   """
   A generated field that is used for caching results in SDKs.
   """
-  _id: ID! @fdc_generated(from: "LagValue.id", purpose: GLOBAL_ID)
+  _id: ID! @fdc_generated(from: "LagValue.id", purpose: ENTITY_ID)
 }
 extend type Perspective {
   """
@@ -224,7 +224,7 @@ extend type Perspective {
   """
   A generated field that is used for caching results in SDKs.
   """
-  _id: ID! @fdc_generated(from: "Perspective.id", purpose: GLOBAL_ID)
+  _id: ID! @fdc_generated(from: "Perspective.id", purpose: ENTITY_ID)
 }
 extend type PerspectiveMember {
   """
@@ -291,7 +291,7 @@ extend type PerspectiveMember {
   """
   A generated field that is used for caching results in SDKs.
   """
-  _id: ID! @fdc_generated(from: "PerspectiveMember.id", purpose: GLOBAL_ID)
+  _id: ID! @fdc_generated(from: "PerspectiveMember.id", purpose: ENTITY_ID)
 }
 extend type Relationship {
   """
@@ -405,15 +405,6 @@ extend type Relationship {
   """
   _count: Int! @fdc_generated(from: "Relationship.", purpose: QUERY_COUNT)
   """
-  ✨ Count the number of rows in the `Relationship` table where the `contributorStoryId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
-  """
-  contributorStoryId_count(
-    """
-    Set to true to count the number of distinct values.
-    """
-    distinct: Boolean = false
-  ): Int! @fdc_generated(from: "Relationship.contributorStoryId", purpose: QUERY_COUNT)
-  """
   ✨ Count the number of rows in the `Relationship` table where the `createdAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """
   createdAt_count(
@@ -450,6 +441,24 @@ extend type Relationship {
     distinct: Boolean = false
   ): Int! @fdc_generated(from: "Relationship.id", purpose: QUERY_COUNT)
   """
+  ✨ Count the number of rows in the `Relationship` table where the `name` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  name_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Relationship.name", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Relationship` table where the `trendId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  trendId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Relationship.trendId", purpose: QUERY_COUNT)
+  """
   ✨ Count the number of rows in the `Relationship` table where the `type` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """
   type_count(
@@ -478,7 +487,7 @@ extend type Relationship {
   """
   A generated field that is used for caching results in SDKs.
   """
-  _id: ID! @fdc_generated(from: "Relationship.id", purpose: GLOBAL_ID)
+  _id: ID! @fdc_generated(from: "Relationship.id", purpose: ENTITY_ID)
 }
 extend type RelationshipValue {
   """
@@ -562,43 +571,9 @@ extend type RelationshipValue {
   """
   A generated field that is used for caching results in SDKs.
   """
-  _id: ID! @fdc_generated(from: "RelationshipValue.id", purpose: GLOBAL_ID)
+  _id: ID! @fdc_generated(from: "RelationshipValue.id", purpose: ENTITY_ID)
 }
 extend type Story {
-  """
-  ✨ List `Relationship` objects in a one-to-many relationship (where `Relationship`.`contributorStory` is this object).
-  """
-  relationships_on_contributorStory(
-    """
-    Filter condition to narrow down the query results.
-    """
-    where: Relationship_Filter
-
-    """
-    Order the query results by specific fields.
-    """
-    orderBy: [Relationship_Order!]
-
-    """
-    Number of rows to skip before starting to return the results.
-    """
-    offset: Int
-
-    """
-    Maximum number of rows to return (defaults to 100 rows).
-    """
-    limit: Int = 100
-
-    """
-    Set to true to return distinct results.
-    """
-    distinct: Boolean = false
-
-    """
-    Filter condition to apply to the groups of aggregate queries.
-    """
-    having: Relationship_Having
-  ): [Relationship!]! @fdc_generated(from: "Relationship.contributorStory", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
   """
   ✨ List `Relationship` objects in a one-to-many relationship (where `Relationship`.`focalStory` is this object).
   """
@@ -757,9 +732,43 @@ extend type Story {
   """
   A generated field that is used for caching results in SDKs.
   """
-  _id: ID! @fdc_generated(from: "Story.id", purpose: GLOBAL_ID)
+  _id: ID! @fdc_generated(from: "Story.id", purpose: ENTITY_ID)
 }
 extend type Trend {
+  """
+  ✨ List `Relationship` objects in a one-to-many relationship (where `Relationship`.`trend` is this object).
+  """
+  relationships_on_trend(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Relationship_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Relationship_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Relationship_Having
+  ): [Relationship!]! @fdc_generated(from: "Relationship.trend", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
   """
   ✨ List `Story` objects in a one-to-many relationship (where `Story`.`focalTrend` is this object).
   """
@@ -1032,7 +1041,7 @@ extend type Trend {
   """
   A generated field that is used for caching results in SDKs.
   """
-  _id: ID! @fdc_generated(from: "Trend.id", purpose: GLOBAL_ID)
+  _id: ID! @fdc_generated(from: "Trend.id", purpose: ENTITY_ID)
 }
 extend type TrendValue {
   """
@@ -1116,7 +1125,7 @@ extend type TrendValue {
   """
   A generated field that is used for caching results in SDKs.
   """
-  _id: ID! @fdc_generated(from: "TrendValue.id", purpose: GLOBAL_ID)
+  _id: ID! @fdc_generated(from: "TrendValue.id", purpose: ENTITY_ID)
 }
 extend type Variant {
   """
@@ -1251,7 +1260,7 @@ extend type Variant {
   """
   A generated field that is used for caching results in SDKs.
   """
-  _id: ID! @fdc_generated(from: "Variant.id", purpose: GLOBAL_ID)
+  _id: ID! @fdc_generated(from: "Variant.id", purpose: ENTITY_ID)
 }
 extend type Weight {
   """
@@ -1335,5 +1344,5 @@ extend type Weight {
   """
   A generated field that is used for caching results in SDKs.
   """
-  _id: ID! @fdc_generated(from: "Weight.id", purpose: GLOBAL_ID)
+  _id: ID! @fdc_generated(from: "Weight.id", purpose: ENTITY_ID)
 }

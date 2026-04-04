@@ -16,13 +16,13 @@ extend type PerspectiveMember {
 }
 extend type Relationship {
   """
-  ✨ Implicit foreign key field based on `Relationship`.`contributorStory`. It must match the value of `Story`.`id`. See `@ref` for how to customize it.
-  """
-  contributorStoryId: UUID! @fdc_generated(from: "Relationship.contributorStory", purpose: IMPLICIT_REF_FIELD)
-  """
   ✨ Implicit foreign key field based on `Relationship`.`focalStory`. It must match the value of `Story`.`id`. See `@ref` for how to customize it.
   """
   focalStoryId: UUID! @fdc_generated(from: "Relationship.focalStory", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `Relationship`.`trend`. It must match the value of `Trend`.`id`. See `@ref` for how to customize it.
+  """
+  trendId: UUID! @fdc_generated(from: "Relationship.trend", purpose: IMPLICIT_REF_FIELD)
   """
   ✨ Implicit foreign key field based on `Relationship`.`variant`. It must match the value of `Variant`.`id`. See `@ref` for how to customize it.
   """

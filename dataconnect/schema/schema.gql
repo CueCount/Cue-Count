@@ -1,11 +1,14 @@
 # schema.gql — Firebase Data Connect
 # ─────────────────────────────────────────────────────────────────────────────
 # Structural decisions reflected here:
-#   - Relationship IS the contributor link (no StoryContributor table)
+#   - Relationship owns the contributor trend directly (no contributorStory ref)
+#   - Relationship has a name field — the display label for the contributor
 #   - variantId on Relationship and Trend is nullable — null = base/canonical
 #   - Variant.story always references the ROOT focal story
 #   - Trend overrides carry variantId + baseTrend reference
 #   - No VariantValue table — variant data lives in override Trend rows
+#   - Stories are now purely focal stories — no story exists solely to be
+#     a contributor. Contributor identity lives on the Relationship row.
 # ─────────────────────────────────────────────────────────────────────────────
 
 type Perspective @table {
@@ -74,14 +77,20 @@ type Variant @table {
 }
 
 # Relationship — contributor link AND relationship descriptor.
-# Replaces the old StoryContributor + Relationship pair.
-# One row per (focalStory, contributorStory, variant) combination.
+# The relationship owns the contributor trend directly — there is no
+# contributorStory. A trend becomes a contributor purely by being
+# referenced from a Relationship row. One row per (focalStory, trend, variant).
+#
 #   variant = null  → base/canonical, always shown by default
 #   variant set     → only active when that variant is selected in the UI
+#
+# name is the display label shown in the sidebar for this contributor.
+# It defaults to the trend name but can be overridden per-relationship.
 type Relationship @table {
   id: UUID! @default(expr: "uuidV4()")
   focalStory: Story!
-  contributorStory: Story!
+  trend: Trend!               # CHANGED: was contributorStory: Story!
+  name: String!               # ADDED: display label for this contributor
   variant: Variant            # null = base relationship
   type: String!               # "direct" | "inverse" | "correlated" | "lagged"
   createdBy: String!
@@ -99,7 +108,6 @@ type Weight @table {
 }
 
 # RelationshipValue — type-specific quantitative modifier time series.
-# e.g. number of lag days for a "lagged" relationship.
 # Empty until the UI populates it for relevant relationship types.
 type RelationshipValue @table {
   id: UUID! @default(expr: "uuidV4()")
@@ -108,12 +116,12 @@ type RelationshipValue @table {
   timestamp: Timestamp!
 }
 
-# LagValue — time-series of lag offset (in days) for "lagged" relationships.
+# LagValue — time-series of lag offset (in periods) for "lagged" relationships.
 # Parallel to RelationshipValue but semantically distinct — stores how many
-# days behind the contributor trend lags the focal trend at each point in time.
+# periods the contributor trend lags the focal trend at each point in time.
 type LagValue @table {
   id: UUID! @default(expr: "uuidV4()")
   relationship: Relationship!
-  value: Float!               # number of days of lag
+  value: Float!               # periods of lag (positive = contributor leads)
   timestamp: Timestamp!
 }
