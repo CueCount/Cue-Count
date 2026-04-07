@@ -1,24 +1,8 @@
-extend type Connection {
+extend type LagValue {
   """
-  ✨ Implicit foreign key field based on `Connection`.`sourceConnection`. It must match the value of `Connection`.`id`. See `@ref` for how to customize it.
+  ✨ Implicit foreign key field based on `LagValue`.`relationship`. It must match the value of `Relationship`.`id`. See `@ref` for how to customize it.
   """
-  sourceConnectionId: UUID @fdc_generated(from: "Connection.sourceConnection", purpose: IMPLICIT_REF_FIELD)
-  """
-  ✨ Implicit foreign key field based on `Connection`.`sourceTrend`. It must match the value of `Trend`.`id`. See `@ref` for how to customize it.
-  """
-  sourceTrendId: UUID @fdc_generated(from: "Connection.sourceTrend", purpose: IMPLICIT_REF_FIELD)
-  """
-  ✨ Implicit foreign key field based on `Connection`.`story`. It must match the value of `Story`.`id`. See `@ref` for how to customize it.
-  """
-  storyId: UUID! @fdc_generated(from: "Connection.story", purpose: IMPLICIT_REF_FIELD)
-  """
-  ✨ Implicit foreign key field based on `Connection`.`targetConnection`. It must match the value of `Connection`.`id`. See `@ref` for how to customize it.
-  """
-  targetConnectionId: UUID @fdc_generated(from: "Connection.targetConnection", purpose: IMPLICIT_REF_FIELD)
-  """
-  ✨ Implicit foreign key field based on `Connection`.`targetTrend`. It must match the value of `Trend`.`id`. See `@ref` for how to customize it.
-  """
-  targetTrendId: UUID @fdc_generated(from: "Connection.targetTrend", purpose: IMPLICIT_REF_FIELD)
+  relationshipId: UUID! @fdc_generated(from: "LagValue.relationship", purpose: IMPLICIT_REF_FIELD)
 }
 extend type PerspectiveMember {
   """
@@ -30,6 +14,26 @@ extend type PerspectiveMember {
   """
   perspectiveId: UUID! @fdc_generated(from: "PerspectiveMember.perspective", purpose: IMPLICIT_REF_FIELD)
 }
+extend type Relationship {
+  """
+  ✨ Implicit foreign key field based on `Relationship`.`focalStory`. It must match the value of `Story`.`id`. See `@ref` for how to customize it.
+  """
+  focalStoryId: UUID! @fdc_generated(from: "Relationship.focalStory", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `Relationship`.`trend`. It must match the value of `Trend`.`id`. See `@ref` for how to customize it.
+  """
+  trendId: UUID! @fdc_generated(from: "Relationship.trend", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `Relationship`.`variant`. It must match the value of `Variant`.`id`. See `@ref` for how to customize it.
+  """
+  variantId: UUID @fdc_generated(from: "Relationship.variant", purpose: IMPLICIT_REF_FIELD)
+}
+extend type RelationshipValue {
+  """
+  ✨ Implicit foreign key field based on `RelationshipValue`.`relationship`. It must match the value of `Relationship`.`id`. See `@ref` for how to customize it.
+  """
+  relationshipId: UUID! @fdc_generated(from: "RelationshipValue.relationship", purpose: IMPLICIT_REF_FIELD)
+}
 extend type Story {
   """
   ✨ Implicit foreign key field based on `Story`.`focalTrend`. It must match the value of `Trend`.`id`. See `@ref` for how to customize it.
@@ -39,6 +43,16 @@ extend type Story {
   ✨ Implicit foreign key field based on `Story`.`perspective`. It must match the value of `Perspective`.`id`. See `@ref` for how to customize it.
   """
   perspectiveId: UUID! @fdc_generated(from: "Story.perspective", purpose: IMPLICIT_REF_FIELD)
+}
+extend type Trend {
+  """
+  ✨ Implicit foreign key field based on `Trend`.`baseTrend`. It must match the value of `Trend`.`id`. See `@ref` for how to customize it.
+  """
+  baseTrendId: UUID @fdc_generated(from: "Trend.baseTrend", purpose: IMPLICIT_REF_FIELD)
+  """
+  ✨ Implicit foreign key field based on `Trend`.`variant`. It must match the value of `Variant`.`id`. See `@ref` for how to customize it.
+  """
+  variantId: UUID @fdc_generated(from: "Trend.variant", purpose: IMPLICIT_REF_FIELD)
 }
 extend type TrendValue {
   """
@@ -51,14 +65,10 @@ extend type Variant {
   ✨ Implicit foreign key field based on `Variant`.`story`. It must match the value of `Story`.`id`. See `@ref` for how to customize it.
   """
   storyId: UUID! @fdc_generated(from: "Variant.story", purpose: IMPLICIT_REF_FIELD)
-  """
-  ✨ Implicit foreign key field based on `Variant`.`trend`. It must match the value of `Trend`.`id`. See `@ref` for how to customize it.
-  """
-  trendId: UUID! @fdc_generated(from: "Variant.trend", purpose: IMPLICIT_REF_FIELD)
 }
-extend type VariantValue {
+extend type Weight {
   """
-  ✨ Implicit foreign key field based on `VariantValue`.`variant`. It must match the value of `Variant`.`id`. See `@ref` for how to customize it.
+  ✨ Implicit foreign key field based on `Weight`.`relationship`. It must match the value of `Relationship`.`id`. See `@ref` for how to customize it.
   """
-  variantId: UUID! @fdc_generated(from: "VariantValue.variant", purpose: IMPLICIT_REF_FIELD)
+  relationshipId: UUID! @fdc_generated(from: "Weight.relationship", purpose: IMPLICIT_REF_FIELD)
 }

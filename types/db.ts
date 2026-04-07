@@ -1,111 +1,175 @@
 // types/db.ts
 // ─────────────────────────────────────────────────────────────────────────────
-// These types mirror your Postgres schema exactly — one type per table.
-// A "Row" type represents a single record as it comes back from a DB query,
-// with foreign keys stored as plain ID strings (not nested objects).
+// These types mirror the Postgres schema exactly — one type per table.
+// "Row" types represent a single record as returned by a DB query, with
+// foreign keys as plain ID strings (not nested objects).
+//
+// Key structural decisions:
+//   - Relationship IS the contributor link (no separate StoryContributor table)
+//   - Relationship owns the contributor trend directly via trendId — there is
+//     no contributorStoryId. A trend becomes a contributor purely by being
+//     referenced from a Relationship row.
+//   - name on RelationshipRow is the display label for the contributor
+//   - variantId = null on any row means it belongs to the base/canonical state
+//   - Variants are always scoped to the root focal story (never a contributor)
+//   - Trends can be overridden per-variant via variantId + baseTrendId
+//   - Stories are now purely focal stories — no story exists solely to be a
+//     contributor. Contributor identity lives on the Relationship row.
 // ─────────────────────────────────────────────────────────────────────────────
 
-// Perspective — top-level container, like a folder for a question
+// Perspective — top-level container, like a folder for related stories
 export type PerspectiveRow = {
-  id: string;           // UUID
+  id: string;
   name: string;
-  slug: string;         // URL-safe unique identifier e.g. "abcellera-q2"
-  createdBy: string;    // Firebase user ID
-  plan: string;         // "free" | "pro" | "enterprise"
-  createdAt: string;    // ISO timestamp
+  slug: string;        // URL-safe identifier e.g. "us-macro-trends"
+  createdBy: string;   // Firebase UID
+  plan: string;        // "free" | "pro" | "enterprise"
+  createdAt: string;   // ISO timestamp
 };
 
-// PerspectiveMember — who has access to a perspective and at what role
-export type PerspectiveMemberRow = {
-  perspectiveId: string;  // FK → Perspective.id
-  userId: string;         // Firebase user ID
-  role: string;           // "owner" | "editor" | "viewer"
-  createdAt: string;
-};
-
-// Trend — metadata about a data series (not the values themselves)
+// Trend — metadata for a data series. Can be:
+//   - A base trend (variantId = null, baseTrendId = null): sourced from API or created manually
+//   - A variant override (variantId set, baseTrendId set): replaces the base trend
+//     when the referenced variant is active in the UI
 export type TrendRow = {
-  id: string;           // UUID
-  name: string;         // e.g. "US Total Population"
-  unit: string | null;  // e.g. "thousands", "%" , "USD"
+  id: string;
+  name: string;
+  unit: string | null;
+  denomination: number | null; // e.g. 1000 = values are in thousands
   description: string | null;
-  source: string;       // e.g. "US Census Bureau"
-  frequency: string;    // "monthly" | "quarterly" | "annual"
-  externalId: string | null;  // ID in the external source system if applicable
+  source: string;
+  frequency: string;           // "monthly" | "quarterly" | "annual"
+  externalId: string | null;   // ID in external source system if API-sourced
+  variantId: string | null;    // FK → Variant.id — null if this is base data
+  baseTrendId: string | null;  // FK → Trend.id — the trend this overrides (null if base)
   createdBy: string;
   createdAt: string;
   updatedAt: string;
 };
 
-// TrendValue — a single data point in a Trend's time series
+// TrendValue — one data point in a trend's time series.
 export type TrendValueRow = {
-  id: string;         // UUID
-  trendId: string;    // FK → Trend.id
-  index: number;      // sequential position (0, 1, 2...) for ordering
-  value: number;      // the actual number
-  timestamp: string;  // ISO timestamp — the date this value represents
-};
-
-// Story — a question or analysis living inside a Perspective
-export type StoryRow = {
-  id: string;             // UUID
-  perspectiveId: string;  // FK → Perspective.id
-  focalTrendId: string;   // FK → Trend.id — the primary/bold line on the graph
-  name: string;           // the question e.g. "Should I invest in AbCellera?"
-  createdBy: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
-// Variant — a supporting/comparison trend attached to a Story
-export type VariantRow = {
-  id: string;         // UUID
-  storyId: string;    // FK → Story.id
-  trendId: string;    // FK → Trend.id — which trend this variant uses
-  name: string | null;  // optional display override for this trend in context
-  createdBy: string;
-  createdAt: string;
-};
-
-// VariantValue — a single data point for a Variant's version of a trend
-// (Variants can have their own value overrides separate from the base Trend)
-export type VariantValueRow = {
-  id: string;         // UUID
-  variantId: string;  // FK → Variant.id
-  index: number;
+  id: string;
+  trendId: string;  // FK → Trend.id
   value: number;
   timestamp: string;
 };
 
-// Connection — a relationship between two trends or connections within a Story
-// Used for correlation/causation graph logic
-export type ConnectionRow = {
-  id: string;                       // UUID
-  storyId: string;                  // FK → Story.id
-  sourceType: string;               // "trend" | "connection"
-  sourceTrendId: string | null;     // FK → Trend.id (if sourceType = "trend")
-  sourceConnectionId: string | null;// FK → Connection.id (if sourceType = "connection")
-  targetType: string;               // "trend" | "connection"
-  targetTrendId: string | null;
-  targetConnectionId: string | null;
-  direction: string;                // "unidirectional" | "bidirectional"
-  weight: number;                   // correlation strength 0.0–1.0
+// Story — a question or analysis inside a Perspective.
+// Stories are purely focal — they represent the question being asked and
+// own the primary trend line on the graph. Contributors are not stories;
+// they are Relationship rows that point directly to a Trend.
+export type StoryRow = {
+  id: string;
+  perspectiveId: string; // FK → Perspective.id
+  focalTrendId: string;  // FK → Trend.id — the primary line rendered on the graph
+  name: string;
+  status: string;        // "active" | "archived" | "draft" — reserved for future use
+  createdAt: string;
+  updatedAt: string;
+};
+
+// Contributor — the link between a focal story and a contributor trend.
+// Replaces the old Relationship table. Flat — every contributor belongs
+// directly to a focal story. The contributor owns its trend via trendId.
+export type ContributorRow = {
+  id: string;
+  focalStoryId: string; // FK → Story.id
+  trendId: string;      // FK → Trend.id
+  name: string;         // display label
+  type: string;         // "direct" | "inverse" | "correlated" | "lagged"
   createdAt: string;
 };
 
+// ── Weight ────────────────────────────────────────────────────────────────────
+
+// WeightRow — header that owns a weight series for a contributor.
+// analysisId = null → base weights, always shown by default.
+// analysisId set   → these weights only apply when that analysis is active.
+export type WeightRow = {
+  id: string;
+  analysisId: string | null; // FK → Analysis.id — null = base
+  contributorId: string;     // FK → Contributor.id
+};
+
+// WeightValueRow — one data point in a weight series.
+export type WeightValueRow = {
+  id: string;
+  weightId: string;  // FK → Weight.id
+  value: number;     // 0.0–1.0 correlation strength
+  timestamp: string;
+};
+
+// ── Lag ───────────────────────────────────────────────────────────────────────
+
+// LagRow — header that owns a lag series for a contributor.
+// analysisId = null → base lag values.
+export type LagRow = {
+  id: string;
+  analysisId: string | null; // FK → Analysis.id — null = base
+  contributorId: string;     // FK → Contributor.id
+};
+
+// LagValueRow — one data point in a lag series.
+export type LagValueRow = {
+  id: string;
+  lagId: string;     // FK → Lag.id
+  value: number;     // periods offset — positive = contributor leads focal story
+  timestamp: string;
+};
+
+// ── RelationshipValue ─────────────────────────────────────────────────────────
+
+// RelationshipRow — header that owns a relationship-value series for a contributor.
+// analysisId = null → base relationship values.
+export type RelationshipRow = {
+  id: string;
+  analysisId: string | null; // FK → Analysis.id — null = base
+  contributorId: string;     // FK → Contributor.id
+};
+
+// RelationshipValueRow — one data point in a relationship-value series.
+export type RelationshipValueRow = {
+  id: string;
+  relationshipId: string; // FK → Relationship.id
+  value: number;
+  timestamp: string;
+};
+
+// Analysis — a named alternative state for a root focal story.
+export type AnalysisRow = {
+  id: string;
+  storyId: string;      // FK → Story.id — always the ROOT focal story
+  name: string | null;
+  isDefault: boolean;   // true = the story's permanent default analysis
+  createdAt: string;
+  updatedAt: string;
+};
+
 // ─────────────────────────────────────────────────────────────────────────────
-// Composed types — these are NOT DB rows, they're what your UI actually needs
-// after joining tables together. Think of these as what your query functions
-// return after assembling data from multiple tables.
+// Composed types — assembled by query functions, NOT raw DB rows.
 // ─────────────────────────────────────────────────────────────────────────────
 
-// A Trend with its values attached — used to render a single line on a graph
+// A Trend with its value series attached — renders one line on the graph
 export type TrendWithValues = TrendRow & {
   values: TrendValueRow[];
 };
 
-// A full Story with its focal trend + all variants, ready to render
-export type StoryWithTrends = StoryRow & {
+// A Story with its focal trend + values attached — base unit for display
+export type StoryWithTrend = StoryRow & {
   focalTrend: TrendWithValues;
-  variants: (VariantRow & { trend: TrendWithValues })[];
+};
+
+// A fully assembled contributor — ContributorRow with its trend values,
+// and all time series headers + their data points attached.
+export type ContributorWithDetail = ContributorRow & {
+  trend: TrendWithValues;
+  weights: (WeightRow & { values: WeightValueRow[] })[];
+  lags: (LagRow & { values: LagValueRow[] })[];
+  relationships: (RelationshipRow & { values: RelationshipValueRow[] })[];
+};
+
+// A full focal story with all base contributors assembled, ready to render.
+export type StoryWithContributors = StoryWithTrend & {
+  contributors: ContributorWithDetail[];
 };

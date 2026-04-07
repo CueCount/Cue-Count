@@ -7,78 +7,6 @@ const connectorConfig = {
 };
 exports.connectorConfig = connectorConfig;
 
-const createPerspectiveRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'CreatePerspective', inputVars);
-}
-createPerspectiveRef.operationName = 'CreatePerspective';
-exports.createPerspectiveRef = createPerspectiveRef;
-
-exports.createPerspective = function createPerspective(dcOrVars, vars) {
-  return executeMutation(createPerspectiveRef(dcOrVars, vars));
-};
-
-const addPerspectiveMemberRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'AddPerspectiveMember', inputVars);
-}
-addPerspectiveMemberRef.operationName = 'AddPerspectiveMember';
-exports.addPerspectiveMemberRef = addPerspectiveMemberRef;
-
-exports.addPerspectiveMember = function addPerspectiveMember(dcOrVars, vars) {
-  return executeMutation(addPerspectiveMemberRef(dcOrVars, vars));
-};
-
-const createTrendRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'CreateTrend', inputVars);
-}
-createTrendRef.operationName = 'CreateTrend';
-exports.createTrendRef = createTrendRef;
-
-exports.createTrend = function createTrend(dcOrVars, vars) {
-  return executeMutation(createTrendRef(dcOrVars, vars));
-};
-
-const createStoryRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'CreateStory', inputVars);
-}
-createStoryRef.operationName = 'CreateStory';
-exports.createStoryRef = createStoryRef;
-
-exports.createStory = function createStory(dcOrVars, vars) {
-  return executeMutation(createStoryRef(dcOrVars, vars));
-};
-
-const createConnectionRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'CreateConnection', inputVars);
-}
-createConnectionRef.operationName = 'CreateConnection';
-exports.createConnectionRef = createConnectionRef;
-
-exports.createConnection = function createConnection(dcOrVars, vars) {
-  return executeMutation(createConnectionRef(dcOrVars, vars));
-};
-
-const createVariantRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'CreateVariant', inputVars);
-}
-createVariantRef.operationName = 'CreateVariant';
-exports.createVariantRef = createVariantRef;
-
-exports.createVariant = function createVariant(dcOrVars, vars) {
-  return executeMutation(createVariantRef(dcOrVars, vars));
-};
-
 const getPerspectiveRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();
@@ -149,4 +77,76 @@ exports.searchTrendsRef = searchTrendsRef;
 
 exports.searchTrends = function searchTrends(dcOrVars, vars) {
   return executeQuery(searchTrendsRef(dcOrVars, vars));
+};
+
+const createPerspectiveRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'CreatePerspective', inputVars);
+}
+createPerspectiveRef.operationName = 'CreatePerspective';
+exports.createPerspectiveRef = createPerspectiveRef;
+
+exports.createPerspective = function createPerspective(dcOrVars, vars) {
+  return executeMutation(createPerspectiveRef(dcOrVars, vars));
+};
+
+const addPerspectiveMemberRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'AddPerspectiveMember', inputVars);
+}
+addPerspectiveMemberRef.operationName = 'AddPerspectiveMember';
+exports.addPerspectiveMemberRef = addPerspectiveMemberRef;
+
+exports.addPerspectiveMember = function addPerspectiveMember(dcOrVars, vars) {
+  return executeMutation(addPerspectiveMemberRef(dcOrVars, vars));
+};
+
+const createTrendRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'CreateTrend', inputVars);
+}
+createTrendRef.operationName = 'CreateTrend';
+exports.createTrendRef = createTrendRef;
+
+exports.createTrend = function createTrend(dcOrVars, vars) {
+  return executeMutation(createTrendRef(dcOrVars, vars));
+};
+
+const createStoryRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'CreateStory', inputVars);
+}
+createStoryRef.operationName = 'CreateStory';
+exports.createStoryRef = createStoryRef;
+
+exports.createStory = function createStory(dcOrVars, vars) {
+  return executeMutation(createStoryRef(dcOrVars, vars));
+};
+
+const createConnectionRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'CreateConnection', inputVars);
+}
+createConnectionRef.operationName = 'CreateConnection';
+exports.createConnectionRef = createConnectionRef;
+
+exports.createConnection = function createConnection(dcOrVars, vars) {
+  return executeMutation(createConnectionRef(dcOrVars, vars));
+};
+
+const createVariantRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'CreateVariant', inputVars);
+}
+createVariantRef.operationName = 'CreateVariant';
+exports.createVariantRef = createVariantRef;
+
+exports.createVariant = function createVariant(dcOrVars, vars) {
+  return executeMutation(createVariantRef(dcOrVars, vars));
 };

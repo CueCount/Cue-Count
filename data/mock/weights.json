@@ -1,0 +1,14 @@
+[
+  { "id": "wt-0001", "analysisId": null, "contributorId": "con-0001-0000-0000-000000000001" },
+  { "id": "wt-0002", "analysisId": null, "contributorId": "con-0002-0000-0000-000000000002" },
+  { "id": "wt-0003", "analysisId": null, "contributorId": "con-0003-0000-0000-000000000003" },
+  { "id": "wt-0004", "analysisId": null, "contributorId": "con-0004-0000-0000-000000000004" },
+  { "id": "wt-0005", "analysisId": null, "contributorId": "con-0005-0000-0000-000000000005" },
+  { "id": "wt-0006", "analysisId": null, "contributorId": "con-0006-0000-0000-000000000006" },
+  { "id": "wt-0009", "analysisId": null, "contributorId": "con-0009-0000-0000-000000000009" },
+  { "id": "wt-0010", "analysisId": null, "contributorId": "con-0010-0000-0000-000000000010" },
+  { "id": "wt-0013", "analysisId": "var-0001-0000-0000-000000000001", "contributorId": "con-0001-0000-0000-000000000001" },
+  { "id": "wt-0014", "analysisId": "var-0001-0000-0000-000000000001", "contributorId": "con-0002-0000-0000-000000000002" },
+  { "id": "wt-0017", "analysisId": "var-0003-0000-0000-000000000003", "contributorId": "con-0005-0000-0000-000000000005" },
+  { "id": "wt-0019", "analysisId": "var-0004-0000-0000-000000000004", "contributorId": "con-0009-0000-0000-000000000009" }
+]

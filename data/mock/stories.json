@@ -4,7 +4,7 @@
     "perspectiveId": "persp-0002-0000-0000-000000000002",
     "focalTrendId": "trend-0001-0000-0000-000000000001",
     "name": "Is US population growth slowing across major states?",
-    "createdBy": "user-firebase-uid-001",
+    "status": "active",
     "createdAt": "2024-02-01T10:00:00Z",
     "updatedAt": "2024-12-01T10:00:00Z"
   },
@@ -13,7 +13,7 @@
     "perspectiveId": "persp-0002-0000-0000-000000000002",
     "focalTrendId": "trend-0004-0000-0000-000000000004",
     "name": "Is labor force participation recovering post-pandemic?",
-    "createdBy": "user-firebase-uid-001",
+    "status": "active",
     "createdAt": "2024-02-05T10:00:00Z",
     "updatedAt": "2024-12-01T10:00:00Z"
   },
@@ -22,7 +22,7 @@
     "perspectiveId": "persp-0002-0000-0000-000000000002",
     "focalTrendId": "trend-0006-0000-0000-000000000006",
     "name": "Are Sun Belt home prices diverging from wage growth?",
-    "createdBy": "user-firebase-uid-001",
+    "status": "active",
     "createdAt": "2024-02-10T10:00:00Z",
     "updatedAt": "2024-12-01T10:00:00Z"
   },
@@ -31,8 +31,53 @@
     "perspectiveId": "persp-0003-0000-0000-000000000003",
     "focalTrendId": "trend-0007-0000-0000-000000000007",
     "name": "Is US shale output outpacing OPEC supply cuts?",
-    "createdBy": "user-firebase-uid-002",
+    "status": "active",
     "createdAt": "2024-02-10T10:00:00Z",
+    "updatedAt": "2024-12-01T10:00:00Z"
+  },
+  {
+    "id": "story-0009-0000-0000-000000000009",
+    "perspectiveId": "persp-0002-0000-0000-000000000002",
+    "focalTrendId": "trend-0011-0000-0000-000000000011",
+    "name": "Is inflation responding to Fed rate hikes?",
+    "status": "active",
+    "createdAt": "2024-03-01T10:00:00Z",
+    "updatedAt": "2024-12-01T10:00:00Z"
+  },
+  {
+    "id": "story-0012-0000-0000-000000000012",
+    "perspectiveId": "persp-0002-0000-0000-000000000002",
+    "focalTrendId": "trend-0014-0000-0000-000000000014",
+    "name": "Is wage growth outpacing inflation?",
+    "status": "active",
+    "createdAt": "2024-03-01T10:00:00Z",
+    "updatedAt": "2024-12-01T10:00:00Z"
+  },
+  {
+    "id": "story-0013-0000-0000-000000000013",
+    "perspectiveId": "persp-0002-0000-0000-000000000002",
+    "focalTrendId": "trend-0013-0000-0000-000000000013",
+    "name": "What's driving S&P 500 performance in 2024?",
+    "status": "active",
+    "createdAt": "2024-03-01T10:00:00Z",
+    "updatedAt": "2024-12-01T10:00:00Z"
+  },
+  {
+    "id": "story-0014-0000-0000-000000000014",
+    "perspectiveId": "persp-0003-0000-0000-000000000003",
+    "focalTrendId": "trend-0015-0000-0000-000000000015",
+    "name": "Are housing starts collapsing under high rates?",
+    "status": "active",
+    "createdAt": "2024-03-01T10:00:00Z",
+    "updatedAt": "2024-12-01T10:00:00Z"
+  },
+  {
+    "id": "story-0015-0000-0000-000000000015",
+    "perspectiveId": "persp-0002-0000-0000-000000000002",
+    "focalTrendId": "trend-0016-0000-0000-000000000016",
+    "name": "Is US nominal GDP growth sustainable?",
+    "status": "active",
+    "createdAt": "2024-03-01T10:00:00Z",
     "updatedAt": "2024-12-01T10:00:00Z"
   }
 ]

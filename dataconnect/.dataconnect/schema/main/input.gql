@@ -1,9 +1,9 @@
 """
-✨ `Connection_KeyOutput` returns the primary key fields of table type `Connection`.
+✨ `LagValue_KeyOutput` returns the primary key fields of table type `LagValue`.
 
-It has the same format as `Connection_Key`, but is only used as mutation return value.
+It has the same format as `LagValue_Key`, but is only used as mutation return value.
 """
-scalar Connection_KeyOutput
+scalar LagValue_KeyOutput
 """
 ✨ `Perspective_KeyOutput` returns the primary key fields of table type `Perspective`.
 
@@ -16,6 +16,18 @@ scalar Perspective_KeyOutput
 It has the same format as `PerspectiveMember_Key`, but is only used as mutation return value.
 """
 scalar PerspectiveMember_KeyOutput
+"""
+✨ `Relationship_KeyOutput` returns the primary key fields of table type `Relationship`.
+
+It has the same format as `Relationship_Key`, but is only used as mutation return value.
+"""
+scalar Relationship_KeyOutput
+"""
+✨ `RelationshipValue_KeyOutput` returns the primary key fields of table type `RelationshipValue`.
+
+It has the same format as `RelationshipValue_Key`, but is only used as mutation return value.
+"""
+scalar RelationshipValue_KeyOutput
 """
 ✨ `Story_KeyOutput` returns the primary key fields of table type `Story`.
 
@@ -41,246 +53,122 @@ It has the same format as `Variant_Key`, but is only used as mutation return val
 """
 scalar Variant_KeyOutput
 """
-✨ `VariantValue_KeyOutput` returns the primary key fields of table type `VariantValue`.
+✨ `Weight_KeyOutput` returns the primary key fields of table type `Weight`.
 
-It has the same format as `VariantValue_Key`, but is only used as mutation return value.
+It has the same format as `Weight_Key`, but is only used as mutation return value.
 """
-scalar VariantValue_KeyOutput
+scalar Weight_KeyOutput
 """
-✨ Generated data input type for table 'Connection'. It includes all necessary fields for creating or upserting rows into table.
+✨ Generated data input type for table 'LagValue'. It includes all necessary fields for creating or upserting rows into table.
 """
-input Connection_Data {
+input LagValue_Data {
   """
-  ✨ Generated from Field `Connection`.`id` of type `UUID!`
+  ✨ Generated from Field `LagValue`.`id` of type `UUID!`
   """
   id: UUID
   """
-  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Connection`.`id` of type `UUID!`)
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `LagValue`.`id` of type `UUID!`)
   """
-  id_expr: UUID_Expr
+  id_expr: UUID_Expr @fdc_forbiddenInVariables
   """
-  ✨ Generated from Field `Connection`.`sourceConnectionId` of type `UUID`
+  ✨ Generated from Field `LagValue`.`relationshipId` of type `UUID!`
   """
-  sourceConnectionId: UUID
+  relationshipId: UUID
   """
-  ✨ `_expr` server value variant of `sourceConnectionId` (✨ Generated from Field `Connection`.`sourceConnectionId` of type `UUID`)
+  ✨ `_expr` server value variant of `relationshipId` (✨ Generated from Field `LagValue`.`relationshipId` of type `UUID!`)
   """
-  sourceConnectionId_expr: UUID_Expr
+  relationshipId_expr: UUID_Expr @fdc_forbiddenInVariables
   """
-  ✨ Generated from Field `Connection`.`sourceTrendId` of type `UUID`
+  ✨ Generated from Field `LagValue`.`relationship` of type `Relationship!`
   """
-  sourceTrendId: UUID
+  relationship: Relationship_Key @fdc_forbiddenInVariables
   """
-  ✨ `_expr` server value variant of `sourceTrendId` (✨ Generated from Field `Connection`.`sourceTrendId` of type `UUID`)
+  ✨ Generated from Field `LagValue`.`timestamp` of type `Timestamp!`
   """
-  sourceTrendId_expr: UUID_Expr
+  timestamp: Timestamp
   """
-  ✨ Generated from Field `Connection`.`storyId` of type `UUID!`
+  ✨ `_expr` server value variant of `timestamp` (✨ Generated from Field `LagValue`.`timestamp` of type `Timestamp!`)
   """
-  storyId: UUID
+  timestamp_expr: Timestamp_Expr @fdc_forbiddenInVariables
   """
-  ✨ `_expr` server value variant of `storyId` (✨ Generated from Field `Connection`.`storyId` of type `UUID!`)
+  ✨ `_time` server value variant of `timestamp` (✨ Generated from Field `LagValue`.`timestamp` of type `Timestamp!`)
   """
-  storyId_expr: UUID_Expr
+  timestamp_time: Timestamp_Relative @fdc_forbiddenInVariables
   """
-  ✨ Generated from Field `Connection`.`targetConnectionId` of type `UUID`
+  ✨ `_update` server value variant of `timestamp` (✨ Generated from Field `LagValue`.`timestamp` of type `Timestamp!`)
   """
-  targetConnectionId: UUID
+  timestamp_update: [Timestamp_Update!] @fdc_forbiddenInVariables
   """
-  ✨ `_expr` server value variant of `targetConnectionId` (✨ Generated from Field `Connection`.`targetConnectionId` of type `UUID`)
+  ✨ Generated from Field `LagValue`.`value` of type `Float!`
   """
-  targetConnectionId_expr: UUID_Expr
+  value: Float
   """
-  ✨ Generated from Field `Connection`.`targetTrendId` of type `UUID`
+  ✨ `_expr` server value variant of `value` (✨ Generated from Field `LagValue`.`value` of type `Float!`)
   """
-  targetTrendId: UUID
+  value_expr: Float_Expr @fdc_forbiddenInVariables
   """
-  ✨ `_expr` server value variant of `targetTrendId` (✨ Generated from Field `Connection`.`targetTrendId` of type `UUID`)
+  ✨ `_update` server value variant of `value` (✨ Generated from Field `LagValue`.`value` of type `Float!`)
   """
-  targetTrendId_expr: UUID_Expr
-  """
-  ✨ Generated from Field `Connection`.`sourceConnection` of type `Connection`
-  """
-  sourceConnection: Connection_Key
-  """
-  ✨ Generated from Field `Connection`.`sourceTrend` of type `Trend`
-  """
-  sourceTrend: Trend_Key
-  """
-  ✨ Generated from Field `Connection`.`story` of type `Story!`
-  """
-  story: Story_Key
-  """
-  ✨ Generated from Field `Connection`.`targetConnection` of type `Connection`
-  """
-  targetConnection: Connection_Key
-  """
-  ✨ Generated from Field `Connection`.`targetTrend` of type `Trend`
-  """
-  targetTrend: Trend_Key
-  """
-  ✨ Generated from Field `Connection`.`createdAt` of type `Timestamp!`
-  """
-  createdAt: Timestamp
-  """
-  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `Connection`.`createdAt` of type `Timestamp!`)
-  """
-  createdAt_expr: Timestamp_Expr
-  """
-  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `Connection`.`createdAt` of type `Timestamp!`)
-  """
-  createdAt_time: Timestamp_Relative
-  """
-  ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `Connection`.`createdAt` of type `Timestamp!`)
-  """
-  createdAt_update: [Timestamp_Update!]
-  """
-  ✨ Generated from Field `Connection`.`direction` of type `String!`
-  """
-  direction: String
-  """
-  ✨ `_expr` server value variant of `direction` (✨ Generated from Field `Connection`.`direction` of type `String!`)
-  """
-  direction_expr: String_Expr
-  """
-  ✨ Generated from Field `Connection`.`sourceType` of type `String!`
-  """
-  sourceType: String
-  """
-  ✨ `_expr` server value variant of `sourceType` (✨ Generated from Field `Connection`.`sourceType` of type `String!`)
-  """
-  sourceType_expr: String_Expr
-  """
-  ✨ Generated from Field `Connection`.`targetType` of type `String!`
-  """
-  targetType: String
-  """
-  ✨ `_expr` server value variant of `targetType` (✨ Generated from Field `Connection`.`targetType` of type `String!`)
-  """
-  targetType_expr: String_Expr
-  """
-  ✨ Generated from Field `Connection`.`weight` of type `Float!`
-  """
-  weight: Float
-  """
-  ✨ `_expr` server value variant of `weight` (✨ Generated from Field `Connection`.`weight` of type `Float!`)
-  """
-  weight_expr: Float_Expr
-  """
-  ✨ `_update` server value variant of `weight` (✨ Generated from Field `Connection`.`weight` of type `Float!`)
-  """
-  weight_update: [Float_Update!]
+  value_update: [Float_Update!] @fdc_forbiddenInVariables
 }
 """
-✨ Generated filter input type for table 'Connection'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+✨ Generated filter input type for table 'LagValue'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
 """
-input Connection_Filter {
+input LagValue_Filter {
   """
   Apply multiple filter conditions using `AND` logic.
   """
-  _and: [Connection_Filter!]
+  _and: [LagValue_Filter!]
   """
   Negate the result of the provided filter condition.
   """
-  _not: Connection_Filter
+  _not: LagValue_Filter
   """
   Apply multiple filter conditions using `OR` logic.
   """
-  _or: [Connection_Filter!]
+  _or: [LagValue_Filter!]
   """
-  ✨ Generated from Field `Connection`.`id` of type `UUID!`
+  ✨ Generated from Field `LagValue`.`id` of type `UUID!`
   """
   id: UUID_Filter
   """
-  ✨ Generated from Field `Connection`.`sourceConnectionId` of type `UUID`
+  ✨ Generated from Field `LagValue`.`relationshipId` of type `UUID!`
   """
-  sourceConnectionId: UUID_Filter
+  relationshipId: UUID_Filter
   """
-  ✨ Generated from Field `Connection`.`sourceTrendId` of type `UUID`
+  ✨ Generated from Field `LagValue`.`relationship` of type `Relationship!`
   """
-  sourceTrendId: UUID_Filter
+  relationship: Relationship_Filter
   """
-  ✨ Generated from Field `Connection`.`storyId` of type `UUID!`
+  ✨ Generated from Field `LagValue`.`timestamp` of type `Timestamp!`
   """
-  storyId: UUID_Filter
+  timestamp: Timestamp_Filter
   """
-  ✨ Generated from Field `Connection`.`targetConnectionId` of type `UUID`
+  ✨ Generated from Field `LagValue`.`value` of type `Float!`
   """
-  targetConnectionId: UUID_Filter
-  """
-  ✨ Generated from Field `Connection`.`targetTrendId` of type `UUID`
-  """
-  targetTrendId: UUID_Filter
-  """
-  ✨ Generated from Field `Connection`.`sourceConnection` of type `Connection`
-  """
-  sourceConnection: Connection_Filter
-  """
-  ✨ Generated from Field `Connection`.`sourceTrend` of type `Trend`
-  """
-  sourceTrend: Trend_Filter
-  """
-  ✨ Generated from Field `Connection`.`story` of type `Story!`
-  """
-  story: Story_Filter
-  """
-  ✨ Generated from Field `Connection`.`targetConnection` of type `Connection`
-  """
-  targetConnection: Connection_Filter
-  """
-  ✨ Generated from Field `Connection`.`targetTrend` of type `Trend`
-  """
-  targetTrend: Trend_Filter
-  """
-  ✨ Generated from Field `Connection`.`createdAt` of type `Timestamp!`
-  """
-  createdAt: Timestamp_Filter
-  """
-  ✨ Generated from Field `Connection`.`direction` of type `String!`
-  """
-  direction: String_Filter
-  """
-  ✨ Generated from Field `Connection`.`sourceType` of type `String!`
-  """
-  sourceType: String_Filter
-  """
-  ✨ Generated from Field `Connection`.`targetType` of type `String!`
-  """
-  targetType: String_Filter
-  """
-  ✨ Generated from Field `Connection`.`weight` of type `Float!`
-  """
-  weight: Float_Filter
-  """
-  ✨ Generated from Field `Connection`.`connections_on_sourceConnection` of type `[Connection!]!`
-  """
-  connections_on_sourceConnection: Connection_ListFilter
-  """
-  ✨ Generated from Field `Connection`.`connections_on_targetConnection` of type `[Connection!]!`
-  """
-  connections_on_targetConnection: Connection_ListFilter
+  value: Float_Filter
 }
 """
-✨ Generated first-row input type for table 'Connection'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+✨ Generated first-row input type for table 'LagValue'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
 """
-input Connection_FirstRow {
+input LagValue_FirstRow {
   """
   Order the result by the specified fields.
   """
-  orderBy: [Connection_Order!]
+  orderBy: [LagValue_Order!]
   """
   Filters rows based on the specified conditions.
   """
-  where: Connection_Filter
+  where: LagValue_Filter
 }
 """
-✨ Generated having input type for table 'Connection'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+✨ Generated having input type for table 'LagValue'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
 """
-input Connection_Having {
+input LagValue_Having {
   """
   Apply multiple Having conditions using `AND` logic.
   """
-  _and: [Connection_Having!]
+  _and: [LagValue_Having!]
   """
   Whether to apply DISTINCT to the aggregate function.
   """
@@ -288,101 +176,73 @@ input Connection_Having {
   """
   Negate the result of the provided Having condition.
   """
-  _not: Connection_Having
+  _not: LagValue_Having
   """
   Apply multiple Having conditions using `OR` logic.
   """
-  _or: [Connection_Having!]
+  _or: [LagValue_Having!]
   """
-  ✨ Generated from Field `Connection`.`_count` of type `Int!`
+  ✨ Generated from Field `LagValue`.`_count` of type `Int!`
   """
   _count: Int_Filter
   """
-  ✨ Generated from Field `Connection`.`createdAt_count` of type `Int!`
-  """
-  createdAt_count: Int_Filter
-  """
-  ✨ Generated from Field `Connection`.`direction_count` of type `Int!`
-  """
-  direction_count: Int_Filter
-  """
-  ✨ Generated from Field `Connection`.`id_count` of type `Int!`
+  ✨ Generated from Field `LagValue`.`id_count` of type `Int!`
   """
   id_count: Int_Filter
   """
-  ✨ Generated from Field `Connection`.`sourceConnectionId_count` of type `Int!`
+  ✨ Generated from Field `LagValue`.`relationshipId_count` of type `Int!`
   """
-  sourceConnectionId_count: Int_Filter
+  relationshipId_count: Int_Filter
   """
-  ✨ Generated from Field `Connection`.`sourceTrendId_count` of type `Int!`
+  ✨ Generated from Field `LagValue`.`timestamp_count` of type `Int!`
   """
-  sourceTrendId_count: Int_Filter
+  timestamp_count: Int_Filter
   """
-  ✨ Generated from Field `Connection`.`sourceType_count` of type `Int!`
+  ✨ Generated from Field `LagValue`.`value_count` of type `Int!`
   """
-  sourceType_count: Int_Filter
+  value_count: Int_Filter
   """
-  ✨ Generated from Field `Connection`.`storyId_count` of type `Int!`
+  ✨ Generated from Field `LagValue`.`value_sum` of type `Float`
   """
-  storyId_count: Int_Filter
+  value_sum: Float_Filter
   """
-  ✨ Generated from Field `Connection`.`targetConnectionId_count` of type `Int!`
+  ✨ Generated from Field `LagValue`.`value_avg` of type `Float`
   """
-  targetConnectionId_count: Int_Filter
+  value_avg: Float_Filter
   """
-  ✨ Generated from Field `Connection`.`targetTrendId_count` of type `Int!`
+  ✨ Generated from Field `LagValue`.`timestamp_min` of type `Timestamp`
   """
-  targetTrendId_count: Int_Filter
+  timestamp_min: Timestamp_Filter
   """
-  ✨ Generated from Field `Connection`.`targetType_count` of type `Int!`
+  ✨ Generated from Field `LagValue`.`value_min` of type `Float`
   """
-  targetType_count: Int_Filter
+  value_min: Float_Filter
   """
-  ✨ Generated from Field `Connection`.`weight_count` of type `Int!`
+  ✨ Generated from Field `LagValue`.`timestamp_max` of type `Timestamp`
   """
-  weight_count: Int_Filter
+  timestamp_max: Timestamp_Filter
   """
-  ✨ Generated from Field `Connection`.`weight_sum` of type `Float`
+  ✨ Generated from Field `LagValue`.`value_max` of type `Float`
   """
-  weight_sum: Float_Filter
-  """
-  ✨ Generated from Field `Connection`.`weight_avg` of type `Float`
-  """
-  weight_avg: Float_Filter
-  """
-  ✨ Generated from Field `Connection`.`createdAt_min` of type `Timestamp`
-  """
-  createdAt_min: Timestamp_Filter
-  """
-  ✨ Generated from Field `Connection`.`weight_min` of type `Float`
-  """
-  weight_min: Float_Filter
-  """
-  ✨ Generated from Field `Connection`.`createdAt_max` of type `Timestamp`
-  """
-  createdAt_max: Timestamp_Filter
-  """
-  ✨ Generated from Field `Connection`.`weight_max` of type `Float`
-  """
-  weight_max: Float_Filter
+  value_max: Float_Filter
 }
 """
-✨ Generated key input type for table 'Connection'. It represents the primary key fields used to uniquely identify a row in the table.
+✨ Generated key input type for table 'LagValue'. It represents the primary key fields used to uniquely identify a row in the table.
 """
-input Connection_Key {
+input LagValue_Key {
   """
-  ✨ Generated from Field `Connection`.`id` of type `UUID!`
+  ✨ Generated from Field `LagValue`.`id` of type `UUID!`
   """
   id: UUID
   """
-  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Connection`.`id` of type `UUID!`)
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `LagValue`.`id` of type `UUID!`)
   """
-  id_expr: UUID_Expr
+  id_expr: UUID_Expr @fdc_forbiddenInVariables
 }
 """
-✨ Generated list filter input type for table 'Connection'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+✨ Generated list filter input type for table 'LagValue'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
 """
-input Connection_ListFilter {
+input LagValue_ListFilter {
   """
   The desired number of objects that match the condition (defaults to at least one).
   """
@@ -390,148 +250,76 @@ input Connection_ListFilter {
   """
   Condition of the related objects to filter for.
   """
-  exist: Connection_Filter
+  exist: LagValue_Filter
 }
 """
-✨ Generated order input type for table 'Connection'. This input defines the sorting order of rows in query results based on one or more fields.
+✨ Generated order input type for table 'LagValue'. This input defines the sorting order of rows in query results based on one or more fields.
 """
-input Connection_Order {
+input LagValue_Order {
   """
-  ✨ Generated from Field `Connection`.`id` of type `UUID!`
+  ✨ Generated from Field `LagValue`.`id` of type `UUID!`
   """
   id: OrderDirection
   """
-  ✨ Generated from Field `Connection`.`sourceConnectionId` of type `UUID`
+  ✨ Generated from Field `LagValue`.`relationshipId` of type `UUID!`
   """
-  sourceConnectionId: OrderDirection
+  relationshipId: OrderDirection
   """
-  ✨ Generated from Field `Connection`.`sourceTrendId` of type `UUID`
+  ✨ Generated from Field `LagValue`.`relationship` of type `Relationship!`
   """
-  sourceTrendId: OrderDirection
+  relationship: Relationship_Order
   """
-  ✨ Generated from Field `Connection`.`storyId` of type `UUID!`
+  ✨ Generated from Field `LagValue`.`timestamp` of type `Timestamp!`
   """
-  storyId: OrderDirection
+  timestamp: OrderDirection
   """
-  ✨ Generated from Field `Connection`.`targetConnectionId` of type `UUID`
+  ✨ Generated from Field `LagValue`.`value` of type `Float!`
   """
-  targetConnectionId: OrderDirection
+  value: OrderDirection
   """
-  ✨ Generated from Field `Connection`.`targetTrendId` of type `UUID`
-  """
-  targetTrendId: OrderDirection
-  """
-  ✨ Generated from Field `Connection`.`sourceConnection` of type `Connection`
-  """
-  sourceConnection: Connection_Order
-  """
-  ✨ Generated from Field `Connection`.`sourceTrend` of type `Trend`
-  """
-  sourceTrend: Trend_Order
-  """
-  ✨ Generated from Field `Connection`.`story` of type `Story!`
-  """
-  story: Story_Order
-  """
-  ✨ Generated from Field `Connection`.`targetConnection` of type `Connection`
-  """
-  targetConnection: Connection_Order
-  """
-  ✨ Generated from Field `Connection`.`targetTrend` of type `Trend`
-  """
-  targetTrend: Trend_Order
-  """
-  ✨ Generated from Field `Connection`.`createdAt` of type `Timestamp!`
-  """
-  createdAt: OrderDirection
-  """
-  ✨ Generated from Field `Connection`.`direction` of type `String!`
-  """
-  direction: OrderDirection
-  """
-  ✨ Generated from Field `Connection`.`sourceType` of type `String!`
-  """
-  sourceType: OrderDirection
-  """
-  ✨ Generated from Field `Connection`.`targetType` of type `String!`
-  """
-  targetType: OrderDirection
-  """
-  ✨ Generated from Field `Connection`.`weight` of type `Float!`
-  """
-  weight: OrderDirection
-  """
-  ✨ Generated from Field `Connection`.`_count` of type `Int!`
+  ✨ Generated from Field `LagValue`.`_count` of type `Int!`
   """
   _count: OrderDirection
   """
-  ✨ Generated from Field `Connection`.`createdAt_count` of type `Int!`
-  """
-  createdAt_count: OrderDirection
-  """
-  ✨ Generated from Field `Connection`.`direction_count` of type `Int!`
-  """
-  direction_count: OrderDirection
-  """
-  ✨ Generated from Field `Connection`.`id_count` of type `Int!`
+  ✨ Generated from Field `LagValue`.`id_count` of type `Int!`
   """
   id_count: OrderDirection
   """
-  ✨ Generated from Field `Connection`.`sourceConnectionId_count` of type `Int!`
+  ✨ Generated from Field `LagValue`.`relationshipId_count` of type `Int!`
   """
-  sourceConnectionId_count: OrderDirection
+  relationshipId_count: OrderDirection
   """
-  ✨ Generated from Field `Connection`.`sourceTrendId_count` of type `Int!`
+  ✨ Generated from Field `LagValue`.`timestamp_count` of type `Int!`
   """
-  sourceTrendId_count: OrderDirection
+  timestamp_count: OrderDirection
   """
-  ✨ Generated from Field `Connection`.`sourceType_count` of type `Int!`
+  ✨ Generated from Field `LagValue`.`value_count` of type `Int!`
   """
-  sourceType_count: OrderDirection
+  value_count: OrderDirection
   """
-  ✨ Generated from Field `Connection`.`storyId_count` of type `Int!`
+  ✨ Generated from Field `LagValue`.`value_sum` of type `Float`
   """
-  storyId_count: OrderDirection
+  value_sum: OrderDirection
   """
-  ✨ Generated from Field `Connection`.`targetConnectionId_count` of type `Int!`
+  ✨ Generated from Field `LagValue`.`value_avg` of type `Float`
   """
-  targetConnectionId_count: OrderDirection
+  value_avg: OrderDirection
   """
-  ✨ Generated from Field `Connection`.`targetTrendId_count` of type `Int!`
+  ✨ Generated from Field `LagValue`.`timestamp_min` of type `Timestamp`
   """
-  targetTrendId_count: OrderDirection
+  timestamp_min: OrderDirection
   """
-  ✨ Generated from Field `Connection`.`targetType_count` of type `Int!`
+  ✨ Generated from Field `LagValue`.`value_min` of type `Float`
   """
-  targetType_count: OrderDirection
+  value_min: OrderDirection
   """
-  ✨ Generated from Field `Connection`.`weight_count` of type `Int!`
+  ✨ Generated from Field `LagValue`.`timestamp_max` of type `Timestamp`
   """
-  weight_count: OrderDirection
+  timestamp_max: OrderDirection
   """
-  ✨ Generated from Field `Connection`.`weight_sum` of type `Float`
+  ✨ Generated from Field `LagValue`.`value_max` of type `Float`
   """
-  weight_sum: OrderDirection
-  """
-  ✨ Generated from Field `Connection`.`weight_avg` of type `Float`
-  """
-  weight_avg: OrderDirection
-  """
-  ✨ Generated from Field `Connection`.`createdAt_min` of type `Timestamp`
-  """
-  createdAt_min: OrderDirection
-  """
-  ✨ Generated from Field `Connection`.`weight_min` of type `Float`
-  """
-  weight_min: OrderDirection
-  """
-  ✨ Generated from Field `Connection`.`createdAt_max` of type `Timestamp`
-  """
-  createdAt_max: OrderDirection
-  """
-  ✨ Generated from Field `Connection`.`weight_max` of type `Float`
-  """
-  weight_max: OrderDirection
+  value_max: OrderDirection
 }
 """
 ✨ Generated data input type for table 'Perspective'. It includes all necessary fields for creating or upserting rows into table.
@@ -544,7 +332,7 @@ input Perspective_Data {
   """
   ✨ `_expr` server value variant of `id` (✨ Generated from Field `Perspective`.`id` of type `UUID!`)
   """
-  id_expr: UUID_Expr
+  id_expr: UUID_Expr @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Perspective`.`createdAt` of type `Timestamp!`
   """
@@ -552,15 +340,15 @@ input Perspective_Data {
   """
   ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `Perspective`.`createdAt` of type `Timestamp!`)
   """
-  createdAt_expr: Timestamp_Expr
+  createdAt_expr: Timestamp_Expr @fdc_forbiddenInVariables
   """
   ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `Perspective`.`createdAt` of type `Timestamp!`)
   """
-  createdAt_time: Timestamp_Relative
+  createdAt_time: Timestamp_Relative @fdc_forbiddenInVariables
   """
   ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `Perspective`.`createdAt` of type `Timestamp!`)
   """
-  createdAt_update: [Timestamp_Update!]
+  createdAt_update: [Timestamp_Update!] @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Perspective`.`createdBy` of type `String!`
   """
@@ -568,7 +356,7 @@ input Perspective_Data {
   """
   ✨ `_expr` server value variant of `createdBy` (✨ Generated from Field `Perspective`.`createdBy` of type `String!`)
   """
-  createdBy_expr: String_Expr
+  createdBy_expr: String_Expr @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Perspective`.`name` of type `String!`
   """
@@ -576,7 +364,7 @@ input Perspective_Data {
   """
   ✨ `_expr` server value variant of `name` (✨ Generated from Field `Perspective`.`name` of type `String!`)
   """
-  name_expr: String_Expr
+  name_expr: String_Expr @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Perspective`.`plan` of type `String!`
   """
@@ -584,7 +372,7 @@ input Perspective_Data {
   """
   ✨ `_expr` server value variant of `plan` (✨ Generated from Field `Perspective`.`plan` of type `String!`)
   """
-  plan_expr: String_Expr
+  plan_expr: String_Expr @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Perspective`.`slug` of type `String!`
   """
@@ -592,7 +380,7 @@ input Perspective_Data {
   """
   ✨ `_expr` server value variant of `slug` (✨ Generated from Field `Perspective`.`slug` of type `String!`)
   """
-  slug_expr: String_Expr
+  slug_expr: String_Expr @fdc_forbiddenInVariables
 }
 """
 ✨ Generated filter input type for table 'Perspective'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
@@ -724,7 +512,7 @@ input Perspective_Key {
   """
   ✨ `_expr` server value variant of `id` (✨ Generated from Field `Perspective`.`id` of type `UUID!`)
   """
-  id_expr: UUID_Expr
+  id_expr: UUID_Expr @fdc_forbiddenInVariables
 }
 """
 ✨ Generated list filter input type for table 'Perspective'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
@@ -815,7 +603,7 @@ input PerspectiveMember_Data {
   """
   ✨ `_expr` server value variant of `id` (✨ Generated from Field `PerspectiveMember`.`id` of type `UUID!`)
   """
-  id_expr: UUID_Expr
+  id_expr: UUID_Expr @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `PerspectiveMember`.`perspectiveId` of type `UUID!`
   """
@@ -823,11 +611,11 @@ input PerspectiveMember_Data {
   """
   ✨ `_expr` server value variant of `perspectiveId` (✨ Generated from Field `PerspectiveMember`.`perspectiveId` of type `UUID!`)
   """
-  perspectiveId_expr: UUID_Expr
+  perspectiveId_expr: UUID_Expr @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `PerspectiveMember`.`perspective` of type `Perspective!`
   """
-  perspective: Perspective_Key
+  perspective: Perspective_Key @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `PerspectiveMember`.`createdAt` of type `Timestamp!`
   """
@@ -835,15 +623,15 @@ input PerspectiveMember_Data {
   """
   ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `PerspectiveMember`.`createdAt` of type `Timestamp!`)
   """
-  createdAt_expr: Timestamp_Expr
+  createdAt_expr: Timestamp_Expr @fdc_forbiddenInVariables
   """
   ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `PerspectiveMember`.`createdAt` of type `Timestamp!`)
   """
-  createdAt_time: Timestamp_Relative
+  createdAt_time: Timestamp_Relative @fdc_forbiddenInVariables
   """
   ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `PerspectiveMember`.`createdAt` of type `Timestamp!`)
   """
-  createdAt_update: [Timestamp_Update!]
+  createdAt_update: [Timestamp_Update!] @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `PerspectiveMember`.`role` of type `String!`
   """
@@ -851,7 +639,7 @@ input PerspectiveMember_Data {
   """
   ✨ `_expr` server value variant of `role` (✨ Generated from Field `PerspectiveMember`.`role` of type `String!`)
   """
-  role_expr: String_Expr
+  role_expr: String_Expr @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `PerspectiveMember`.`userId` of type `String!`
   """
@@ -859,7 +647,7 @@ input PerspectiveMember_Data {
   """
   ✨ `_expr` server value variant of `userId` (✨ Generated from Field `PerspectiveMember`.`userId` of type `String!`)
   """
-  userId_expr: String_Expr
+  userId_expr: String_Expr @fdc_forbiddenInVariables
 }
 """
 ✨ Generated filter input type for table 'PerspectiveMember'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
@@ -979,7 +767,7 @@ input PerspectiveMember_Key {
   """
   ✨ `_expr` server value variant of `id` (✨ Generated from Field `PerspectiveMember`.`id` of type `UUID!`)
   """
-  id_expr: UUID_Expr
+  id_expr: UUID_Expr @fdc_forbiddenInVariables
 }
 """
 ✨ Generated list filter input type for table 'PerspectiveMember'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
@@ -1056,6 +844,628 @@ input PerspectiveMember_Order {
   createdAt_max: OrderDirection
 }
 """
+✨ Generated data input type for table 'Relationship'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input Relationship_Data {
+  """
+  ✨ Generated from Field `Relationship`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Relationship`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Relationship`.`focalStoryId` of type `UUID!`
+  """
+  focalStoryId: UUID
+  """
+  ✨ `_expr` server value variant of `focalStoryId` (✨ Generated from Field `Relationship`.`focalStoryId` of type `UUID!`)
+  """
+  focalStoryId_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Relationship`.`trendId` of type `UUID!`
+  """
+  trendId: UUID
+  """
+  ✨ `_expr` server value variant of `trendId` (✨ Generated from Field `Relationship`.`trendId` of type `UUID!`)
+  """
+  trendId_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Relationship`.`variantId` of type `UUID`
+  """
+  variantId: UUID
+  """
+  ✨ `_expr` server value variant of `variantId` (✨ Generated from Field `Relationship`.`variantId` of type `UUID`)
+  """
+  variantId_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Relationship`.`focalStory` of type `Story!`
+  """
+  focalStory: Story_Key @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Relationship`.`trend` of type `Trend!`
+  """
+  trend: Trend_Key @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Relationship`.`variant` of type `Variant`
+  """
+  variant: Variant_Key @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Relationship`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `Relationship`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_expr: Timestamp_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `Relationship`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_time: Timestamp_Relative @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `Relationship`.`createdAt` of type `Timestamp!`)
+  """
+  createdAt_update: [Timestamp_Update!] @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Relationship`.`createdBy` of type `String!`
+  """
+  createdBy: String
+  """
+  ✨ `_expr` server value variant of `createdBy` (✨ Generated from Field `Relationship`.`createdBy` of type `String!`)
+  """
+  createdBy_expr: String_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Relationship`.`name` of type `String!`
+  """
+  name: String
+  """
+  ✨ `_expr` server value variant of `name` (✨ Generated from Field `Relationship`.`name` of type `String!`)
+  """
+  name_expr: String_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Relationship`.`type` of type `String!`
+  """
+  type: String
+  """
+  ✨ `_expr` server value variant of `type` (✨ Generated from Field `Relationship`.`type` of type `String!`)
+  """
+  type_expr: String_Expr @fdc_forbiddenInVariables
+}
+"""
+✨ Generated filter input type for table 'Relationship'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Relationship_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [Relationship_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: Relationship_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [Relationship_Filter!]
+  """
+  ✨ Generated from Field `Relationship`.`id` of type `UUID!`
+  """
+  id: UUID_Filter
+  """
+  ✨ Generated from Field `Relationship`.`focalStoryId` of type `UUID!`
+  """
+  focalStoryId: UUID_Filter
+  """
+  ✨ Generated from Field `Relationship`.`trendId` of type `UUID!`
+  """
+  trendId: UUID_Filter
+  """
+  ✨ Generated from Field `Relationship`.`variantId` of type `UUID`
+  """
+  variantId: UUID_Filter
+  """
+  ✨ Generated from Field `Relationship`.`focalStory` of type `Story!`
+  """
+  focalStory: Story_Filter
+  """
+  ✨ Generated from Field `Relationship`.`trend` of type `Trend!`
+  """
+  trend: Trend_Filter
+  """
+  ✨ Generated from Field `Relationship`.`variant` of type `Variant`
+  """
+  variant: Variant_Filter
+  """
+  ✨ Generated from Field `Relationship`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `Relationship`.`createdBy` of type `String!`
+  """
+  createdBy: String_Filter
+  """
+  ✨ Generated from Field `Relationship`.`name` of type `String!`
+  """
+  name: String_Filter
+  """
+  ✨ Generated from Field `Relationship`.`type` of type `String!`
+  """
+  type: String_Filter
+  """
+  ✨ Generated from Field `Relationship`.`lagValues_on_relationship` of type `[LagValue!]!`
+  """
+  lagValues_on_relationship: LagValue_ListFilter
+  """
+  ✨ Generated from Field `Relationship`.`relationshipValues_on_relationship` of type `[RelationshipValue!]!`
+  """
+  relationshipValues_on_relationship: RelationshipValue_ListFilter
+  """
+  ✨ Generated from Field `Relationship`.`weights_on_relationship` of type `[Weight!]!`
+  """
+  weights_on_relationship: Weight_ListFilter
+}
+"""
+✨ Generated first-row input type for table 'Relationship'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input Relationship_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [Relationship_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: Relationship_Filter
+}
+"""
+✨ Generated having input type for table 'Relationship'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Relationship_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [Relationship_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: Relationship_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [Relationship_Having!]
+  """
+  ✨ Generated from Field `Relationship`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `Relationship`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: Int_Filter
+  """
+  ✨ Generated from Field `Relationship`.`createdBy_count` of type `Int!`
+  """
+  createdBy_count: Int_Filter
+  """
+  ✨ Generated from Field `Relationship`.`focalStoryId_count` of type `Int!`
+  """
+  focalStoryId_count: Int_Filter
+  """
+  ✨ Generated from Field `Relationship`.`id_count` of type `Int!`
+  """
+  id_count: Int_Filter
+  """
+  ✨ Generated from Field `Relationship`.`name_count` of type `Int!`
+  """
+  name_count: Int_Filter
+  """
+  ✨ Generated from Field `Relationship`.`trendId_count` of type `Int!`
+  """
+  trendId_count: Int_Filter
+  """
+  ✨ Generated from Field `Relationship`.`type_count` of type `Int!`
+  """
+  type_count: Int_Filter
+  """
+  ✨ Generated from Field `Relationship`.`variantId_count` of type `Int!`
+  """
+  variantId_count: Int_Filter
+  """
+  ✨ Generated from Field `Relationship`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `Relationship`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: Timestamp_Filter
+}
+"""
+✨ Generated key input type for table 'Relationship'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input Relationship_Key {
+  """
+  ✨ Generated from Field `Relationship`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Relationship`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr @fdc_forbiddenInVariables
+}
+"""
+✨ Generated list filter input type for table 'Relationship'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input Relationship_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: Relationship_Filter
+}
+"""
+✨ Generated order input type for table 'Relationship'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input Relationship_Order {
+  """
+  ✨ Generated from Field `Relationship`.`id` of type `UUID!`
+  """
+  id: OrderDirection
+  """
+  ✨ Generated from Field `Relationship`.`focalStoryId` of type `UUID!`
+  """
+  focalStoryId: OrderDirection
+  """
+  ✨ Generated from Field `Relationship`.`trendId` of type `UUID!`
+  """
+  trendId: OrderDirection
+  """
+  ✨ Generated from Field `Relationship`.`variantId` of type `UUID`
+  """
+  variantId: OrderDirection
+  """
+  ✨ Generated from Field `Relationship`.`focalStory` of type `Story!`
+  """
+  focalStory: Story_Order
+  """
+  ✨ Generated from Field `Relationship`.`trend` of type `Trend!`
+  """
+  trend: Trend_Order
+  """
+  ✨ Generated from Field `Relationship`.`variant` of type `Variant`
+  """
+  variant: Variant_Order
+  """
+  ✨ Generated from Field `Relationship`.`createdAt` of type `Timestamp!`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `Relationship`.`createdBy` of type `String!`
+  """
+  createdBy: OrderDirection
+  """
+  ✨ Generated from Field `Relationship`.`name` of type `String!`
+  """
+  name: OrderDirection
+  """
+  ✨ Generated from Field `Relationship`.`type` of type `String!`
+  """
+  type: OrderDirection
+  """
+  ✨ Generated from Field `Relationship`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `Relationship`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: OrderDirection
+  """
+  ✨ Generated from Field `Relationship`.`createdBy_count` of type `Int!`
+  """
+  createdBy_count: OrderDirection
+  """
+  ✨ Generated from Field `Relationship`.`focalStoryId_count` of type `Int!`
+  """
+  focalStoryId_count: OrderDirection
+  """
+  ✨ Generated from Field `Relationship`.`id_count` of type `Int!`
+  """
+  id_count: OrderDirection
+  """
+  ✨ Generated from Field `Relationship`.`name_count` of type `Int!`
+  """
+  name_count: OrderDirection
+  """
+  ✨ Generated from Field `Relationship`.`trendId_count` of type `Int!`
+  """
+  trendId_count: OrderDirection
+  """
+  ✨ Generated from Field `Relationship`.`type_count` of type `Int!`
+  """
+  type_count: OrderDirection
+  """
+  ✨ Generated from Field `Relationship`.`variantId_count` of type `Int!`
+  """
+  variantId_count: OrderDirection
+  """
+  ✨ Generated from Field `Relationship`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: OrderDirection
+  """
+  ✨ Generated from Field `Relationship`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: OrderDirection
+}
+"""
+✨ Generated data input type for table 'RelationshipValue'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input RelationshipValue_Data {
+  """
+  ✨ Generated from Field `RelationshipValue`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `RelationshipValue`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `RelationshipValue`.`relationshipId` of type `UUID!`
+  """
+  relationshipId: UUID
+  """
+  ✨ `_expr` server value variant of `relationshipId` (✨ Generated from Field `RelationshipValue`.`relationshipId` of type `UUID!`)
+  """
+  relationshipId_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `RelationshipValue`.`relationship` of type `Relationship!`
+  """
+  relationship: Relationship_Key @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `RelationshipValue`.`timestamp` of type `Timestamp!`
+  """
+  timestamp: Timestamp
+  """
+  ✨ `_expr` server value variant of `timestamp` (✨ Generated from Field `RelationshipValue`.`timestamp` of type `Timestamp!`)
+  """
+  timestamp_expr: Timestamp_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_time` server value variant of `timestamp` (✨ Generated from Field `RelationshipValue`.`timestamp` of type `Timestamp!`)
+  """
+  timestamp_time: Timestamp_Relative @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `timestamp` (✨ Generated from Field `RelationshipValue`.`timestamp` of type `Timestamp!`)
+  """
+  timestamp_update: [Timestamp_Update!] @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `RelationshipValue`.`value` of type `Float!`
+  """
+  value: Float
+  """
+  ✨ `_expr` server value variant of `value` (✨ Generated from Field `RelationshipValue`.`value` of type `Float!`)
+  """
+  value_expr: Float_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `value` (✨ Generated from Field `RelationshipValue`.`value` of type `Float!`)
+  """
+  value_update: [Float_Update!] @fdc_forbiddenInVariables
+}
+"""
+✨ Generated filter input type for table 'RelationshipValue'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input RelationshipValue_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [RelationshipValue_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: RelationshipValue_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [RelationshipValue_Filter!]
+  """
+  ✨ Generated from Field `RelationshipValue`.`id` of type `UUID!`
+  """
+  id: UUID_Filter
+  """
+  ✨ Generated from Field `RelationshipValue`.`relationshipId` of type `UUID!`
+  """
+  relationshipId: UUID_Filter
+  """
+  ✨ Generated from Field `RelationshipValue`.`relationship` of type `Relationship!`
+  """
+  relationship: Relationship_Filter
+  """
+  ✨ Generated from Field `RelationshipValue`.`timestamp` of type `Timestamp!`
+  """
+  timestamp: Timestamp_Filter
+  """
+  ✨ Generated from Field `RelationshipValue`.`value` of type `Float!`
+  """
+  value: Float_Filter
+}
+"""
+✨ Generated first-row input type for table 'RelationshipValue'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input RelationshipValue_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [RelationshipValue_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: RelationshipValue_Filter
+}
+"""
+✨ Generated having input type for table 'RelationshipValue'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input RelationshipValue_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [RelationshipValue_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: RelationshipValue_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [RelationshipValue_Having!]
+  """
+  ✨ Generated from Field `RelationshipValue`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `RelationshipValue`.`id_count` of type `Int!`
+  """
+  id_count: Int_Filter
+  """
+  ✨ Generated from Field `RelationshipValue`.`relationshipId_count` of type `Int!`
+  """
+  relationshipId_count: Int_Filter
+  """
+  ✨ Generated from Field `RelationshipValue`.`timestamp_count` of type `Int!`
+  """
+  timestamp_count: Int_Filter
+  """
+  ✨ Generated from Field `RelationshipValue`.`value_count` of type `Int!`
+  """
+  value_count: Int_Filter
+  """
+  ✨ Generated from Field `RelationshipValue`.`value_sum` of type `Float`
+  """
+  value_sum: Float_Filter
+  """
+  ✨ Generated from Field `RelationshipValue`.`value_avg` of type `Float`
+  """
+  value_avg: Float_Filter
+  """
+  ✨ Generated from Field `RelationshipValue`.`timestamp_min` of type `Timestamp`
+  """
+  timestamp_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `RelationshipValue`.`value_min` of type `Float`
+  """
+  value_min: Float_Filter
+  """
+  ✨ Generated from Field `RelationshipValue`.`timestamp_max` of type `Timestamp`
+  """
+  timestamp_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `RelationshipValue`.`value_max` of type `Float`
+  """
+  value_max: Float_Filter
+}
+"""
+✨ Generated key input type for table 'RelationshipValue'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input RelationshipValue_Key {
+  """
+  ✨ Generated from Field `RelationshipValue`.`id` of type `UUID!`
+  """
+  id: UUID
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `RelationshipValue`.`id` of type `UUID!`)
+  """
+  id_expr: UUID_Expr @fdc_forbiddenInVariables
+}
+"""
+✨ Generated list filter input type for table 'RelationshipValue'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input RelationshipValue_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: RelationshipValue_Filter
+}
+"""
+✨ Generated order input type for table 'RelationshipValue'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input RelationshipValue_Order {
+  """
+  ✨ Generated from Field `RelationshipValue`.`id` of type `UUID!`
+  """
+  id: OrderDirection
+  """
+  ✨ Generated from Field `RelationshipValue`.`relationshipId` of type `UUID!`
+  """
+  relationshipId: OrderDirection
+  """
+  ✨ Generated from Field `RelationshipValue`.`relationship` of type `Relationship!`
+  """
+  relationship: Relationship_Order
+  """
+  ✨ Generated from Field `RelationshipValue`.`timestamp` of type `Timestamp!`
+  """
+  timestamp: OrderDirection
+  """
+  ✨ Generated from Field `RelationshipValue`.`value` of type `Float!`
+  """
+  value: OrderDirection
+  """
+  ✨ Generated from Field `RelationshipValue`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `RelationshipValue`.`id_count` of type `Int!`
+  """
+  id_count: OrderDirection
+  """
+  ✨ Generated from Field `RelationshipValue`.`relationshipId_count` of type `Int!`
+  """
+  relationshipId_count: OrderDirection
+  """
+  ✨ Generated from Field `RelationshipValue`.`timestamp_count` of type `Int!`
+  """
+  timestamp_count: OrderDirection
+  """
+  ✨ Generated from Field `RelationshipValue`.`value_count` of type `Int!`
+  """
+  value_count: OrderDirection
+  """
+  ✨ Generated from Field `RelationshipValue`.`value_sum` of type `Float`
+  """
+  value_sum: OrderDirection
+  """
+  ✨ Generated from Field `RelationshipValue`.`value_avg` of type `Float`
+  """
+  value_avg: OrderDirection
+  """
+  ✨ Generated from Field `RelationshipValue`.`timestamp_min` of type `Timestamp`
+  """
+  timestamp_min: OrderDirection
+  """
+  ✨ Generated from Field `RelationshipValue`.`value_min` of type `Float`
+  """
+  value_min: OrderDirection
+  """
+  ✨ Generated from Field `RelationshipValue`.`timestamp_max` of type `Timestamp`
+  """
+  timestamp_max: OrderDirection
+  """
+  ✨ Generated from Field `RelationshipValue`.`value_max` of type `Float`
+  """
+  value_max: OrderDirection
+}
+"""
 ✨ Generated data input type for table 'Story'. It includes all necessary fields for creating or upserting rows into table.
 """
 input Story_Data {
@@ -1066,7 +1476,7 @@ input Story_Data {
   """
   ✨ `_expr` server value variant of `id` (✨ Generated from Field `Story`.`id` of type `UUID!`)
   """
-  id_expr: UUID_Expr
+  id_expr: UUID_Expr @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Story`.`focalTrendId` of type `UUID!`
   """
@@ -1074,7 +1484,7 @@ input Story_Data {
   """
   ✨ `_expr` server value variant of `focalTrendId` (✨ Generated from Field `Story`.`focalTrendId` of type `UUID!`)
   """
-  focalTrendId_expr: UUID_Expr
+  focalTrendId_expr: UUID_Expr @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Story`.`perspectiveId` of type `UUID!`
   """
@@ -1082,15 +1492,15 @@ input Story_Data {
   """
   ✨ `_expr` server value variant of `perspectiveId` (✨ Generated from Field `Story`.`perspectiveId` of type `UUID!`)
   """
-  perspectiveId_expr: UUID_Expr
+  perspectiveId_expr: UUID_Expr @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Story`.`focalTrend` of type `Trend!`
   """
-  focalTrend: Trend_Key
+  focalTrend: Trend_Key @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Story`.`perspective` of type `Perspective!`
   """
-  perspective: Perspective_Key
+  perspective: Perspective_Key @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Story`.`createdAt` of type `Timestamp!`
   """
@@ -1098,15 +1508,15 @@ input Story_Data {
   """
   ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `Story`.`createdAt` of type `Timestamp!`)
   """
-  createdAt_expr: Timestamp_Expr
+  createdAt_expr: Timestamp_Expr @fdc_forbiddenInVariables
   """
   ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `Story`.`createdAt` of type `Timestamp!`)
   """
-  createdAt_time: Timestamp_Relative
+  createdAt_time: Timestamp_Relative @fdc_forbiddenInVariables
   """
   ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `Story`.`createdAt` of type `Timestamp!`)
   """
-  createdAt_update: [Timestamp_Update!]
+  createdAt_update: [Timestamp_Update!] @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Story`.`createdBy` of type `String!`
   """
@@ -1114,7 +1524,7 @@ input Story_Data {
   """
   ✨ `_expr` server value variant of `createdBy` (✨ Generated from Field `Story`.`createdBy` of type `String!`)
   """
-  createdBy_expr: String_Expr
+  createdBy_expr: String_Expr @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Story`.`name` of type `String!`
   """
@@ -1122,7 +1532,7 @@ input Story_Data {
   """
   ✨ `_expr` server value variant of `name` (✨ Generated from Field `Story`.`name` of type `String!`)
   """
-  name_expr: String_Expr
+  name_expr: String_Expr @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Story`.`updatedAt` of type `Timestamp!`
   """
@@ -1130,15 +1540,15 @@ input Story_Data {
   """
   ✨ `_expr` server value variant of `updatedAt` (✨ Generated from Field `Story`.`updatedAt` of type `Timestamp!`)
   """
-  updatedAt_expr: Timestamp_Expr
+  updatedAt_expr: Timestamp_Expr @fdc_forbiddenInVariables
   """
   ✨ `_time` server value variant of `updatedAt` (✨ Generated from Field `Story`.`updatedAt` of type `Timestamp!`)
   """
-  updatedAt_time: Timestamp_Relative
+  updatedAt_time: Timestamp_Relative @fdc_forbiddenInVariables
   """
   ✨ `_update` server value variant of `updatedAt` (✨ Generated from Field `Story`.`updatedAt` of type `Timestamp!`)
   """
-  updatedAt_update: [Timestamp_Update!]
+  updatedAt_update: [Timestamp_Update!] @fdc_forbiddenInVariables
 }
 """
 ✨ Generated filter input type for table 'Story'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
@@ -1193,9 +1603,9 @@ input Story_Filter {
   """
   updatedAt: Timestamp_Filter
   """
-  ✨ Generated from Field `Story`.`connections_on_story` of type `[Connection!]!`
+  ✨ Generated from Field `Story`.`relationships_on_focalStory` of type `[Relationship!]!`
   """
-  connections_on_story: Connection_ListFilter
+  relationships_on_focalStory: Relationship_ListFilter
   """
   ✨ Generated from Field `Story`.`variants_on_story` of type `[Variant!]!`
   """
@@ -1294,7 +1704,7 @@ input Story_Key {
   """
   ✨ `_expr` server value variant of `id` (✨ Generated from Field `Story`.`id` of type `UUID!`)
   """
-  id_expr: UUID_Expr
+  id_expr: UUID_Expr @fdc_forbiddenInVariables
 }
 """
 ✨ Generated list filter input type for table 'Story'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
@@ -1409,7 +1819,31 @@ input Trend_Data {
   """
   ✨ `_expr` server value variant of `id` (✨ Generated from Field `Trend`.`id` of type `UUID!`)
   """
-  id_expr: UUID_Expr
+  id_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Trend`.`baseTrendId` of type `UUID`
+  """
+  baseTrendId: UUID
+  """
+  ✨ `_expr` server value variant of `baseTrendId` (✨ Generated from Field `Trend`.`baseTrendId` of type `UUID`)
+  """
+  baseTrendId_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Trend`.`variantId` of type `UUID`
+  """
+  variantId: UUID
+  """
+  ✨ `_expr` server value variant of `variantId` (✨ Generated from Field `Trend`.`variantId` of type `UUID`)
+  """
+  variantId_expr: UUID_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Trend`.`baseTrend` of type `Trend`
+  """
+  baseTrend: Trend_Key @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Trend`.`variant` of type `Variant`
+  """
+  variant: Variant_Key @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Trend`.`createdAt` of type `Timestamp!`
   """
@@ -1417,15 +1851,15 @@ input Trend_Data {
   """
   ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `Trend`.`createdAt` of type `Timestamp!`)
   """
-  createdAt_expr: Timestamp_Expr
+  createdAt_expr: Timestamp_Expr @fdc_forbiddenInVariables
   """
   ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `Trend`.`createdAt` of type `Timestamp!`)
   """
-  createdAt_time: Timestamp_Relative
+  createdAt_time: Timestamp_Relative @fdc_forbiddenInVariables
   """
   ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `Trend`.`createdAt` of type `Timestamp!`)
   """
-  createdAt_update: [Timestamp_Update!]
+  createdAt_update: [Timestamp_Update!] @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Trend`.`createdBy` of type `String!`
   """
@@ -1433,7 +1867,19 @@ input Trend_Data {
   """
   ✨ `_expr` server value variant of `createdBy` (✨ Generated from Field `Trend`.`createdBy` of type `String!`)
   """
-  createdBy_expr: String_Expr
+  createdBy_expr: String_Expr @fdc_forbiddenInVariables
+  """
+  ✨ Generated from Field `Trend`.`denomination` of type `Float`
+  """
+  denomination: Float
+  """
+  ✨ `_expr` server value variant of `denomination` (✨ Generated from Field `Trend`.`denomination` of type `Float`)
+  """
+  denomination_expr: Float_Expr @fdc_forbiddenInVariables
+  """
+  ✨ `_update` server value variant of `denomination` (✨ Generated from Field `Trend`.`denomination` of type `Float`)
+  """
+  denomination_update: [Float_Update!] @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Trend`.`description` of type `String`
   """
@@ -1441,7 +1887,7 @@ input Trend_Data {
   """
   ✨ `_expr` server value variant of `description` (✨ Generated from Field `Trend`.`description` of type `String`)
   """
-  description_expr: String_Expr
+  description_expr: String_Expr @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Trend`.`externalId` of type `String`
   """
@@ -1449,7 +1895,7 @@ input Trend_Data {
   """
   ✨ `_expr` server value variant of `externalId` (✨ Generated from Field `Trend`.`externalId` of type `String`)
   """
-  externalId_expr: String_Expr
+  externalId_expr: String_Expr @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Trend`.`frequency` of type `String!`
   """
@@ -1457,7 +1903,7 @@ input Trend_Data {
   """
   ✨ `_expr` server value variant of `frequency` (✨ Generated from Field `Trend`.`frequency` of type `String!`)
   """
-  frequency_expr: String_Expr
+  frequency_expr: String_Expr @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Trend`.`name` of type `String!`
   """
@@ -1465,7 +1911,7 @@ input Trend_Data {
   """
   ✨ `_expr` server value variant of `name` (✨ Generated from Field `Trend`.`name` of type `String!`)
   """
-  name_expr: String_Expr
+  name_expr: String_Expr @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Trend`.`source` of type `String!`
   """
@@ -1473,7 +1919,7 @@ input Trend_Data {
   """
   ✨ `_expr` server value variant of `source` (✨ Generated from Field `Trend`.`source` of type `String!`)
   """
-  source_expr: String_Expr
+  source_expr: String_Expr @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Trend`.`unit` of type `String`
   """
@@ -1481,7 +1927,7 @@ input Trend_Data {
   """
   ✨ `_expr` server value variant of `unit` (✨ Generated from Field `Trend`.`unit` of type `String`)
   """
-  unit_expr: String_Expr
+  unit_expr: String_Expr @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Trend`.`updatedAt` of type `Timestamp!`
   """
@@ -1489,15 +1935,15 @@ input Trend_Data {
   """
   ✨ `_expr` server value variant of `updatedAt` (✨ Generated from Field `Trend`.`updatedAt` of type `Timestamp!`)
   """
-  updatedAt_expr: Timestamp_Expr
+  updatedAt_expr: Timestamp_Expr @fdc_forbiddenInVariables
   """
   ✨ `_time` server value variant of `updatedAt` (✨ Generated from Field `Trend`.`updatedAt` of type `Timestamp!`)
   """
-  updatedAt_time: Timestamp_Relative
+  updatedAt_time: Timestamp_Relative @fdc_forbiddenInVariables
   """
   ✨ `_update` server value variant of `updatedAt` (✨ Generated from Field `Trend`.`updatedAt` of type `Timestamp!`)
   """
-  updatedAt_update: [Timestamp_Update!]
+  updatedAt_update: [Timestamp_Update!] @fdc_forbiddenInVariables
 }
 """
 ✨ Generated filter input type for table 'Trend'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
@@ -1520,6 +1966,22 @@ input Trend_Filter {
   """
   id: UUID_Filter
   """
+  ✨ Generated from Field `Trend`.`baseTrendId` of type `UUID`
+  """
+  baseTrendId: UUID_Filter
+  """
+  ✨ Generated from Field `Trend`.`variantId` of type `UUID`
+  """
+  variantId: UUID_Filter
+  """
+  ✨ Generated from Field `Trend`.`baseTrend` of type `Trend`
+  """
+  baseTrend: Trend_Filter
+  """
+  ✨ Generated from Field `Trend`.`variant` of type `Variant`
+  """
+  variant: Variant_Filter
+  """
   ✨ Generated from Field `Trend`.`createdAt` of type `Timestamp!`
   """
   createdAt: Timestamp_Filter
@@ -1527,6 +1989,10 @@ input Trend_Filter {
   ✨ Generated from Field `Trend`.`createdBy` of type `String!`
   """
   createdBy: String_Filter
+  """
+  ✨ Generated from Field `Trend`.`denomination` of type `Float`
+  """
+  denomination: Float_Filter
   """
   ✨ Generated from Field `Trend`.`description` of type `String`
   """
@@ -1556,25 +2022,21 @@ input Trend_Filter {
   """
   updatedAt: Timestamp_Filter
   """
-  ✨ Generated from Field `Trend`.`connections_on_sourceTrend` of type `[Connection!]!`
+  ✨ Generated from Field `Trend`.`relationships_on_trend` of type `[Relationship!]!`
   """
-  connections_on_sourceTrend: Connection_ListFilter
-  """
-  ✨ Generated from Field `Trend`.`connections_on_targetTrend` of type `[Connection!]!`
-  """
-  connections_on_targetTrend: Connection_ListFilter
+  relationships_on_trend: Relationship_ListFilter
   """
   ✨ Generated from Field `Trend`.`stories_on_focalTrend` of type `[Story!]!`
   """
   stories_on_focalTrend: Story_ListFilter
   """
+  ✨ Generated from Field `Trend`.`trends_on_baseTrend` of type `[Trend!]!`
+  """
+  trends_on_baseTrend: Trend_ListFilter
+  """
   ✨ Generated from Field `Trend`.`trendValues_on_trend` of type `[TrendValue!]!`
   """
   trendValues_on_trend: TrendValue_ListFilter
-  """
-  ✨ Generated from Field `Trend`.`variants_on_trend` of type `[Variant!]!`
-  """
-  variants_on_trend: Variant_ListFilter
 }
 """
 ✨ Generated first-row input type for table 'Trend'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
@@ -1614,6 +2076,10 @@ input Trend_Having {
   """
   _count: Int_Filter
   """
+  ✨ Generated from Field `Trend`.`baseTrendId_count` of type `Int!`
+  """
+  baseTrendId_count: Int_Filter
+  """
   ✨ Generated from Field `Trend`.`createdAt_count` of type `Int!`
   """
   createdAt_count: Int_Filter
@@ -1621,6 +2087,10 @@ input Trend_Having {
   ✨ Generated from Field `Trend`.`createdBy_count` of type `Int!`
   """
   createdBy_count: Int_Filter
+  """
+  ✨ Generated from Field `Trend`.`denomination_count` of type `Int!`
+  """
+  denomination_count: Int_Filter
   """
   ✨ Generated from Field `Trend`.`description_count` of type `Int!`
   """
@@ -1654,9 +2124,25 @@ input Trend_Having {
   """
   updatedAt_count: Int_Filter
   """
+  ✨ Generated from Field `Trend`.`variantId_count` of type `Int!`
+  """
+  variantId_count: Int_Filter
+  """
+  ✨ Generated from Field `Trend`.`denomination_sum` of type `Float`
+  """
+  denomination_sum: Float_Filter
+  """
+  ✨ Generated from Field `Trend`.`denomination_avg` of type `Float`
+  """
+  denomination_avg: Float_Filter
+  """
   ✨ Generated from Field `Trend`.`createdAt_min` of type `Timestamp`
   """
   createdAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `Trend`.`denomination_min` of type `Float`
+  """
+  denomination_min: Float_Filter
   """
   ✨ Generated from Field `Trend`.`updatedAt_min` of type `Timestamp`
   """
@@ -1665,6 +2151,10 @@ input Trend_Having {
   ✨ Generated from Field `Trend`.`createdAt_max` of type `Timestamp`
   """
   createdAt_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `Trend`.`denomination_max` of type `Float`
+  """
+  denomination_max: Float_Filter
   """
   ✨ Generated from Field `Trend`.`updatedAt_max` of type `Timestamp`
   """
@@ -1681,7 +2171,7 @@ input Trend_Key {
   """
   ✨ `_expr` server value variant of `id` (✨ Generated from Field `Trend`.`id` of type `UUID!`)
   """
-  id_expr: UUID_Expr
+  id_expr: UUID_Expr @fdc_forbiddenInVariables
 }
 """
 ✨ Generated list filter input type for table 'Trend'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
@@ -1705,6 +2195,22 @@ input Trend_Order {
   """
   id: OrderDirection
   """
+  ✨ Generated from Field `Trend`.`baseTrendId` of type `UUID`
+  """
+  baseTrendId: OrderDirection
+  """
+  ✨ Generated from Field `Trend`.`variantId` of type `UUID`
+  """
+  variantId: OrderDirection
+  """
+  ✨ Generated from Field `Trend`.`baseTrend` of type `Trend`
+  """
+  baseTrend: Trend_Order
+  """
+  ✨ Generated from Field `Trend`.`variant` of type `Variant`
+  """
+  variant: Variant_Order
+  """
   ✨ Generated from Field `Trend`.`createdAt` of type `Timestamp!`
   """
   createdAt: OrderDirection
@@ -1712,6 +2218,10 @@ input Trend_Order {
   ✨ Generated from Field `Trend`.`createdBy` of type `String!`
   """
   createdBy: OrderDirection
+  """
+  ✨ Generated from Field `Trend`.`denomination` of type `Float`
+  """
+  denomination: OrderDirection
   """
   ✨ Generated from Field `Trend`.`description` of type `String`
   """
@@ -1745,6 +2255,10 @@ input Trend_Order {
   """
   _count: OrderDirection
   """
+  ✨ Generated from Field `Trend`.`baseTrendId_count` of type `Int!`
+  """
+  baseTrendId_count: OrderDirection
+  """
   ✨ Generated from Field `Trend`.`createdAt_count` of type `Int!`
   """
   createdAt_count: OrderDirection
@@ -1752,6 +2266,10 @@ input Trend_Order {
   ✨ Generated from Field `Trend`.`createdBy_count` of type `Int!`
   """
   createdBy_count: OrderDirection
+  """
+  ✨ Generated from Field `Trend`.`denomination_count` of type `Int!`
+  """
+  denomination_count: OrderDirection
   """
   ✨ Generated from Field `Trend`.`description_count` of type `Int!`
   """
@@ -1785,9 +2303,25 @@ input Trend_Order {
   """
   updatedAt_count: OrderDirection
   """
+  ✨ Generated from Field `Trend`.`variantId_count` of type `Int!`
+  """
+  variantId_count: OrderDirection
+  """
+  ✨ Generated from Field `Trend`.`denomination_sum` of type `Float`
+  """
+  denomination_sum: OrderDirection
+  """
+  ✨ Generated from Field `Trend`.`denomination_avg` of type `Float`
+  """
+  denomination_avg: OrderDirection
+  """
   ✨ Generated from Field `Trend`.`createdAt_min` of type `Timestamp`
   """
   createdAt_min: OrderDirection
+  """
+  ✨ Generated from Field `Trend`.`denomination_min` of type `Float`
+  """
+  denomination_min: OrderDirection
   """
   ✨ Generated from Field `Trend`.`updatedAt_min` of type `Timestamp`
   """
@@ -1796,6 +2330,10 @@ input Trend_Order {
   ✨ Generated from Field `Trend`.`createdAt_max` of type `Timestamp`
   """
   createdAt_max: OrderDirection
+  """
+  ✨ Generated from Field `Trend`.`denomination_max` of type `Float`
+  """
+  denomination_max: OrderDirection
   """
   ✨ Generated from Field `Trend`.`updatedAt_max` of type `Timestamp`
   """
@@ -1812,7 +2350,7 @@ input TrendValue_Data {
   """
   ✨ `_expr` server value variant of `id` (✨ Generated from Field `TrendValue`.`id` of type `UUID!`)
   """
-  id_expr: UUID_Expr
+  id_expr: UUID_Expr @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `TrendValue`.`trendId` of type `UUID!`
   """
@@ -1820,23 +2358,11 @@ input TrendValue_Data {
   """
   ✨ `_expr` server value variant of `trendId` (✨ Generated from Field `TrendValue`.`trendId` of type `UUID!`)
   """
-  trendId_expr: UUID_Expr
+  trendId_expr: UUID_Expr @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `TrendValue`.`trend` of type `Trend!`
   """
-  trend: Trend_Key
-  """
-  ✨ Generated from Field `TrendValue`.`index` of type `Int!`
-  """
-  index: Int
-  """
-  ✨ `_expr` server value variant of `index` (✨ Generated from Field `TrendValue`.`index` of type `Int!`)
-  """
-  index_expr: Int_Expr
-  """
-  ✨ `_update` server value variant of `index` (✨ Generated from Field `TrendValue`.`index` of type `Int!`)
-  """
-  index_update: [Int_Update!]
+  trend: Trend_Key @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `TrendValue`.`timestamp` of type `Timestamp!`
   """
@@ -1844,15 +2370,15 @@ input TrendValue_Data {
   """
   ✨ `_expr` server value variant of `timestamp` (✨ Generated from Field `TrendValue`.`timestamp` of type `Timestamp!`)
   """
-  timestamp_expr: Timestamp_Expr
+  timestamp_expr: Timestamp_Expr @fdc_forbiddenInVariables
   """
   ✨ `_time` server value variant of `timestamp` (✨ Generated from Field `TrendValue`.`timestamp` of type `Timestamp!`)
   """
-  timestamp_time: Timestamp_Relative
+  timestamp_time: Timestamp_Relative @fdc_forbiddenInVariables
   """
   ✨ `_update` server value variant of `timestamp` (✨ Generated from Field `TrendValue`.`timestamp` of type `Timestamp!`)
   """
-  timestamp_update: [Timestamp_Update!]
+  timestamp_update: [Timestamp_Update!] @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `TrendValue`.`value` of type `Float!`
   """
@@ -1860,11 +2386,11 @@ input TrendValue_Data {
   """
   ✨ `_expr` server value variant of `value` (✨ Generated from Field `TrendValue`.`value` of type `Float!`)
   """
-  value_expr: Float_Expr
+  value_expr: Float_Expr @fdc_forbiddenInVariables
   """
   ✨ `_update` server value variant of `value` (✨ Generated from Field `TrendValue`.`value` of type `Float!`)
   """
-  value_update: [Float_Update!]
+  value_update: [Float_Update!] @fdc_forbiddenInVariables
 }
 """
 ✨ Generated filter input type for table 'TrendValue'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
@@ -1894,10 +2420,6 @@ input TrendValue_Filter {
   ✨ Generated from Field `TrendValue`.`trend` of type `Trend!`
   """
   trend: Trend_Filter
-  """
-  ✨ Generated from Field `TrendValue`.`index` of type `Int!`
-  """
-  index: Int_Filter
   """
   ✨ Generated from Field `TrendValue`.`timestamp` of type `Timestamp!`
   """
@@ -1949,10 +2471,6 @@ input TrendValue_Having {
   """
   id_count: Int_Filter
   """
-  ✨ Generated from Field `TrendValue`.`index_count` of type `Int!`
-  """
-  index_count: Int_Filter
-  """
   ✨ Generated from Field `TrendValue`.`timestamp_count` of type `Int!`
   """
   timestamp_count: Int_Filter
@@ -1965,25 +2483,13 @@ input TrendValue_Having {
   """
   value_count: Int_Filter
   """
-  ✨ Generated from Field `TrendValue`.`index_sum` of type `Int`
-  """
-  index_sum: Int_Filter
-  """
   ✨ Generated from Field `TrendValue`.`value_sum` of type `Float`
   """
   value_sum: Float_Filter
   """
-  ✨ Generated from Field `TrendValue`.`index_avg` of type `Float`
-  """
-  index_avg: Float_Filter
-  """
   ✨ Generated from Field `TrendValue`.`value_avg` of type `Float`
   """
   value_avg: Float_Filter
-  """
-  ✨ Generated from Field `TrendValue`.`index_min` of type `Int`
-  """
-  index_min: Int_Filter
   """
   ✨ Generated from Field `TrendValue`.`timestamp_min` of type `Timestamp`
   """
@@ -1992,10 +2498,6 @@ input TrendValue_Having {
   ✨ Generated from Field `TrendValue`.`value_min` of type `Float`
   """
   value_min: Float_Filter
-  """
-  ✨ Generated from Field `TrendValue`.`index_max` of type `Int`
-  """
-  index_max: Int_Filter
   """
   ✨ Generated from Field `TrendValue`.`timestamp_max` of type `Timestamp`
   """
@@ -2016,7 +2518,7 @@ input TrendValue_Key {
   """
   ✨ `_expr` server value variant of `id` (✨ Generated from Field `TrendValue`.`id` of type `UUID!`)
   """
-  id_expr: UUID_Expr
+  id_expr: UUID_Expr @fdc_forbiddenInVariables
 }
 """
 ✨ Generated list filter input type for table 'TrendValue'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
@@ -2048,10 +2550,6 @@ input TrendValue_Order {
   """
   trend: Trend_Order
   """
-  ✨ Generated from Field `TrendValue`.`index` of type `Int!`
-  """
-  index: OrderDirection
-  """
   ✨ Generated from Field `TrendValue`.`timestamp` of type `Timestamp!`
   """
   timestamp: OrderDirection
@@ -2068,10 +2566,6 @@ input TrendValue_Order {
   """
   id_count: OrderDirection
   """
-  ✨ Generated from Field `TrendValue`.`index_count` of type `Int!`
-  """
-  index_count: OrderDirection
-  """
   ✨ Generated from Field `TrendValue`.`timestamp_count` of type `Int!`
   """
   timestamp_count: OrderDirection
@@ -2084,25 +2578,13 @@ input TrendValue_Order {
   """
   value_count: OrderDirection
   """
-  ✨ Generated from Field `TrendValue`.`index_sum` of type `Int`
-  """
-  index_sum: OrderDirection
-  """
   ✨ Generated from Field `TrendValue`.`value_sum` of type `Float`
   """
   value_sum: OrderDirection
   """
-  ✨ Generated from Field `TrendValue`.`index_avg` of type `Float`
-  """
-  index_avg: OrderDirection
-  """
   ✨ Generated from Field `TrendValue`.`value_avg` of type `Float`
   """
   value_avg: OrderDirection
-  """
-  ✨ Generated from Field `TrendValue`.`index_min` of type `Int`
-  """
-  index_min: OrderDirection
   """
   ✨ Generated from Field `TrendValue`.`timestamp_min` of type `Timestamp`
   """
@@ -2111,10 +2593,6 @@ input TrendValue_Order {
   ✨ Generated from Field `TrendValue`.`value_min` of type `Float`
   """
   value_min: OrderDirection
-  """
-  ✨ Generated from Field `TrendValue`.`index_max` of type `Int`
-  """
-  index_max: OrderDirection
   """
   ✨ Generated from Field `TrendValue`.`timestamp_max` of type `Timestamp`
   """
@@ -2135,7 +2613,7 @@ input Variant_Data {
   """
   ✨ `_expr` server value variant of `id` (✨ Generated from Field `Variant`.`id` of type `UUID!`)
   """
-  id_expr: UUID_Expr
+  id_expr: UUID_Expr @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Variant`.`storyId` of type `UUID!`
   """
@@ -2143,23 +2621,11 @@ input Variant_Data {
   """
   ✨ `_expr` server value variant of `storyId` (✨ Generated from Field `Variant`.`storyId` of type `UUID!`)
   """
-  storyId_expr: UUID_Expr
-  """
-  ✨ Generated from Field `Variant`.`trendId` of type `UUID!`
-  """
-  trendId: UUID
-  """
-  ✨ `_expr` server value variant of `trendId` (✨ Generated from Field `Variant`.`trendId` of type `UUID!`)
-  """
-  trendId_expr: UUID_Expr
+  storyId_expr: UUID_Expr @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Variant`.`story` of type `Story!`
   """
-  story: Story_Key
-  """
-  ✨ Generated from Field `Variant`.`trend` of type `Trend!`
-  """
-  trend: Trend_Key
+  story: Story_Key @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Variant`.`createdAt` of type `Timestamp!`
   """
@@ -2167,15 +2633,15 @@ input Variant_Data {
   """
   ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `Variant`.`createdAt` of type `Timestamp!`)
   """
-  createdAt_expr: Timestamp_Expr
+  createdAt_expr: Timestamp_Expr @fdc_forbiddenInVariables
   """
   ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `Variant`.`createdAt` of type `Timestamp!`)
   """
-  createdAt_time: Timestamp_Relative
+  createdAt_time: Timestamp_Relative @fdc_forbiddenInVariables
   """
   ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `Variant`.`createdAt` of type `Timestamp!`)
   """
-  createdAt_update: [Timestamp_Update!]
+  createdAt_update: [Timestamp_Update!] @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Variant`.`createdBy` of type `String!`
   """
@@ -2183,7 +2649,7 @@ input Variant_Data {
   """
   ✨ `_expr` server value variant of `createdBy` (✨ Generated from Field `Variant`.`createdBy` of type `String!`)
   """
-  createdBy_expr: String_Expr
+  createdBy_expr: String_Expr @fdc_forbiddenInVariables
   """
   ✨ Generated from Field `Variant`.`name` of type `String`
   """
@@ -2191,7 +2657,7 @@ input Variant_Data {
   """
   ✨ `_expr` server value variant of `name` (✨ Generated from Field `Variant`.`name` of type `String`)
   """
-  name_expr: String_Expr
+  name_expr: String_Expr @fdc_forbiddenInVariables
 }
 """
 ✨ Generated filter input type for table 'Variant'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
@@ -2218,17 +2684,9 @@ input Variant_Filter {
   """
   storyId: UUID_Filter
   """
-  ✨ Generated from Field `Variant`.`trendId` of type `UUID!`
-  """
-  trendId: UUID_Filter
-  """
   ✨ Generated from Field `Variant`.`story` of type `Story!`
   """
   story: Story_Filter
-  """
-  ✨ Generated from Field `Variant`.`trend` of type `Trend!`
-  """
-  trend: Trend_Filter
   """
   ✨ Generated from Field `Variant`.`createdAt` of type `Timestamp!`
   """
@@ -2242,9 +2700,13 @@ input Variant_Filter {
   """
   name: String_Filter
   """
-  ✨ Generated from Field `Variant`.`variantValues_on_variant` of type `[VariantValue!]!`
+  ✨ Generated from Field `Variant`.`relationships_on_variant` of type `[Relationship!]!`
   """
-  variantValues_on_variant: VariantValue_ListFilter
+  relationships_on_variant: Relationship_ListFilter
+  """
+  ✨ Generated from Field `Variant`.`trends_on_variant` of type `[Trend!]!`
+  """
+  trends_on_variant: Trend_ListFilter
 }
 """
 ✨ Generated first-row input type for table 'Variant'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
@@ -2304,10 +2766,6 @@ input Variant_Having {
   """
   storyId_count: Int_Filter
   """
-  ✨ Generated from Field `Variant`.`trendId_count` of type `Int!`
-  """
-  trendId_count: Int_Filter
-  """
   ✨ Generated from Field `Variant`.`createdAt_min` of type `Timestamp`
   """
   createdAt_min: Timestamp_Filter
@@ -2327,7 +2785,7 @@ input Variant_Key {
   """
   ✨ `_expr` server value variant of `id` (✨ Generated from Field `Variant`.`id` of type `UUID!`)
   """
-  id_expr: UUID_Expr
+  id_expr: UUID_Expr @fdc_forbiddenInVariables
 }
 """
 ✨ Generated list filter input type for table 'Variant'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
@@ -2355,17 +2813,9 @@ input Variant_Order {
   """
   storyId: OrderDirection
   """
-  ✨ Generated from Field `Variant`.`trendId` of type `UUID!`
-  """
-  trendId: OrderDirection
-  """
   ✨ Generated from Field `Variant`.`story` of type `Story!`
   """
   story: Story_Order
-  """
-  ✨ Generated from Field `Variant`.`trend` of type `Trend!`
-  """
-  trend: Trend_Order
   """
   ✨ Generated from Field `Variant`.`createdAt` of type `Timestamp!`
   """
@@ -2403,10 +2853,6 @@ input Variant_Order {
   """
   storyId_count: OrderDirection
   """
-  ✨ Generated from Field `Variant`.`trendId_count` of type `Int!`
-  """
-  trendId_count: OrderDirection
-  """
   ✨ Generated from Field `Variant`.`createdAt_min` of type `Timestamp`
   """
   createdAt_min: OrderDirection
@@ -2416,132 +2862,116 @@ input Variant_Order {
   createdAt_max: OrderDirection
 }
 """
-✨ Generated data input type for table 'VariantValue'. It includes all necessary fields for creating or upserting rows into table.
+✨ Generated data input type for table 'Weight'. It includes all necessary fields for creating or upserting rows into table.
 """
-input VariantValue_Data {
+input Weight_Data {
   """
-  ✨ Generated from Field `VariantValue`.`id` of type `UUID!`
+  ✨ Generated from Field `Weight`.`id` of type `UUID!`
   """
   id: UUID
   """
-  ✨ `_expr` server value variant of `id` (✨ Generated from Field `VariantValue`.`id` of type `UUID!`)
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Weight`.`id` of type `UUID!`)
   """
-  id_expr: UUID_Expr
+  id_expr: UUID_Expr @fdc_forbiddenInVariables
   """
-  ✨ Generated from Field `VariantValue`.`variantId` of type `UUID!`
+  ✨ Generated from Field `Weight`.`relationshipId` of type `UUID!`
   """
-  variantId: UUID
+  relationshipId: UUID
   """
-  ✨ `_expr` server value variant of `variantId` (✨ Generated from Field `VariantValue`.`variantId` of type `UUID!`)
+  ✨ `_expr` server value variant of `relationshipId` (✨ Generated from Field `Weight`.`relationshipId` of type `UUID!`)
   """
-  variantId_expr: UUID_Expr
+  relationshipId_expr: UUID_Expr @fdc_forbiddenInVariables
   """
-  ✨ Generated from Field `VariantValue`.`variant` of type `Variant!`
+  ✨ Generated from Field `Weight`.`relationship` of type `Relationship!`
   """
-  variant: Variant_Key
+  relationship: Relationship_Key @fdc_forbiddenInVariables
   """
-  ✨ Generated from Field `VariantValue`.`index` of type `Int!`
-  """
-  index: Int
-  """
-  ✨ `_expr` server value variant of `index` (✨ Generated from Field `VariantValue`.`index` of type `Int!`)
-  """
-  index_expr: Int_Expr
-  """
-  ✨ `_update` server value variant of `index` (✨ Generated from Field `VariantValue`.`index` of type `Int!`)
-  """
-  index_update: [Int_Update!]
-  """
-  ✨ Generated from Field `VariantValue`.`timestamp` of type `Timestamp!`
+  ✨ Generated from Field `Weight`.`timestamp` of type `Timestamp!`
   """
   timestamp: Timestamp
   """
-  ✨ `_expr` server value variant of `timestamp` (✨ Generated from Field `VariantValue`.`timestamp` of type `Timestamp!`)
+  ✨ `_expr` server value variant of `timestamp` (✨ Generated from Field `Weight`.`timestamp` of type `Timestamp!`)
   """
-  timestamp_expr: Timestamp_Expr
+  timestamp_expr: Timestamp_Expr @fdc_forbiddenInVariables
   """
-  ✨ `_time` server value variant of `timestamp` (✨ Generated from Field `VariantValue`.`timestamp` of type `Timestamp!`)
+  ✨ `_time` server value variant of `timestamp` (✨ Generated from Field `Weight`.`timestamp` of type `Timestamp!`)
   """
-  timestamp_time: Timestamp_Relative
+  timestamp_time: Timestamp_Relative @fdc_forbiddenInVariables
   """
-  ✨ `_update` server value variant of `timestamp` (✨ Generated from Field `VariantValue`.`timestamp` of type `Timestamp!`)
+  ✨ `_update` server value variant of `timestamp` (✨ Generated from Field `Weight`.`timestamp` of type `Timestamp!`)
   """
-  timestamp_update: [Timestamp_Update!]
+  timestamp_update: [Timestamp_Update!] @fdc_forbiddenInVariables
   """
-  ✨ Generated from Field `VariantValue`.`value` of type `Float!`
+  ✨ Generated from Field `Weight`.`value` of type `Float!`
   """
   value: Float
   """
-  ✨ `_expr` server value variant of `value` (✨ Generated from Field `VariantValue`.`value` of type `Float!`)
+  ✨ `_expr` server value variant of `value` (✨ Generated from Field `Weight`.`value` of type `Float!`)
   """
-  value_expr: Float_Expr
+  value_expr: Float_Expr @fdc_forbiddenInVariables
   """
-  ✨ `_update` server value variant of `value` (✨ Generated from Field `VariantValue`.`value` of type `Float!`)
+  ✨ `_update` server value variant of `value` (✨ Generated from Field `Weight`.`value` of type `Float!`)
   """
-  value_update: [Float_Update!]
+  value_update: [Float_Update!] @fdc_forbiddenInVariables
 }
 """
-✨ Generated filter input type for table 'VariantValue'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+✨ Generated filter input type for table 'Weight'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
 """
-input VariantValue_Filter {
+input Weight_Filter {
   """
   Apply multiple filter conditions using `AND` logic.
   """
-  _and: [VariantValue_Filter!]
+  _and: [Weight_Filter!]
   """
   Negate the result of the provided filter condition.
   """
-  _not: VariantValue_Filter
+  _not: Weight_Filter
   """
   Apply multiple filter conditions using `OR` logic.
   """
-  _or: [VariantValue_Filter!]
+  _or: [Weight_Filter!]
   """
-  ✨ Generated from Field `VariantValue`.`id` of type `UUID!`
+  ✨ Generated from Field `Weight`.`id` of type `UUID!`
   """
   id: UUID_Filter
   """
-  ✨ Generated from Field `VariantValue`.`variantId` of type `UUID!`
+  ✨ Generated from Field `Weight`.`relationshipId` of type `UUID!`
   """
-  variantId: UUID_Filter
+  relationshipId: UUID_Filter
   """
-  ✨ Generated from Field `VariantValue`.`variant` of type `Variant!`
+  ✨ Generated from Field `Weight`.`relationship` of type `Relationship!`
   """
-  variant: Variant_Filter
+  relationship: Relationship_Filter
   """
-  ✨ Generated from Field `VariantValue`.`index` of type `Int!`
-  """
-  index: Int_Filter
-  """
-  ✨ Generated from Field `VariantValue`.`timestamp` of type `Timestamp!`
+  ✨ Generated from Field `Weight`.`timestamp` of type `Timestamp!`
   """
   timestamp: Timestamp_Filter
   """
-  ✨ Generated from Field `VariantValue`.`value` of type `Float!`
+  ✨ Generated from Field `Weight`.`value` of type `Float!`
   """
   value: Float_Filter
 }
 """
-✨ Generated first-row input type for table 'VariantValue'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+✨ Generated first-row input type for table 'Weight'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
 """
-input VariantValue_FirstRow {
+input Weight_FirstRow {
   """
   Order the result by the specified fields.
   """
-  orderBy: [VariantValue_Order!]
+  orderBy: [Weight_Order!]
   """
   Filters rows based on the specified conditions.
   """
-  where: VariantValue_Filter
+  where: Weight_Filter
 }
 """
-✨ Generated having input type for table 'VariantValue'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+✨ Generated having input type for table 'Weight'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
 """
-input VariantValue_Having {
+input Weight_Having {
   """
   Apply multiple Having conditions using `AND` logic.
   """
-  _and: [VariantValue_Having!]
+  _and: [Weight_Having!]
   """
   Whether to apply DISTINCT to the aggregate function.
   """
@@ -2549,93 +2979,73 @@ input VariantValue_Having {
   """
   Negate the result of the provided Having condition.
   """
-  _not: VariantValue_Having
+  _not: Weight_Having
   """
   Apply multiple Having conditions using `OR` logic.
   """
-  _or: [VariantValue_Having!]
+  _or: [Weight_Having!]
   """
-  ✨ Generated from Field `VariantValue`.`_count` of type `Int!`
+  ✨ Generated from Field `Weight`.`_count` of type `Int!`
   """
   _count: Int_Filter
   """
-  ✨ Generated from Field `VariantValue`.`id_count` of type `Int!`
+  ✨ Generated from Field `Weight`.`id_count` of type `Int!`
   """
   id_count: Int_Filter
   """
-  ✨ Generated from Field `VariantValue`.`index_count` of type `Int!`
+  ✨ Generated from Field `Weight`.`relationshipId_count` of type `Int!`
   """
-  index_count: Int_Filter
+  relationshipId_count: Int_Filter
   """
-  ✨ Generated from Field `VariantValue`.`timestamp_count` of type `Int!`
+  ✨ Generated from Field `Weight`.`timestamp_count` of type `Int!`
   """
   timestamp_count: Int_Filter
   """
-  ✨ Generated from Field `VariantValue`.`value_count` of type `Int!`
+  ✨ Generated from Field `Weight`.`value_count` of type `Int!`
   """
   value_count: Int_Filter
   """
-  ✨ Generated from Field `VariantValue`.`variantId_count` of type `Int!`
-  """
-  variantId_count: Int_Filter
-  """
-  ✨ Generated from Field `VariantValue`.`index_sum` of type `Int`
-  """
-  index_sum: Int_Filter
-  """
-  ✨ Generated from Field `VariantValue`.`value_sum` of type `Float`
+  ✨ Generated from Field `Weight`.`value_sum` of type `Float`
   """
   value_sum: Float_Filter
   """
-  ✨ Generated from Field `VariantValue`.`index_avg` of type `Float`
-  """
-  index_avg: Float_Filter
-  """
-  ✨ Generated from Field `VariantValue`.`value_avg` of type `Float`
+  ✨ Generated from Field `Weight`.`value_avg` of type `Float`
   """
   value_avg: Float_Filter
   """
-  ✨ Generated from Field `VariantValue`.`index_min` of type `Int`
-  """
-  index_min: Int_Filter
-  """
-  ✨ Generated from Field `VariantValue`.`timestamp_min` of type `Timestamp`
+  ✨ Generated from Field `Weight`.`timestamp_min` of type `Timestamp`
   """
   timestamp_min: Timestamp_Filter
   """
-  ✨ Generated from Field `VariantValue`.`value_min` of type `Float`
+  ✨ Generated from Field `Weight`.`value_min` of type `Float`
   """
   value_min: Float_Filter
   """
-  ✨ Generated from Field `VariantValue`.`index_max` of type `Int`
-  """
-  index_max: Int_Filter
-  """
-  ✨ Generated from Field `VariantValue`.`timestamp_max` of type `Timestamp`
+  ✨ Generated from Field `Weight`.`timestamp_max` of type `Timestamp`
   """
   timestamp_max: Timestamp_Filter
   """
-  ✨ Generated from Field `VariantValue`.`value_max` of type `Float`
+  ✨ Generated from Field `Weight`.`value_max` of type `Float`
   """
   value_max: Float_Filter
 }
 """
-✨ Generated key input type for table 'VariantValue'. It represents the primary key fields used to uniquely identify a row in the table.
+✨ Generated key input type for table 'Weight'. It represents the primary key fields used to uniquely identify a row in the table.
 """
-input VariantValue_Key {
+input Weight_Key {
   """
-  ✨ Generated from Field `VariantValue`.`id` of type `UUID!`
+  ✨ Generated from Field `Weight`.`id` of type `UUID!`
   """
   id: UUID
   """
-  ✨ `_expr` server value variant of `id` (✨ Generated from Field `VariantValue`.`id` of type `UUID!`)
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Weight`.`id` of type `UUID!`)
   """
-  id_expr: UUID_Expr
+  id_expr: UUID_Expr @fdc_forbiddenInVariables
 }
 """
-✨ Generated list filter input type for table 'VariantValue'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+✨ Generated list filter input type for table 'Weight'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
 """
-input VariantValue_ListFilter {
+input Weight_ListFilter {
   """
   The desired number of objects that match the condition (defaults to at least one).
   """
@@ -2643,98 +3053,74 @@ input VariantValue_ListFilter {
   """
   Condition of the related objects to filter for.
   """
-  exist: VariantValue_Filter
+  exist: Weight_Filter
 }
 """
-✨ Generated order input type for table 'VariantValue'. This input defines the sorting order of rows in query results based on one or more fields.
+✨ Generated order input type for table 'Weight'. This input defines the sorting order of rows in query results based on one or more fields.
 """
-input VariantValue_Order {
+input Weight_Order {
   """
-  ✨ Generated from Field `VariantValue`.`id` of type `UUID!`
+  ✨ Generated from Field `Weight`.`id` of type `UUID!`
   """
   id: OrderDirection
   """
-  ✨ Generated from Field `VariantValue`.`variantId` of type `UUID!`
+  ✨ Generated from Field `Weight`.`relationshipId` of type `UUID!`
   """
-  variantId: OrderDirection
+  relationshipId: OrderDirection
   """
-  ✨ Generated from Field `VariantValue`.`variant` of type `Variant!`
+  ✨ Generated from Field `Weight`.`relationship` of type `Relationship!`
   """
-  variant: Variant_Order
+  relationship: Relationship_Order
   """
-  ✨ Generated from Field `VariantValue`.`index` of type `Int!`
-  """
-  index: OrderDirection
-  """
-  ✨ Generated from Field `VariantValue`.`timestamp` of type `Timestamp!`
+  ✨ Generated from Field `Weight`.`timestamp` of type `Timestamp!`
   """
   timestamp: OrderDirection
   """
-  ✨ Generated from Field `VariantValue`.`value` of type `Float!`
+  ✨ Generated from Field `Weight`.`value` of type `Float!`
   """
   value: OrderDirection
   """
-  ✨ Generated from Field `VariantValue`.`_count` of type `Int!`
+  ✨ Generated from Field `Weight`.`_count` of type `Int!`
   """
   _count: OrderDirection
   """
-  ✨ Generated from Field `VariantValue`.`id_count` of type `Int!`
+  ✨ Generated from Field `Weight`.`id_count` of type `Int!`
   """
   id_count: OrderDirection
   """
-  ✨ Generated from Field `VariantValue`.`index_count` of type `Int!`
+  ✨ Generated from Field `Weight`.`relationshipId_count` of type `Int!`
   """
-  index_count: OrderDirection
+  relationshipId_count: OrderDirection
   """
-  ✨ Generated from Field `VariantValue`.`timestamp_count` of type `Int!`
+  ✨ Generated from Field `Weight`.`timestamp_count` of type `Int!`
   """
   timestamp_count: OrderDirection
   """
-  ✨ Generated from Field `VariantValue`.`value_count` of type `Int!`
+  ✨ Generated from Field `Weight`.`value_count` of type `Int!`
   """
   value_count: OrderDirection
   """
-  ✨ Generated from Field `VariantValue`.`variantId_count` of type `Int!`
-  """
-  variantId_count: OrderDirection
-  """
-  ✨ Generated from Field `VariantValue`.`index_sum` of type `Int`
-  """
-  index_sum: OrderDirection
-  """
-  ✨ Generated from Field `VariantValue`.`value_sum` of type `Float`
+  ✨ Generated from Field `Weight`.`value_sum` of type `Float`
   """
   value_sum: OrderDirection
   """
-  ✨ Generated from Field `VariantValue`.`index_avg` of type `Float`
-  """
-  index_avg: OrderDirection
-  """
-  ✨ Generated from Field `VariantValue`.`value_avg` of type `Float`
+  ✨ Generated from Field `Weight`.`value_avg` of type `Float`
   """
   value_avg: OrderDirection
   """
-  ✨ Generated from Field `VariantValue`.`index_min` of type `Int`
-  """
-  index_min: OrderDirection
-  """
-  ✨ Generated from Field `VariantValue`.`timestamp_min` of type `Timestamp`
+  ✨ Generated from Field `Weight`.`timestamp_min` of type `Timestamp`
   """
   timestamp_min: OrderDirection
   """
-  ✨ Generated from Field `VariantValue`.`value_min` of type `Float`
+  ✨ Generated from Field `Weight`.`value_min` of type `Float`
   """
   value_min: OrderDirection
   """
-  ✨ Generated from Field `VariantValue`.`index_max` of type `Int`
-  """
-  index_max: OrderDirection
-  """
-  ✨ Generated from Field `VariantValue`.`timestamp_max` of type `Timestamp`
+  ✨ Generated from Field `Weight`.`timestamp_max` of type `Timestamp`
   """
   timestamp_max: OrderDirection
   """
-  ✨ Generated from Field `VariantValue`.`value_max` of type `Float`
+  ✨ Generated from Field `Weight`.`value_max` of type `Float`
   """
   value_max: OrderDirection
 }

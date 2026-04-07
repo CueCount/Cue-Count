@@ -1,0 +1,235 @@
+[debug] [2026-03-14T12:26:52.180Z] [Firebase Plugin] Activating Firebase extension.
+[debug] [2026-03-14T12:26:55.107Z] [Firebase Plugin] requireAuthWrapper
+[debug] [2026-03-14T12:26:55.107Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-03-14T12:26:55.108Z] > authorizing via signed-in user (james@cuecount.com)
+[debug] [2026-03-14T12:26:55.109Z] Checked if tokens are valid: false, expires at: 1772848468470
+[debug] [2026-03-14T12:26:55.109Z] Checked if tokens are valid: false, expires at: 1772848468470
+[debug] [2026-03-14T12:26:55.109Z] > refreshing access token with scopes: []
+[debug] [2026-03-14T12:26:55.109Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-03-14T12:26:55.109Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-03-14T12:26:55.112Z] [Firebase Plugin] VSCode notification server listening on port 40001
+[info] [Firebase Plugin] Starting Data Connect toolkit (version 3.2.1) on port 50001
+[info] i  dataconnect: downloading dataconnect-emulator-3.2.1... {"metadata":{"emulator":{"name":"dataconnect"},"message":"downloading dataconnect-emulator-3.2.1..."}}
+[debug] [2026-03-14T12:26:55.225Z] >>> [apiv2][query] GET https://storage.googleapis.com/firemat-preview-drop/emulator/dataconnect-emulator-macos-arm64-v3.2.1 
+[debug] [2026-03-14T12:26:55.332Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 400
+[debug] [2026-03-14T12:26:55.332Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[error] Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[error] Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[error] [Firebase Plugin] requireAuth error: Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[debug] [2026-03-14T12:26:55.403Z] <<< [apiv2][status] GET https://storage.googleapis.com/firemat-preview-drop/emulator/dataconnect-emulator-macos-arm64-v3.2.1 200
+[debug] [2026-03-14T12:26:55.403Z] <<< [apiv2][body] GET https://storage.googleapis.com/firemat-preview-drop/emulator/dataconnect-emulator-macos-arm64-v3.2.1 [stream]
+[info] i  dataconnect: Removing outdated emulator files: dataconnect-emulator-2.16.0 {"metadata":{"emulator":{"name":"dataconnect"},"message":"Removing outdated emulator files: dataconnect-emulator-2.16.0"}}
+[debug] [2026-03-14T12:26:59.590Z] I0314 08:26:59.583405   50479 control.go:100] [projects/emulator/locations/emulator/services/cue-count-service b3ae] UpdateResources(): done
+Main schema: sources: schema/schema.gql [1730B] 
+Connector "example": sources: example/mutations.gql [1791B] example/queries.gql [1395B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0314 08:26:59.583405   50479 control.go:100] [projects/emulator/locations/emulator/services/cue-count-service b3ae] UpdateResources(): done\nMain schema: sources: schema/schema.gql [1730B] \nConnector \"example\": sources: example/mutations.gql [1791B] example/queries.gql [1395B] \n"}}
+[debug] [2026-03-14T12:26:59.590Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"dataconnect"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2026-03-14T12:26:59.590Z] Ignoring unsupported arg: port {"metadata":{"emulator":{"name":"dataconnect"},"message":"Ignoring unsupported arg: port"}}
+[debug] [2026-03-14T12:26:59.591Z] Starting Data Connect Emulator with command {"binary":"/Users/jamesmocko/.cache/firebase/emulators/dataconnect-emulator-3.2.1","args":["--logtostderr","-v=2","dev","--listen=localhost:50001","--config_dir=/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/dataconnect","--enable_output_schema_extensions=true","--enable_output_generated_sdk=true"],"optionalArgs":["listen","config_dir","enable_output_schema_extensions","enable_output_generated_sdk"],"joinArgs":true,"shell":false,"port":9399} {"metadata":{"emulator":{"name":"dataconnect"},"message":"Starting Data Connect Emulator with command {\"binary\":\"/Users/jamesmocko/.cache/firebase/emulators/dataconnect-emulator-3.2.1\",\"args\":[\"--logtostderr\",\"-v=2\",\"dev\",\"--listen=localhost:50001\",\"--config_dir=/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/dataconnect\",\"--enable_output_schema_extensions=true\",\"--enable_output_generated_sdk=true\"],\"optionalArgs\":[\"listen\",\"config_dir\",\"enable_output_schema_extensions\",\"enable_output_generated_sdk\"],\"joinArgs\":true,\"shell\":false,\"port\":9399}"}}
+[info] i  dataconnect: Data Connect Emulator logging to dataconnect-debug.log {"metadata":{"emulator":{"name":"dataconnect"},"message":"Data Connect Emulator logging to dataconnect-debug.log"}}
+[debug] [2026-03-14T12:26:59.605Z] I0314 08:26:59.605384   50483 load.go:31] Reloading schema and connectors...
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0314 08:26:59.605384   50483 load.go:31] Reloading schema and connectors...\n"}}
+[debug] [2026-03-14T12:26:59.616Z] I0314 08:26:59.616200   50483 control.go:100] [projects/emulator/locations/emulator/services/cue-count-service 97ed] UpdateResources(): done
+Main schema: sources: schema/schema.gql [1730B] 
+Connector "example": sources: example/mutations.gql [1791B] example/queries.gql [1395B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0314 08:26:59.616200   50483 control.go:100] [projects/emulator/locations/emulator/services/cue-count-service 97ed] UpdateResources(): done\nMain schema: sources: schema/schema.gql [1730B] \nConnector \"example\": sources: example/mutations.gql [1791B] example/queries.gql [1395B] \n"}}
+[debug] [2026-03-14T12:26:59.625Z] I0314 08:26:59.625277   50483 codegen.go:80] [connector "example" javascriptSdk] Generating sources into "/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/src/dataconnect-generated"
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0314 08:26:59.625277   50483 codegen.go:80] [connector \"example\" javascriptSdk] Generating sources into \"/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/src/dataconnect-generated\"\n"}}
+[debug] [2026-03-14T12:26:59.632Z] I0314 08:26:59.632110   50483 collector.go:107] schema extensions wrote into "/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/dataconnect/.dataconnect/schema"
+Generated sources: main/mutation.gql [28050B] prelude.gql [80731B] main/implicit.gql [3455B] main/input.gql [81277B] main/relation.gql [42444B] main/query.gql [10336B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0314 08:26:59.632110   50483 collector.go:107] schema extensions wrote into \"/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/dataconnect/.dataconnect/schema\"\nGenerated sources: main/mutation.gql [28050B] prelude.gql [80731B] main/implicit.gql [3455B] main/input.gql [81277B] main/relation.gql [42444B] main/query.gql [10336B] \n"}}
+[debug] [2026-03-14T12:26:59.634Z] I0314 08:26:59.634210   50483 collector.go:107] connector "example" javascriptSdk wrote into "/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/src/dataconnect-generated"
+Generated sources: index.cjs.js [5995B] react/index.d.ts [6085B] react/package.json [460B] react/README.md [66190B] esm/package.json [17B] README.md [61309B] .guides/setup.md [1682B] .guides/config.json [236B] index.d.ts [13297B] esm/index.esm.js [5229B] package.json [863B] react/esm/package.json [17B] react/index.cjs.js [4903B] react/esm/index.esm.js [4637B] .guides/usage.md [4324B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0314 08:26:59.634210   50483 collector.go:107] connector \"example\" javascriptSdk wrote into \"/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/src/dataconnect-generated\"\nGenerated sources: index.cjs.js [5995B] react/index.d.ts [6085B] react/package.json [460B] react/README.md [66190B] esm/package.json [17B] README.md [61309B] .guides/setup.md [1682B] .guides/config.json [236B] index.d.ts [13297B] esm/index.esm.js [5229B] package.json [863B] react/esm/package.json [17B] react/index.cjs.js [4903B] react/esm/index.esm.js [4637B] .guides/usage.md [4324B] \n"}}
+[debug] [2026-03-14T12:26:59.635Z] I0314 08:26:59.635225   50483 installsdk.go:55] Package @dataconnect/generated is already installed. Skipping installation
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0314 08:26:59.635225   50483 installsdk.go:55] Package @dataconnect/generated is already installed. Skipping installation\n"}}
+[debug] [2026-03-14T12:26:59.635Z] I0314 08:26:59.635246   50483 load.go:109] Finished reloading
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0314 08:26:59.635246   50483 load.go:109] Finished reloading\n"}}
+[debug] [2026-03-14T12:26:59.636Z] I0314 08:26:59.636349   50483 dev.go:104] Listening on address (HTTP + gRPC): 127.0.0.1:50001
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0314 08:26:59.636349   50483 dev.go:104] Listening on address (HTTP + gRPC): 127.0.0.1:50001\n"}}
+[debug] [2026-03-14T12:26:59.838Z] I0314 08:26:59.837984   50483 engine.go:210] [projects/emulator/locations/emulator/services/cue-count-service 97ed] ExecuteGraphqlRead query IntrospectionQuery: succeeded. 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0314 08:26:59.837984   50483 engine.go:210] [projects/emulator/locations/emulator/services/cue-count-service 97ed] ExecuteGraphqlRead query IntrospectionQuery: succeeded. \n"}}
+[debug] [2026-03-24T19:20:34.182Z] I0324 15:20:34.176161   50483 load.go:31] Reloading schema and connectors...
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0324 15:20:34.176161   50483 load.go:31] Reloading schema and connectors...\n"}}
+[debug] [2026-03-24T19:20:34.229Z] W0324 15:20:34.229433   50483 control.go:74] [projects/emulator/locations/emulator/services/cue-count-service bf6c] connector "example" has errors: example/mutations.gql:38:3: Cannot query field "connection_insert" on type "Mutation". Did you mean "perspective_insert"?
+example/mutations.gql:54:5: Field "trendId" is not defined by type "Variant_Data".
+example/queries.gql:56:5: Cannot query field "connections_on_story" on type "Story". Did you mean "variants_on_story"?
+example/queries.gql:74:7: Cannot query field "trend" on type "Variant".
+
+sources: example/mutations.gql [1791B] example/queries.gql [1395B] 
+I0324 15:20:34.229649   50483 control.go:100] [projects/emulator/locations/emulator/services/cue-count-service bf6c] UpdateResources(): done
+Main schema: sources: schema/schema.gql [4185B] 
+Connector "example": sources: example/mutations.gql [1791B] example/queries.gql [1395B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"W0324 15:20:34.229433   50483 control.go:74] [projects/emulator/locations/emulator/services/cue-count-service bf6c] connector \"example\" has errors: example/mutations.gql:38:3: Cannot query field \"connection_insert\" on type \"Mutation\". Did you mean \"perspective_insert\"?\nexample/mutations.gql:54:5: Field \"trendId\" is not defined by type \"Variant_Data\".\nexample/queries.gql:56:5: Cannot query field \"connections_on_story\" on type \"Story\". Did you mean \"variants_on_story\"?\nexample/queries.gql:74:7: Cannot query field \"trend\" on type \"Variant\".\n\nsources: example/mutations.gql [1791B] example/queries.gql [1395B] \nI0324 15:20:34.229649   50483 control.go:100] [projects/emulator/locations/emulator/services/cue-count-service bf6c] UpdateResources(): done\nMain schema: sources: schema/schema.gql [4185B] \nConnector \"example\": sources: example/mutations.gql [1791B] example/queries.gql [1395B] \n"}}
+[debug] [2026-03-24T19:20:34.235Z] E0324 15:20:34.235127   50483 load.go:73] Could not load sources: 
+Errors: example/mutations.gql:38:3: Cannot query field "connection_insert" on type "Mutation". Did you mean "perspective_insert"?
+example/mutations.gql:54:5: Field "trendId" is not defined by type "Variant_Data".
+example/queries.gql:56:5: Cannot query field "connections_on_story" on type "Story". Did you mean "variants_on_story"?
+example/queries.gql:74:7: Cannot query field "trend" on type "Variant".
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"E0324 15:20:34.235127   50483 load.go:73] Could not load sources: \nErrors: example/mutations.gql:38:3: Cannot query field \"connection_insert\" on type \"Mutation\". Did you mean \"perspective_insert\"?\nexample/mutations.gql:54:5: Field \"trendId\" is not defined by type \"Variant_Data\".\nexample/queries.gql:56:5: Cannot query field \"connections_on_story\" on type \"Story\". Did you mean \"variants_on_story\"?\nexample/queries.gql:74:7: Cannot query field \"trend\" on type \"Variant\".\n"}}
+[debug] [2026-03-24T19:20:34.237Z] I0324 15:20:34.237288   50483 collector.go:107] schema extensions wrote into "/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/dataconnect/.dataconnect/schema"
+Generated sources: prelude.gql [80731B] main/query.gql [11669B] main/mutation.gql [31705B] main/implicit.gql [3520B] main/input.gql [84471B] main/relation.gql [42564B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0324 15:20:34.237288   50483 collector.go:107] schema extensions wrote into \"/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/dataconnect/.dataconnect/schema\"\nGenerated sources: prelude.gql [80731B] main/query.gql [11669B] main/mutation.gql [31705B] main/implicit.gql [3520B] main/input.gql [84471B] main/relation.gql [42564B] \n"}}
+[debug] [2026-03-24T19:20:34.237Z] I0324 15:20:34.237495   50483 load.go:74] Finished reloading
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0324 15:20:34.237495   50483 load.go:74] Finished reloading\n"}}
+[debug] [2026-03-24T19:41:55.789Z] I0324 15:41:55.789005   50483 load.go:31] Reloading schema and connectors...
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0324 15:41:55.789005   50483 load.go:31] Reloading schema and connectors...\n"}}
+[debug] [2026-03-24T19:41:55.812Z] W0324 15:41:55.812508   50483 control.go:74] [projects/emulator/locations/emulator/services/cue-count-service 9c20] connector "example" has errors: example/mutations.gql:38:3: Cannot query field "connection_insert" on type "Mutation". Did you mean "perspective_insert"?
+example/mutations.gql:54:5: Field "trendId" is not defined by type "Variant_Data".
+example/queries.gql:56:5: Cannot query field "connections_on_story" on type "Story". Did you mean "variants_on_story"?
+example/queries.gql:74:7: Cannot query field "trend" on type "Variant".
+
+sources: example/mutations.gql [1791B] example/queries.gql [1395B] 
+I0324 15:41:55.812538   50483 control.go:100] [projects/emulator/locations/emulator/services/cue-count-service 9c20] UpdateResources(): done
+Main schema: sources: schema/schema.gql [4595B] 
+Connector "example": sources: example/mutations.gql [1791B] example/queries.gql [1395B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"W0324 15:41:55.812508   50483 control.go:74] [projects/emulator/locations/emulator/services/cue-count-service 9c20] connector \"example\" has errors: example/mutations.gql:38:3: Cannot query field \"connection_insert\" on type \"Mutation\". Did you mean \"perspective_insert\"?\nexample/mutations.gql:54:5: Field \"trendId\" is not defined by type \"Variant_Data\".\nexample/queries.gql:56:5: Cannot query field \"connections_on_story\" on type \"Story\". Did you mean \"variants_on_story\"?\nexample/queries.gql:74:7: Cannot query field \"trend\" on type \"Variant\".\n\nsources: example/mutations.gql [1791B] example/queries.gql [1395B] \nI0324 15:41:55.812538   50483 control.go:100] [projects/emulator/locations/emulator/services/cue-count-service 9c20] UpdateResources(): done\nMain schema: sources: schema/schema.gql [4595B] \nConnector \"example\": sources: example/mutations.gql [1791B] example/queries.gql [1395B] \n"}}
+[debug] [2026-03-24T19:41:55.814Z] E0324 15:41:55.814903   50483 load.go:73] Could not load sources: 
+Errors: example/mutations.gql:38:3: Cannot query field "connection_insert" on type "Mutation". Did you mean "perspective_insert"?
+example/mutations.gql:54:5: Field "trendId" is not defined by type "Variant_Data".
+example/queries.gql:56:5: Cannot query field "connections_on_story" on type "Story". Did you mean "variants_on_story"?
+example/queries.gql:74:7: Cannot query field "trend" on type "Variant".
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"E0324 15:41:55.814903   50483 load.go:73] Could not load sources: \nErrors: example/mutations.gql:38:3: Cannot query field \"connection_insert\" on type \"Mutation\". Did you mean \"perspective_insert\"?\nexample/mutations.gql:54:5: Field \"trendId\" is not defined by type \"Variant_Data\".\nexample/queries.gql:56:5: Cannot query field \"connections_on_story\" on type \"Story\". Did you mean \"variants_on_story\"?\nexample/queries.gql:74:7: Cannot query field \"trend\" on type \"Variant\".\n"}}
+[debug] [2026-03-24T19:41:55.816Z] I0324 15:41:55.816049   50483 collector.go:107] schema extensions wrote into "/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/dataconnect/.dataconnect/schema"
+Generated sources: main/query.gql [12937B] main/mutation.gql [35135B] prelude.gql [80731B] main/implicit.gql [3809B] main/input.gql [92537B] main/relation.gql [46531B] 
+I0324 15:41:55.816067   50483 load.go:74] Finished reloading
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0324 15:41:55.816049   50483 collector.go:107] schema extensions wrote into \"/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/dataconnect/.dataconnect/schema\"\nGenerated sources: main/query.gql [12937B] main/mutation.gql [35135B] prelude.gql [80731B] main/implicit.gql [3809B] main/input.gql [92537B] main/relation.gql [46531B] \nI0324 15:41:55.816067   50483 load.go:74] Finished reloading\n"}}
+[debug] [2026-03-24T19:47:45.779Z] I0324 15:47:45.778710   50483 load.go:31] Reloading schema and connectors...
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0324 15:47:45.778710   50483 load.go:31] Reloading schema and connectors...\n"}}
+[debug] [2026-03-24T19:47:45.801Z] W0324 15:47:45.800974   50483 control.go:74] [projects/emulator/locations/emulator/services/cue-count-service 5393] connector "example" has errors: example/mutations.gql:38:3: Cannot query field "connection_insert" on type "Mutation". Did you mean "perspective_insert"?
+example/mutations.gql:54:5: Field "trendId" is not defined by type "Variant_Data".
+
+sources: example/mutations.gql [1791B] example/queries.gql [6030B] 
+I0324 15:47:45.801005   50483 control.go:100] [projects/emulator/locations/emulator/services/cue-count-service 5393] UpdateResources(): done
+Main schema: sources: schema/schema.gql [4595B] 
+Connector "example": sources: example/mutations.gql [1791B] example/queries.gql [6030B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"W0324 15:47:45.800974   50483 control.go:74] [projects/emulator/locations/emulator/services/cue-count-service 5393] connector \"example\" has errors: example/mutations.gql:38:3: Cannot query field \"connection_insert\" on type \"Mutation\". Did you mean \"perspective_insert\"?\nexample/mutations.gql:54:5: Field \"trendId\" is not defined by type \"Variant_Data\".\n\nsources: example/mutations.gql [1791B] example/queries.gql [6030B] \nI0324 15:47:45.801005   50483 control.go:100] [projects/emulator/locations/emulator/services/cue-count-service 5393] UpdateResources(): done\nMain schema: sources: schema/schema.gql [4595B] \nConnector \"example\": sources: example/mutations.gql [1791B] example/queries.gql [6030B] \n"}}
+[debug] [2026-03-24T19:47:45.802Z] E0324 15:47:45.802604   50483 load.go:73] Could not load sources: 
+Errors: example/mutations.gql:38:3: Cannot query field "connection_insert" on type "Mutation". Did you mean "perspective_insert"?
+example/mutations.gql:54:5: Field "trendId" is not defined by type "Variant_Data".
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"E0324 15:47:45.802604   50483 load.go:73] Could not load sources: \nErrors: example/mutations.gql:38:3: Cannot query field \"connection_insert\" on type \"Mutation\". Did you mean \"perspective_insert\"?\nexample/mutations.gql:54:5: Field \"trendId\" is not defined by type \"Variant_Data\".\n"}}
+[debug] [2026-03-24T19:47:45.803Z] I0324 15:47:45.803517   50483 collector.go:107] schema extensions wrote into "/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/dataconnect/.dataconnect/schema"
+Generated sources: prelude.gql [80731B] main/implicit.gql [3809B] main/input.gql [92537B] main/relation.gql [46531B] main/query.gql [12937B] main/mutation.gql [35135B] 
+I0324 15:47:45.803528   50483 load.go:74] Finished reloading
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0324 15:47:45.803517   50483 collector.go:107] schema extensions wrote into \"/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/dataconnect/.dataconnect/schema\"\nGenerated sources: prelude.gql [80731B] main/implicit.gql [3809B] main/input.gql [92537B] main/relation.gql [46531B] main/query.gql [12937B] main/mutation.gql [35135B] \nI0324 15:47:45.803528   50483 load.go:74] Finished reloading\n"}}
+[debug] [2026-03-24T19:54:05.772Z] I0324 15:54:05.772673   50483 load.go:31] Reloading schema and connectors...
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0324 15:54:05.772673   50483 load.go:31] Reloading schema and connectors...\n"}}
+[debug] [2026-03-24T19:54:05.793Z] W0324 15:54:05.793022   50483 control.go:74] [projects/emulator/locations/emulator/services/cue-count-service 33fc] connector "example" has errors: example/mutations.gql:57:5: Field "perspectiveId" is not defined by type "PerspectiveMember_Key".
+example/mutations.gql:58:5: Field "userId" is not defined by type "PerspectiveMember_Key".
+
+sources: example/mutations.gql [8984B] example/queries.gql [6030B] 
+I0324 15:54:05.793048   50483 control.go:100] [projects/emulator/locations/emulator/services/cue-count-service 33fc] UpdateResources(): done
+Main schema: sources: schema/schema.gql [4595B] 
+Connector "example": sources: example/mutations.gql [8984B] example/queries.gql [6030B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"W0324 15:54:05.793022   50483 control.go:74] [projects/emulator/locations/emulator/services/cue-count-service 33fc] connector \"example\" has errors: example/mutations.gql:57:5: Field \"perspectiveId\" is not defined by type \"PerspectiveMember_Key\".\nexample/mutations.gql:58:5: Field \"userId\" is not defined by type \"PerspectiveMember_Key\".\n\nsources: example/mutations.gql [8984B] example/queries.gql [6030B] \nI0324 15:54:05.793048   50483 control.go:100] [projects/emulator/locations/emulator/services/cue-count-service 33fc] UpdateResources(): done\nMain schema: sources: schema/schema.gql [4595B] \nConnector \"example\": sources: example/mutations.gql [8984B] example/queries.gql [6030B] \n"}}
+[debug] [2026-03-24T19:54:05.794Z] E0324 15:54:05.794244   50483 load.go:73] Could not load sources: 
+Errors: example/mutations.gql:57:5: Field "perspectiveId" is not defined by type "PerspectiveMember_Key".
+example/mutations.gql:58:5: Field "userId" is not defined by type "PerspectiveMember_Key".
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"E0324 15:54:05.794244   50483 load.go:73] Could not load sources: \nErrors: example/mutations.gql:57:5: Field \"perspectiveId\" is not defined by type \"PerspectiveMember_Key\".\nexample/mutations.gql:58:5: Field \"userId\" is not defined by type \"PerspectiveMember_Key\".\n"}}
+[debug] [2026-03-24T19:54:05.795Z] I0324 15:54:05.795452   50483 collector.go:107] schema extensions wrote into "/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/dataconnect/.dataconnect/schema"
+Generated sources: main/query.gql [12937B] main/mutation.gql [35135B] prelude.gql [80731B] main/implicit.gql [3809B] main/input.gql [92537B] main/relation.gql [46531B] 
+I0324 15:54:05.795462   50483 load.go:74] Finished reloading
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0324 15:54:05.795452   50483 collector.go:107] schema extensions wrote into \"/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/dataconnect/.dataconnect/schema\"\nGenerated sources: main/query.gql [12937B] main/mutation.gql [35135B] prelude.gql [80731B] main/implicit.gql [3809B] main/input.gql [92537B] main/relation.gql [46531B] \nI0324 15:54:05.795462   50483 load.go:74] Finished reloading\n"}}
+[debug] [2026-03-28T00:18:08.445Z] I0327 20:18:08.440988   50483 load.go:31] Reloading schema and connectors...
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0327 20:18:08.440988   50483 load.go:31] Reloading schema and connectors...\n"}}
+[debug] [2026-03-28T00:18:08.485Z] W0327 20:18:08.485117   50483 control.go:74] [projects/emulator/locations/emulator/services/cue-count-service 67e7] connector "example" has errors: example/mutations.gql:57:5: Field "perspectiveId" is not defined by type "PerspectiveMember_Key".
+example/mutations.gql:58:5: Field "userId" is not defined by type "PerspectiveMember_Key".
+example/mutations.gql:199:5: Field "contributorStoryId" is not defined by type "Relationship_Data".
+example/queries.gql:129:7: Cannot query field "contributorStory" on type "Relationship".
+example/queries.gql:187:5: Cannot query field "contributorStoryId" on type "Relationship".
+
+sources: example/mutations.gql [8984B] example/queries.gql [6030B] 
+I0327 20:18:08.485537   50483 control.go:100] [projects/emulator/locations/emulator/services/cue-count-service 67e7] UpdateResources(): done
+Main schema: sources: schema/schema.gql [5156B] 
+Connector "example": sources: example/mutations.gql [8984B] example/queries.gql [6030B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"W0327 20:18:08.485117   50483 control.go:74] [projects/emulator/locations/emulator/services/cue-count-service 67e7] connector \"example\" has errors: example/mutations.gql:57:5: Field \"perspectiveId\" is not defined by type \"PerspectiveMember_Key\".\nexample/mutations.gql:58:5: Field \"userId\" is not defined by type \"PerspectiveMember_Key\".\nexample/mutations.gql:199:5: Field \"contributorStoryId\" is not defined by type \"Relationship_Data\".\nexample/queries.gql:129:7: Cannot query field \"contributorStory\" on type \"Relationship\".\nexample/queries.gql:187:5: Cannot query field \"contributorStoryId\" on type \"Relationship\".\n\nsources: example/mutations.gql [8984B] example/queries.gql [6030B] \nI0327 20:18:08.485537   50483 control.go:100] [projects/emulator/locations/emulator/services/cue-count-service 67e7] UpdateResources(): done\nMain schema: sources: schema/schema.gql [5156B] \nConnector \"example\": sources: example/mutations.gql [8984B] example/queries.gql [6030B] \n"}}
+[debug] [2026-03-28T00:18:08.487Z] E0327 20:18:08.487257   50483 load.go:73] Could not load sources: 
+Errors: example/mutations.gql:57:5: Field "perspectiveId" is not defined by type "PerspectiveMember_Key".
+example/mutations.gql:58:5: Field "userId" is not defined by type "PerspectiveMember_Key".
+example/mutations.gql:199:5: Field "contributorStoryId" is not defined by type "Relationship_Data".
+example/queries.gql:129:7: Cannot query field "contributorStory" on type "Relationship".
+example/queries.gql:187:5: Cannot query field "contributorStoryId" on type "Relationship".
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"E0327 20:18:08.487257   50483 load.go:73] Could not load sources: \nErrors: example/mutations.gql:57:5: Field \"perspectiveId\" is not defined by type \"PerspectiveMember_Key\".\nexample/mutations.gql:58:5: Field \"userId\" is not defined by type \"PerspectiveMember_Key\".\nexample/mutations.gql:199:5: Field \"contributorStoryId\" is not defined by type \"Relationship_Data\".\nexample/queries.gql:129:7: Cannot query field \"contributorStory\" on type \"Relationship\".\nexample/queries.gql:187:5: Cannot query field \"contributorStoryId\" on type \"Relationship\".\n"}}
+[debug] [2026-03-28T00:18:08.489Z] I0327 20:18:08.489209   50483 collector.go:107] schema extensions wrote into "/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/dataconnect/.dataconnect/schema"
+Generated sources: main/query.gql [12937B] main/mutation.gql [35135B] prelude.gql [80731B] main/implicit.gql [3776B] main/input.gql [92970B] main/relation.gql [46839B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0327 20:18:08.489209   50483 collector.go:107] schema extensions wrote into \"/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/dataconnect/.dataconnect/schema\"\nGenerated sources: main/query.gql [12937B] main/mutation.gql [35135B] prelude.gql [80731B] main/implicit.gql [3776B] main/input.gql [92970B] main/relation.gql [46839B] \n"}}
+[debug] [2026-03-28T00:18:08.489Z] I0327 20:18:08.489403   50483 load.go:74] Finished reloading
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0327 20:18:08.489403   50483 load.go:74] Finished reloading\n"}}
+[info] [Firebase Plugin] Stopping Data Connect toolkit
+[debug] [2026-04-03T21:33:33.914Z] [Firebase Plugin] Activating Firebase extension.
+[debug] [2026-04-03T21:33:37.905Z] [Firebase Plugin] requireAuthWrapper
+[debug] [2026-04-03T21:33:37.906Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-04-03T21:33:37.906Z] > authorizing via signed-in user (james@cuecount.com)
+[debug] [2026-04-03T21:33:37.907Z] Checked if tokens are valid: false, expires at: 1772848468470
+[debug] [2026-04-03T21:33:37.907Z] Checked if tokens are valid: false, expires at: 1772848468470
+[debug] [2026-04-03T21:33:37.907Z] > refreshing access token with scopes: []
+[debug] [2026-04-03T21:33:37.908Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-04-03T21:33:37.908Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-04-03T21:33:37.911Z] [Firebase Plugin] VSCode notification server listening on port 40001
+[info] [Firebase Plugin] Starting Data Connect toolkit (version 3.3.1) on port 50001
+[info] i  dataconnect: downloading dataconnect-emulator-3.3.1... {"metadata":{"emulator":{"name":"dataconnect"},"message":"downloading dataconnect-emulator-3.3.1..."}}
+[debug] [2026-04-03T21:33:38.001Z] >>> [apiv2][query] GET https://storage.googleapis.com/firemat-preview-drop/emulator/dataconnect-emulator-macos-arm64-v3.3.1 
+[debug] [2026-04-03T21:33:38.475Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 400
+[debug] [2026-04-03T21:33:38.475Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[error] Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[error] Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[error] [Firebase Plugin] requireAuth error: Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[debug] [2026-04-03T21:33:38.603Z] <<< [apiv2][status] GET https://storage.googleapis.com/firemat-preview-drop/emulator/dataconnect-emulator-macos-arm64-v3.3.1 200
+[debug] [2026-04-03T21:33:38.603Z] <<< [apiv2][body] GET https://storage.googleapis.com/firemat-preview-drop/emulator/dataconnect-emulator-macos-arm64-v3.3.1 [stream]
+[info] i  dataconnect: Removing outdated emulator files: dataconnect-emulator-3.2.1 {"metadata":{"emulator":{"name":"dataconnect"},"message":"Removing outdated emulator files: dataconnect-emulator-3.2.1"}}
+[debug] [2026-04-03T21:34:30.842Z] W0403 17:34:30.841271   79700 control.go:74] [projects/emulator/locations/emulator/services/cue-count-service 4e1e] connector "example" has errors: example/mutations.gql:57:5: Field "perspectiveId" is not defined by type "PerspectiveMember_Key".
+example/mutations.gql:58:5: Field "userId" is not defined by type "PerspectiveMember_Key".
+example/mutations.gql:199:5: Field "contributorStoryId" is not defined by type "Relationship_Data".
+example/queries.gql:129:7: Cannot query field "contributorStory" on type "Relationship".
+example/queries.gql:187:5: Cannot query field "contributorStoryId" on type "Relationship".
+
+sources: example/mutations.gql [8984B] example/queries.gql [6030B] 
+I0403 17:34:30.841399   79700 control.go:100] [projects/emulator/locations/emulator/services/cue-count-service 4e1e] UpdateResources(): done
+Main schema: sources: schema/schema.gql [5156B] 
+Connector "example": sources: example/mutations.gql [8984B] example/queries.gql [6030B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"W0403 17:34:30.841271   79700 control.go:74] [projects/emulator/locations/emulator/services/cue-count-service 4e1e] connector \"example\" has errors: example/mutations.gql:57:5: Field \"perspectiveId\" is not defined by type \"PerspectiveMember_Key\".\nexample/mutations.gql:58:5: Field \"userId\" is not defined by type \"PerspectiveMember_Key\".\nexample/mutations.gql:199:5: Field \"contributorStoryId\" is not defined by type \"Relationship_Data\".\nexample/queries.gql:129:7: Cannot query field \"contributorStory\" on type \"Relationship\".\nexample/queries.gql:187:5: Cannot query field \"contributorStoryId\" on type \"Relationship\".\n\nsources: example/mutations.gql [8984B] example/queries.gql [6030B] \nI0403 17:34:30.841399   79700 control.go:100] [projects/emulator/locations/emulator/services/cue-count-service 4e1e] UpdateResources(): done\nMain schema: sources: schema/schema.gql [5156B] \nConnector \"example\": sources: example/mutations.gql [8984B] example/queries.gql [6030B] \n"}}
+[debug] [2026-04-03T21:34:30.843Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"dataconnect"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2026-04-03T21:34:30.843Z] Ignoring unsupported arg: port {"metadata":{"emulator":{"name":"dataconnect"},"message":"Ignoring unsupported arg: port"}}
+[debug] [2026-04-03T21:34:30.843Z] Starting Data Connect Emulator with command {"binary":"/Users/jamesmocko/.cache/firebase/emulators/dataconnect-emulator-3.3.1","args":["--logtostderr","-v=2","dev","--listen=localhost:50001","--config_dir=/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/dataconnect","--enable_output_schema_extensions=true","--enable_output_generated_sdk=true"],"optionalArgs":["listen","config_dir","enable_output_schema_extensions","enable_output_generated_sdk"],"joinArgs":true,"shell":false,"port":9399} {"metadata":{"emulator":{"name":"dataconnect"},"message":"Starting Data Connect Emulator with command {\"binary\":\"/Users/jamesmocko/.cache/firebase/emulators/dataconnect-emulator-3.3.1\",\"args\":[\"--logtostderr\",\"-v=2\",\"dev\",\"--listen=localhost:50001\",\"--config_dir=/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/dataconnect\",\"--enable_output_schema_extensions=true\",\"--enable_output_generated_sdk=true\"],\"optionalArgs\":[\"listen\",\"config_dir\",\"enable_output_schema_extensions\",\"enable_output_generated_sdk\"],\"joinArgs\":true,\"shell\":false,\"port\":9399}"}}
+[info] i  dataconnect: Data Connect Emulator logging to dataconnect-debug.log {"metadata":{"emulator":{"name":"dataconnect"},"message":"Data Connect Emulator logging to dataconnect-debug.log"}}
+[debug] [2026-04-03T21:34:30.858Z] I0403 17:34:30.858637   79701 load.go:31] Reloading schema and connectors...
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0403 17:34:30.858637   79701 load.go:31] Reloading schema and connectors...\n"}}
+[debug] [2026-04-03T21:34:30.870Z] W0403 17:34:30.870181   79701 control.go:74] [projects/emulator/locations/emulator/services/cue-count-service 9447] connector "example" has errors: example/queries.gql:129:7: Cannot query field "contributorStory" on type "Relationship".
+example/queries.gql:187:5: Cannot query field "contributorStoryId" on type "Relationship".
+example/mutations.gql:57:5: Field "perspectiveId" is not defined by type "PerspectiveMember_Key".
+example/mutations.gql:58:5: Field "userId" is not defined by type "PerspectiveMember_Key".
+example/mutations.gql:199:5: Field "contributorStoryId" is not defined by type "Relationship_Data".
+
+sources: example/mutations.gql [8984B] example/queries.gql [6030B] 
+I0403 17:34:30.870204   79701 control.go:100] [projects/emulator/locations/emulator/services/cue-count-service 9447] UpdateResources(): done
+Main schema: sources: schema/schema.gql [5156B] 
+Connector "example": sources: example/mutations.gql [8984B] example/queries.gql [6030B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"W0403 17:34:30.870181   79701 control.go:74] [projects/emulator/locations/emulator/services/cue-count-service 9447] connector \"example\" has errors: example/queries.gql:129:7: Cannot query field \"contributorStory\" on type \"Relationship\".\nexample/queries.gql:187:5: Cannot query field \"contributorStoryId\" on type \"Relationship\".\nexample/mutations.gql:57:5: Field \"perspectiveId\" is not defined by type \"PerspectiveMember_Key\".\nexample/mutations.gql:58:5: Field \"userId\" is not defined by type \"PerspectiveMember_Key\".\nexample/mutations.gql:199:5: Field \"contributorStoryId\" is not defined by type \"Relationship_Data\".\n\nsources: example/mutations.gql [8984B] example/queries.gql [6030B] \nI0403 17:34:30.870204   79701 control.go:100] [projects/emulator/locations/emulator/services/cue-count-service 9447] UpdateResources(): done\nMain schema: sources: schema/schema.gql [5156B] \nConnector \"example\": sources: example/mutations.gql [8984B] example/queries.gql [6030B] \n"}}
+[debug] [2026-04-03T21:34:30.871Z] E0403 17:34:30.871122   79701 load.go:73] Could not load sources: 
+Errors: example/queries.gql:129:7: Cannot query field "contributorStory" on type "Relationship".
+example/queries.gql:187:5: Cannot query field "contributorStoryId" on type "Relationship".
+example/mutations.gql:57:5: Field "perspectiveId" is not defined by type "PerspectiveMember_Key".
+example/mutations.gql:58:5: Field "userId" is not defined by type "PerspectiveMember_Key".
+example/mutations.gql:199:5: Field "contributorStoryId" is not defined by type "Relationship_Data".
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"E0403 17:34:30.871122   79701 load.go:73] Could not load sources: \nErrors: example/queries.gql:129:7: Cannot query field \"contributorStory\" on type \"Relationship\".\nexample/queries.gql:187:5: Cannot query field \"contributorStoryId\" on type \"Relationship\".\nexample/mutations.gql:57:5: Field \"perspectiveId\" is not defined by type \"PerspectiveMember_Key\".\nexample/mutations.gql:58:5: Field \"userId\" is not defined by type \"PerspectiveMember_Key\".\nexample/mutations.gql:199:5: Field \"contributorStoryId\" is not defined by type \"Relationship_Data\".\n"}}
+[debug] [2026-04-03T21:34:30.872Z] I0403 17:34:30.872748   79701 collector.go:107] schema extensions wrote into "/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/dataconnect/.dataconnect/schema"
+Generated sources: prelude.gql [80888B] main/implicit.gql [3776B] main/input.gql [95882B] main/relation.gql [46839B] main/query.gql [12937B] main/mutation.gql [35135B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0403 17:34:30.872748   79701 collector.go:107] schema extensions wrote into \"/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/dataconnect/.dataconnect/schema\"\nGenerated sources: prelude.gql [80888B] main/implicit.gql [3776B] main/input.gql [95882B] main/relation.gql [46839B] main/query.gql [12937B] main/mutation.gql [35135B] \n"}}
+[debug] [2026-04-03T21:34:30.872Z] I0403 17:34:30.872786   79701 load.go:74] Finished reloading
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0403 17:34:30.872786   79701 load.go:74] Finished reloading\n"}}
+[debug] [2026-04-03T21:34:30.873Z] I0403 17:34:30.873802   79701 dev.go:104] Listening on address (HTTP + gRPC): 127.0.0.1:50001
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0403 17:34:30.873802   79701 dev.go:104] Listening on address (HTTP + gRPC): 127.0.0.1:50001\n"}}
+[debug] [2026-04-03T21:34:31.412Z] I0403 17:34:31.412042   79701 engine.go:209] [projects/emulator/locations/emulator/services/cue-count-service 9447] ExecuteGraphqlRead query IntrospectionQuery: succeeded. 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0403 17:34:31.412042   79701 engine.go:209] [projects/emulator/locations/emulator/services/cue-count-service 9447] ExecuteGraphqlRead query IntrospectionQuery: succeeded. \n"}}

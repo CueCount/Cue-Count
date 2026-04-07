@@ -1,27 +1,40 @@
 // lib/db/trends.ts
 // ─────────────────────────────────────────────────────────────────────────────
-// Query functions for Trends, TrendValues, Variants and VariantValues.
+// Query functions for Trends, TrendValues, Weights, RelationshipValues,
+// and LagValues.
 //
 // RIGHT NOW: reads from local mock JSON files (data/mock/)
 // LATER: swap imports for real Postgres queries — callers stay the same.
+//
+// CHANGED from previous version:
+//   - getStoryWithTrends() removed — the story page load is now composed in
+//     DataState directly: getStoryById + getTrendWithValues + getRelationshipsByStoryId
+//   - collectContributors() removed — contributors are fetched via
+//     getRelationshipsByStoryId() in relationships.ts, which now owns the full
+//     contributor detail fetch since RelationshipRow.trendId replaces contributorStoryId
+//   - getRelationshipsByVariantId() removed — variant resolution lives in DataState
+//   - All remaining functions are pure data-fetch utilities
 // ─────────────────────────────────────────────────────────────────────────────
 
 import type {
   TrendRow,
   TrendValueRow,
-  VariantRow,
+  WeightRow,
+  RelationshipValueRow,
   TrendWithValues,
-  StoryWithTrends,
 } from "@/types/db";
-import type { StoryRow } from "@/types/db";
 
-import mockTrends      from "@/data/mock/trends.json";
-import mockTrendValues from "@/data/mock/trend_values.json";
-import mockVariants    from "@/data/mock/variants.json";
+import mockTrends             from "@/data/mock/trends.json";
+import mockTrendValues        from "@/data/mock/trend_values.json";
+import mockWeights            from "@/data/mock/weights.json";
+import mockRelationshipValues from "@/data/mock/relationship_values.json";
+import mockLagValues          from "@/data/mock/lag_values.json";
 
-const trends      = mockTrends      as TrendRow[];
-const trendValues = mockTrendValues as TrendValueRow[];
-const variants    = mockVariants    as VariantRow[];
+const trends             = mockTrends             as TrendRow[];
+const trendValues        = mockTrendValues        as TrendValueRow[];
+const weights            = mockWeights            as WeightRow[];
+const relationshipValues = mockRelationshipValues as RelationshipValueRow[];
+const lagValues          = mockLagValues          as RelationshipValueRow[];
 
 // ── Trend metadata ────────────────────────────────────────────────────────────
 
@@ -31,14 +44,12 @@ export async function getTrendById(id: string): Promise<TrendRow | null> {
 
 // ── Trend values ──────────────────────────────────────────────────────────────
 
-// Get all data points for a trend, sorted by index (as they'd come from Postgres ORDER BY index)
 export async function getTrendValues(trendId: string): Promise<TrendValueRow[]> {
   return trendValues
     .filter((v) => v.trendId === trendId)
-    .sort((a, b) => a.index - b.index);
+    .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
 }
 
-// Combine a trend's metadata with its values — this is what the graph needs
 export async function getTrendWithValues(trendId: string): Promise<TrendWithValues | null> {
   const trend = await getTrendById(trendId);
   if (!trend) return null;
@@ -46,39 +57,44 @@ export async function getTrendWithValues(trendId: string): Promise<TrendWithValu
   return { ...trend, values };
 }
 
-// ── Variants ──────────────────────────────────────────────────────────────────
-
-// Get all variants for a story
-export async function getVariantsByStoryId(storyId: string): Promise<VariantRow[]> {
-  return variants.filter((v) => v.storyId === storyId);
+// Returns the variant override trend for a given base trend + variant.
+// Returns null if no override exists — caller falls back to base trend.
+export async function getOverrideTrend(
+  baseTrendId: string,
+  variantId: string
+): Promise<TrendWithValues | null> {
+  const override = trends.find(
+    (t) => t.baseTrendId === baseTrendId && t.variantId === variantId
+  );
+  if (!override) return null;
+  const values = await getTrendValues(override.id);
+  return { ...override, values };
 }
 
-// ── Composed query — the big one the graph page actually calls ────────────────
-//
-// This is the equivalent of a SQL JOIN across Story → Trend → TrendValue
-// and Story → Variant → Trend → TrendValue.
-// Returns everything the graph page needs in one call.
+// ── Weights ───────────────────────────────────────────────────────────────────
 
-export async function getStoryWithTrends(story: StoryRow): Promise<StoryWithTrends> {
-  // 1. Get the focal trend (the bold primary line)
-  const focalTrend = await getTrendWithValues(story.focalTrendId);
-  if (!focalTrend) throw new Error(`Focal trend not found: ${story.focalTrendId}`);
+export async function getWeightsByRelationshipId(relationshipId: string): Promise<WeightRow[]> {
+  return weights
+    .filter((w) => w.relationshipId === relationshipId)
+    .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+}
 
-  // 2. Get all variants (supporting lines) for this story
-  const storyVariants = await getVariantsByStoryId(story.id);
+// ── Relationship values ───────────────────────────────────────────────────────
 
-  // 3. For each variant, attach its trend + values
-  const variantsWithTrends = await Promise.all(
-    storyVariants.map(async (variant) => {
-      const trend = await getTrendWithValues(variant.trendId);
-      if (!trend) throw new Error(`Variant trend not found: ${variant.trendId}`);
-      return { ...variant, trend };
-    })
-  );
+export async function getRelationshipValuesByRelationshipId(
+  relationshipId: string
+): Promise<RelationshipValueRow[]> {
+  return relationshipValues
+    .filter((rv) => rv.relationshipId === relationshipId)
+    .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+}
 
-  return {
-    ...story,
-    focalTrend,
-    variants: variantsWithTrends,
-  };
+// ── Lag values ────────────────────────────────────────────────────────────────
+
+export async function getLagValuesByRelationshipId(
+  relationshipId: string
+): Promise<RelationshipValueRow[]> {
+  return lagValues
+    .filter((lv) => lv.relationshipId === relationshipId)
+    .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
 }

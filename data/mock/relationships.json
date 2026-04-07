@@ -1,0 +1,50 @@
+[
+  {
+    "id": "rel-0001",
+    "analysisId": null,
+    "contributorId": "con-0001-0000-0000-000000000001",
+    "type": "correlated"
+  },
+  {
+    "id": "rel-0002",
+    "analysisId": null,
+    "contributorId": "con-0002-0000-0000-000000000002",
+    "type": "correlated"
+  },
+  {
+    "id": "rel-0005",
+    "analysisId": null,
+    "contributorId": "con-0005-0000-0000-000000000005",
+    "type": "inversely_correlated"
+  },
+  {
+    "id": "rel-0007",
+    "analysisId": null,
+    "contributorId": "con-0007-0000-0000-000000000007",
+    "type": "correlated"
+  },
+  {
+    "id": "rel-0009",
+    "analysisId": null,
+    "contributorId": "con-0009-0000-0000-000000000009",
+    "type": "correlated"
+  },
+  {
+    "id": "rel-0010",
+    "analysisId": null,
+    "contributorId": "con-0010-0000-0000-000000000010",
+    "type": "correlated"
+  },
+  {
+    "id": "rel-0011",
+    "analysisId": null,
+    "contributorId": "con-0011-0000-0000-000000000011",
+    "type": "inversely_correlated"
+  },
+  {
+    "id": "rel-0005-var003",
+    "analysisId": "var-0003-0000-0000-000000000003",
+    "contributorId": "con-0005-0000-0000-000000000005",
+    "type": "inversely_correlated"
+  }
+]

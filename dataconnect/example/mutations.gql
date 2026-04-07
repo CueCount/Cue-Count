@@ -1,4 +1,24 @@
-mutation CreatePerspective($name: String!, $slug: String!, $createdBy: String!) @auth(level: USER) {
+# mutations.gql — Firebase Data Connect
+# ─────────────────────────────────────────────────────────────────────────────
+# Mutation conventions:
+#   - CreateRelationship handles both base (variantId omitted) and variant-
+#     scoped rows (variantId provided) — same mutation, different args
+#   - CreateVariant always requires the ROOT story ID — enforced in DataState
+#     before this mutation is called, but named clearly here as rootStoryId
+#   - CreateTrendOverride creates a variant-scoped trend + its values in two
+#     steps: CreateTrendOverride then UpsertTrendValue per data point
+#   - Update mutations exist for the fields users can actually edit in the UI
+#   - Delete mutations cascade — deleting a Relationship removes its Weights,
+#     RelationshipValues, and LagValues via DB-level cascade rules
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── Perspective ───────────────────────────────────────────────────────────────
+
+mutation CreatePerspective(
+  $name: String!
+  $slug: String!
+  $createdBy: String!
+) @auth(level: USER) {
   perspective_insert(data: {
     name: $name
     slug: $slug
@@ -6,7 +26,22 @@ mutation CreatePerspective($name: String!, $slug: String!, $createdBy: String!) 
   })
 }
 
-mutation AddPerspectiveMember($perspectiveId: UUID!, $userId: String!, $role: String!) @auth(level: USER) {
+mutation UpdatePerspective(
+  $id: UUID!
+  $name: String!
+  $slug: String!
+) @auth(level: USER) {
+  perspective_update(id: $id, data: {
+    name: $name
+    slug: $slug
+  })
+}
+
+mutation AddPerspectiveMember(
+  $perspectiveId: UUID!
+  $userId: String!
+  $role: String!
+) @auth(level: USER) {
   perspectiveMember_insert(data: {
     perspectiveId: $perspectiveId
     userId: $userId
@@ -14,18 +49,118 @@ mutation AddPerspectiveMember($perspectiveId: UUID!, $userId: String!, $role: St
   })
 }
 
-mutation CreateTrend($name: String!, $unit: String, $description: String, $source: String!, $frequency: String!, $createdBy: String!) @auth(level: USER) {
+mutation RemovePerspectiveMember(
+  $perspectiveId: UUID!
+  $userId: String!
+) @auth(level: USER) {
+  perspectiveMember_delete(key: {
+    perspectiveId: $perspectiveId
+    userId: $userId
+  })
+}
+
+# ── Trend ─────────────────────────────────────────────────────────────────────
+
+# Creates a base trend (no variant association).
+# For variant override trends, use CreateTrendOverride below.
+mutation CreateTrend(
+  $name: String!
+  $unit: String
+  $denomination: Float
+  $description: String
+  $source: String!
+  $frequency: String!
+  $externalId: String
+  $createdBy: String!
+) @auth(level: USER) {
   trend_insert(data: {
     name: $name
     unit: $unit
+    denomination: $denomination
     description: $description
     source: $source
     frequency: $frequency
+    externalId: $externalId
+    variantId: null
+    baseTrendId: null
     createdBy: $createdBy
   })
 }
 
-mutation CreateStory($perspectiveId: UUID!, $focalTrendId: UUID!, $name: String!, $createdBy: String!) @auth(level: USER) {
+# Creates a variant-scoped trend that overrides an existing base trend.
+# baseTrendId must reference the base trend being overridden.
+# variantId must reference a variant scoped to the root story.
+mutation CreateTrendOverride(
+  $name: String!
+  $unit: String
+  $denomination: Float
+  $description: String
+  $source: String!
+  $frequency: String!
+  $variantId: UUID!
+  $baseTrendId: UUID!
+  $createdBy: String!
+) @auth(level: USER) {
+  trend_insert(data: {
+    name: $name
+    unit: $unit
+    denomination: $denomination
+    description: $description
+    source: $source
+    frequency: $frequency
+    variantId: $variantId
+    baseTrendId: $baseTrendId
+    createdBy: $createdBy
+  })
+}
+
+mutation UpdateTrend(
+  $id: UUID!
+  $name: String!
+  $unit: String
+  $denomination: Float
+  $description: String
+  $source: String!
+) @auth(level: USER) {
+  trend_update(id: $id, data: {
+    name: $name
+    unit: $unit
+    denomination: $denomination
+    description: $description
+    source: $source
+  })
+}
+
+mutation DeleteTrend($id: UUID!) @auth(level: USER) {
+  trend_delete(id: $id)
+}
+
+# Upsert a single data point for a trend (base or override).
+# Uses upsert so callers can apply it for both initial load and edits.
+mutation UpsertTrendValue(
+  $trendId: UUID!
+  $value: Float!
+  $timestamp: Timestamp!
+) @auth(level: USER) {
+  trendValue_upsert(data: {
+    trendId: $trendId
+    value: $value
+    timestamp: $timestamp
+  })
+}
+
+mutation DeleteTrendValue($id: UUID!) @auth(level: USER) {
+  trendValue_delete(id: $id)
+}
+
+# ── Story ─────────────────────────────────────────────────────────────────────
+
+mutation CreateStory(
+  $perspectiveId: UUID!
+  $focalTrendId: UUID!
+  $name: String!
+  $createdBy: String!
+) @auth(level: USER) {
   story_insert(data: {
     perspectiveId: $perspectiveId
     focalTrendId: $focalTrendId
@@ -34,25 +169,138 @@ mutation CreateStory($perspectiveId: UUID!, $focalTrendId: UUID!, $name: String!
   })
 }
 
-mutation CreateConnection($storyId: UUID!, $sourceType: String!, $sourceTrendId: UUID, $sourceConnectionId: UUID, $targetType: String!, $targetTrendId: UUID, $targetConnectionId: UUID, $direction: String!, $weight: Float!) @auth(level: USER) {
-  connection_insert(data: {
-    storyId: $storyId
-    sourceType: $sourceType
-    sourceTrendId: $sourceTrendId
-    sourceConnectionId: $sourceConnectionId
-    targetType: $targetType
-    targetTrendId: $targetTrendId
-    targetConnectionId: $targetConnectionId
-    direction: $direction
-    weight: $weight
+mutation UpdateStory(
+  $id: UUID!
+  $name: String!
+) @auth(level: USER) {
+  story_update(id: $id, data: {
+    name: $name
   })
 }
 
-mutation CreateVariant($storyId: UUID!, $trendId: UUID!, $name: String, $createdBy: String!) @auth(level: USER) {
+mutation DeleteStory($id: UUID!) @auth(level: USER) {
+  story_delete(id: $id)
+}
+
+# ── Relationship ──────────────────────────────────────────────────────────────
+
+# Creates a relationship row — works for both base (omit variantId) and
+# variant-scoped rows (provide variantId). DataState enforces that variantId
+# belongs to the root story before calling this.
+mutation CreateRelationship(
+  $focalStoryId: UUID!
+  $contributorStoryId: UUID!
+  $variantId: UUID
+  $type: String!
+  $createdBy: String!
+) @auth(level: USER) {
+  relationship_insert(data: {
+    focalStoryId: $focalStoryId
+    contributorStoryId: $contributorStoryId
+    variantId: $variantId
+    type: $type
+    createdBy: $createdBy
+  })
+}
+
+# Updates the relationship type only — weights and lag values are
+# updated via their own mutations.
+mutation UpdateRelationshipType(
+  $id: UUID!
+  $type: String!
+) @auth(level: USER) {
+  relationship_update(id: $id, data: {
+    type: $type
+  })
+}
+
+# Deletes a relationship row and all its dependent weights,
+# relationship values, and lag values (DB cascade).
+mutation DeleteRelationship($id: UUID!) @auth(level: USER) {
+  relationship_delete(id: $id)
+}
+
+# ── Weight ────────────────────────────────────────────────────────────────────
+
+mutation UpsertWeight(
+  $relationshipId: UUID!
+  $value: Float!
+  $timestamp: Timestamp!
+) @auth(level: USER) {
+  weight_upsert(data: {
+    relationshipId: $relationshipId
+    value: $value
+    timestamp: $timestamp
+  })
+}
+
+mutation DeleteWeight($id: UUID!) @auth(level: USER) {
+  weight_delete(id: $id)
+}
+
+# ── RelationshipValue ─────────────────────────────────────────────────────────
+
+mutation UpsertRelationshipValue(
+  $relationshipId: UUID!
+  $value: Float!
+  $timestamp: Timestamp!
+) @auth(level: USER) {
+  relationshipValue_upsert(data: {
+    relationshipId: $relationshipId
+    value: $value
+    timestamp: $timestamp
+  })
+}
+
+mutation DeleteRelationshipValue($id: UUID!) @auth(level: USER) {
+  relationshipValue_delete(id: $id)
+}
+
+# ── LagValue ──────────────────────────────────────────────────────────────────
+
+# Stores the lag offset in days for a "lagged" relationship at a point in time.
+mutation UpsertLagValue(
+  $relationshipId: UUID!
+  $value: Float!
+  $timestamp: Timestamp!
+) @auth(level: USER) {
+  lagValue_upsert(data: {
+    relationshipId: $relationshipId
+    value: $value
+    timestamp: $timestamp
+  })
+}
+
+mutation DeleteLagValue($id: UUID!) @auth(level: USER) {
+  lagValue_delete(id: $id)
+}
+
+# ── Variant ───────────────────────────────────────────────────────────────────
+
+# storyId must be the ROOT focal story — DataState enforces this before calling.
+mutation CreateVariant(
+  $storyId: UUID!
+  $name: String
+  $createdBy: String!
+) @auth(level: USER) {
   variant_insert(data: {
     storyId: $storyId
-    trendId: $trendId
     name: $name
     createdBy: $createdBy
   })
+}
+
+mutation UpdateVariant(
+  $id: UUID!
+  $name: String!
+) @auth(level: USER) {
+  variant_update(id: $id, data: {
+    name: $name
+  })
+}
+
+# Deletes a variant and all relationship rows + override trends that
+# reference it (DB cascade).
+mutation DeleteVariant($id: UUID!) @auth(level: USER) {
+  variant_delete(id: $id)
 }
