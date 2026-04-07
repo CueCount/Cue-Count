@@ -151,7 +151,8 @@ export function DataProvider({ storyId, children }: { storyId: string; children:
       const contributorIds = contributorRows.map((c) => c.id);
 
       const [contributorTrends, weightHeaders, lagHeaders, relationshipHeaders] = await Promise.all([
-        Promise.all(contributorRows.map((c) => getTrendWithValues(c.trendId))),
+        Promise.all(contributorRows.map((c) => 
+        getTrendWithValues(c.trendId))),
         getWeightsByContributorIds(contributorIds),
         getLagsByContributorIds(contributorIds),
         getRelationshipHeadersByContributorIds(contributorIds),
