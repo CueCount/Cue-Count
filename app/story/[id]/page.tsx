@@ -1,34 +1,204 @@
 "use client";
 
+import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
-import { DataProvider } from "@/contexts/DataState";
-import { UIProvider } from "@/contexts/UIState";
+import { DataProvider, useData } from "@/contexts/DataState";
 import StorySidebar from "@/components/StorySidebar";
 import StoryGraph from "@/components/StoryGraph";
 
-// ── Outer shell ────────────────────────────────────────────────────────
-// Mounts providers and composes the two main panels.
-// All data access and UI logic lives inside StorySidebar and StoryGraph
-// via useData() and useUI() — nothing is threaded through props here.
+// ─────────────────────────────────────────────────────────────────────────────
+// StoryViewState
+//
+// Passed as props to both StorySidebar and StoryGraph.
+// Neither child owns any visibility state — they only read and call back up.
+//
+// Story visibility is split into two independent booleans:
+//   shownStoryTrend    — the shared TrendData baseline line
+//   shownStoryAnalysis — the analysis DataValues overlay line
+//
+// Contributor visibility is a single Set<string>: one toggle per contributor
+// controls the whole pair (TrendData + analysis DataValues overlay).
+//
+// ─────────────────────────────────────────────────────────────────────────────
+
+export type StoryViewState = {
+  activeView:            "story" | "contributor" | "analysis";
+
+  // ── Story toggles (independent) ───────────────────────────────────────────
+  shownStoryTrend:       boolean;   // TrendData baseline
+  shownStoryAnalysis:    boolean;   // Analysis DataValues overlay
+
+  // ── Contributor toggles (whole pair per contributor) ──────────────────────
+  shownContributorIds:   Set<string>;
+
+  // ── Metric toggles (contributor view only) ────────────────────────────────
+  shownWeightIds:        Set<string>;
+  shownLagIds:           Set<string>;
+  shownRelationshipIds:  Set<string>;
+
+  // ── Analysis view toggles ─────────────────────────────────────────────────
+  shownAnalysisIds:      Set<string>;
+
+  // ── View transitions ──────────────────────────────────────────────────────
+  onStoryView:           (contributorIds?: string[]) => void;
+  onRelationshipView:    (contributorId: string) => void;
+  onAnalysisView:        () => void;
+
+  // ── Toggles ───────────────────────────────────────────────────────────────
+  onToggleStoryTrend:    () => void;
+  onToggleStoryAnalysis: () => void;
+  onToggleContributor:   (id: string) => void;
+  onToggleWeight:        (id: string) => void;
+  onToggleLag:           (id: string) => void;
+  onToggleRelationship:  (id: string) => void;
+  onToggleAnalysis:      (id: string) => void;
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// StoryPageInner
+// ─────────────────────────────────────────────────────────────────────────────
+
+function StoryPageInner({ storyId }: { storyId: string }) {
+  const { initStory, assembledStory, activeStoryDoc } = useData();
+
+  // ── View ───────────────────────────────────────────────────────────────────
+  const [activeView,           setActiveView]           = useState<"story" | "contributor" | "analysis">("story");
+
+  // ── Story toggles ──────────────────────────────────────────────────────────
+  const [shownStoryTrend,      setShownStoryTrend]      = useState(true);
+  const [shownStoryAnalysis,   setShownStoryAnalysis]   = useState(true);
+
+  // ── Contributor + metric toggles ───────────────────────────────────────────
+  const [shownContributorIds,  setShownContributorIds]  = useState<Set<string>>(new Set());
+  const [shownWeightIds,       setShownWeightIds]       = useState<Set<string>>(new Set());
+  const [shownLagIds,          setShownLagIds]          = useState<Set<string>>(new Set());
+  const [shownRelationshipIds, setShownRelationshipIds] = useState<Set<string>>(new Set());
+  const [shownAnalysisIds,     setShownAnalysisIds]     = useState<Set<string>>(new Set());
+
+  // ── Init ───────────────────────────────────────────────────────────────────
+  useEffect(() => {
+    if (storyId) initStory(storyId);
+  }, [storyId]);
+
+  useEffect(() => {
+    if (assembledStory) onStoryView();
+  }, [assembledStory?.id]);
+
+  // ── storyView ──────────────────────────────────────────────────────────────
+  // Resets to default story view: both story lines shown, all contributors
+  // shown, metrics cleared.
+  const onStoryView = useCallback((contributorIds?: string[]) => {
+    if (!assembledStory) return;
+    setActiveView("story");
+    setShownStoryTrend(true);
+    setShownStoryAnalysis(true);
+    setShownContributorIds(
+      contributorIds
+        ? new Set(contributorIds)
+        : new Set(assembledStory.contributors.map((c) => c.id))
+    );
+    setShownWeightIds(new Set());
+    setShownLagIds(new Set());
+    setShownRelationshipIds(new Set());
+  }, [assembledStory]);
+
+  // ── relationshipView ───────────────────────────────────────────────────────
+  // Story lines stay on. Shows only the selected contributor pair + their
+  // metrics defaulted to shown.
+  const onRelationshipView = useCallback((contributorId: string) => {
+    if (!assembledStory) return;
+    setActiveView("contributor");
+    setShownStoryTrend(true);
+    setShownStoryAnalysis(true);
+    setShownContributorIds(new Set([contributorId]));
+
+    const c = assembledStory.contributors.find((c) => c.id === contributorId);
+    if (c) {
+      setShownWeightIds(      new Set(c.weightValues.map((w) => w.id)));
+      setShownLagIds(         new Set(c.lagValues.map((l) => l.id)));
+      setShownRelationshipIds(new Set(c.relationshipValues.map((r) => r.id)));
+    }
+  }, [assembledStory]);
+
+  // ── analysisView ───────────────────────────────────────────────────────────
+  // Story trend shown as base. All analysis entries shown by default.
+  // Contributor and metric toggles cleared.
+  const onAnalysisView = useCallback(() => {
+    setActiveView("analysis");
+    setShownStoryTrend(true);
+    setShownStoryAnalysis(false);
+    setShownContributorIds(new Set());
+    setShownWeightIds(new Set());
+    setShownLagIds(new Set());
+    setShownRelationshipIds(new Set());
+    setShownAnalysisIds(
+      new Set(Object.keys(activeStoryDoc?.Analysis ?? {}))
+    );
+  }, [activeStoryDoc]);
+
+  // ── Granular toggles ───────────────────────────────────────────────────────
+  const makeToggle = (setter: React.Dispatch<React.SetStateAction<Set<string>>>) =>
+    (id: string) => setter((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+
+  const onToggleStoryTrend    = useCallback(() => setShownStoryTrend(v => !v),    []);
+  const onToggleStoryAnalysis = useCallback(() => setShownStoryAnalysis(v => !v), []);
+  const onToggleContributor   = useCallback(makeToggle(setShownContributorIds),   []);
+  const onToggleWeight        = useCallback(makeToggle(setShownWeightIds),        []);
+  const onToggleLag           = useCallback(makeToggle(setShownLagIds),           []);
+  const onToggleRelationship  = useCallback(makeToggle(setShownRelationshipIds),  []);
+  const onToggleAnalysis      = useCallback(makeToggle(setShownAnalysisIds),      []);
+
+  // ── View state bundle ──────────────────────────────────────────────────────
+  const viewState: StoryViewState = {
+    activeView,
+    shownStoryTrend,
+    shownStoryAnalysis,
+    shownContributorIds,
+    shownWeightIds,
+    shownLagIds,
+    shownRelationshipIds,
+    shownAnalysisIds,
+    onStoryView,
+    onRelationshipView,
+    onAnalysisView,
+    onToggleStoryTrend,
+    onToggleStoryAnalysis,
+    onToggleContributor,
+    onToggleWeight,
+    onToggleLag,
+    onToggleRelationship,
+    onToggleAnalysis,
+  };
+
+  return (
+    <div className="flex min-h-screen w-full">
+      <aside className="w-96 shrink-0 border-r border-zinc-100 px-5 py-6 overflow-y-auto">
+        <StorySidebar viewState={viewState} />
+      </aside>
+      <div className="flex flex-col flex-1">
+        <main className="flex-1 overflow-hidden">
+          <StoryGraph viewState={viewState} />
+        </main>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// StoryPage — outer shell, mounts DataProvider only
+// ─────────────────────────────────────────────────────────────────────────────
 
 export default function StoryPage() {
   const params  = useParams();
   const storyId = params.id as string;
 
   return (
-    <DataProvider storyId={storyId}>
-      <UIProvider>
-        <div className="flex min-h-screen w-full">
-          <aside className="w-96 shrink-0 border-r border-zinc-100 px-5 py-6 overflow-y-auto">
-            <StorySidebar />
-          </aside>
-          <div className="flex flex-col flex-1">
-            <main className="flex-1 overflow-hidden">
-              <StoryGraph />
-            </main>
-          </div>
-        </div>
-      </UIProvider>
+    <DataProvider>
+      <StoryPageInner storyId={storyId} />
     </DataProvider>
   );
 }

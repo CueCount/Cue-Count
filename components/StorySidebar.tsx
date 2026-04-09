@@ -1,15 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import type {
-  ContributorWithDetail,
-  AnalysisRow,
-  PerspectiveRow,
-} from "@/types/db";
-import { useUI } from "@/contexts/UIState";
 import { useData } from "@/contexts/DataState";
 import Breadcrumb from "@/components/Breadcrumb";
-import mockPerspectives from "@/data/mock/perspectives.json";
+import type { AssembledContributor } from "@/types/db";
+import type { StoryViewState } from "@/app/story/[id]/page";
+
+import {
+  EyeIcon,
+  EyeOffIcon,
+  ForkIcon,
+  BarIcon,
+  FilterIcon,
+  ChevronLeftIcon,
+} from "@/components/icons";
+
+// ── Colors ────────────────────────────────────────────────────────────────────
 
 export const TREND_COLORS = [
   "#c026d3",
@@ -31,16 +37,7 @@ const METRIC_COLORS = {
   relationshipValue: "#10b981",
 };
 
-import {
-  EyeIcon,
-  EyeOffIcon,
-  ForkIcon,
-  BarIcon,
-  FilterIcon,
-  ChevronLeftIcon,
-} from "@/components/icons";
-
-// ── Stat pill ──────────────────────────────────────────────────────────
+// ── Stat pill ─────────────────────────────────────────────────────────────────
 
 function Stat({ icon, value }: { icon: React.ReactNode; value: string | number }) {
   return (
@@ -51,7 +48,36 @@ function Stat({ icon, value }: { icon: React.ReactNode; value: string | number }
   );
 }
 
-// ── Relationship type badge ────────────────────────────────────────────
+// ── Eye toggle button ─────────────────────────────────────────────────────────
+
+function EyeToggle({
+  shown,
+  onToggle,
+  label,
+  title,
+}: {
+  shown:    boolean;
+  onToggle: () => void;
+  label?:   string;
+  title?:   string;
+}) {
+  return (
+    <button
+      onClick={onToggle}
+      title={title ?? (shown ? "Hide from graph" : "Show on graph")}
+      className={`flex items-center gap-1 transition-colors duration-150 ${
+        shown
+          ? "text-indigo-500 hover:text-indigo-700"
+          : "text-zinc-300 hover:text-zinc-500"
+      }`}
+    >
+      {shown ? <EyeIcon /> : <EyeOffIcon />}
+      {label && <span className="text-xs">{label}</span>}
+    </button>
+  );
+}
+
+// ── Relationship type badge ───────────────────────────────────────────────────
 
 const REL_COLORS: Record<string, string> = {
   direct:     "bg-emerald-50 text-emerald-600 border-emerald-200",
@@ -69,27 +95,27 @@ function RelBadge({ type }: { type: string }) {
   );
 }
 
-// ── Metric series row ──────────────────────────────────────────────────
+// ── Metric series row ─────────────────────────────────────────────────────────
 
 function MetricSeriesRow({
   label,
   color,
   ids,
-  isShownFn,
+  shownIds,
   toggleFn,
 }: {
-  label: string;
-  color: string;
-  ids: string[];
-  isShownFn: (id: string) => boolean;
+  label:    string;
+  color:    string;
+  ids:      string[];
+  shownIds: Set<string>;
   toggleFn: (id: string) => void;
 }) {
-  const isShown = ids.length > 0 && ids.some((id) => isShownFn(id));
+  const isShown = ids.length > 0 && ids.some((id) => shownIds.has(id));
 
   function toggle() {
     ids.forEach((id) => {
-      const currentlyShown = isShownFn(id);
-      if (isShown && currentlyShown) toggleFn(id);
+      const currentlyShown = shownIds.has(id);
+      if (isShown && currentlyShown)   toggleFn(id);
       if (!isShown && !currentlyShown) toggleFn(id);
     });
   }
@@ -116,133 +142,20 @@ function MetricSeriesRow({
   );
 }
 
-// ── Contributor Panel ──────────────────────────────────────────────────
-// Shown when activeView === "contributor". Replaces the full sidebar content.
-// Back button calls activateStoryView() to return to the contributors list.
+// ── Analysis card ─────────────────────────────────────────────────────────────
 
-function ContributorPanel() {
-  const { rootStory, getEffectiveContributors } = useData();
-  const {
-    contributorView,
-    isStoryShown,
-    toggleStoryVisibility,
-    isWeightShown,
-    isLagShown,
-    isRelationshipShown,
-    toggleWeightVisibility,
-    toggleLagVisibility,
-    toggleRelationshipVisibility,
-    activateStoryView,
-  } = useUI();
- 
-  if (!contributorView || !rootStory) return null;
- 
-  const { name: title, id: storyId, focalTrend } = rootStory;
-  // Use getEffectiveContributors so the weight/lag/relationship IDs here
-  // match exactly what activateContributorView put into shownWeightIds etc.
-  const contributor = getEffectiveContributors().find((c) => c.id === contributorView.contributorId);
- 
-  const focalIsShown = isStoryShown(storyId);
-  const focalColor   = getTrendColor(0);
- 
-  return (
-    <div className="flex flex-col flex-1 overflow-y-auto">
- 
-      {/* Focal story card */}
-      <div
-        className="flex flex-col gap-2 mb-2 px-3 py-2 rounded-md bg-zinc-100"
-        style={{ borderLeft: `3px solid ${focalColor}` }}
-      >
-        <p className="text-zinc-800 font-semibold text-sm leading-snug">{title}</p>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => toggleStoryVisibility(storyId)}
-            className={`transition-colors duration-150 ${
-              focalIsShown
-                ? "text-indigo-500 hover:text-indigo-700"
-                : "text-zinc-300 hover:text-zinc-500"
-            }`}
-          >
-            {focalIsShown ? <EyeIcon /> : <EyeOffIcon />}
-          </button>
-          <Stat icon={<BarIcon />} value={focalTrend.values.length} />
-        </div>
-      </div>
- 
-      {/* Back link — between focal story and contributor card */}
-      <button
-        onClick={() => activateStoryView()}
-        className="flex items-center gap-1 text-xs text-zinc-400 hover:text-zinc-600 mb-2 transition-colors duration-150"
-      >
-        <ChevronLeftIcon />
-        Back to Contributors
-      </button>
- 
-      {/* Contributor card */}
-      {contributor && (() => {
-        const isShown = isStoryShown(contributor.id);
-        const color   = getTrendColor(1);
-        return (
-          <div
-            className="flex flex-col gap-1.5 py-2 px-3 rounded-md bg-zinc-100 mb-1.5"
-            style={{ borderLeft: `3px solid ${color}` }}
-          >
-            <p className="text-zinc-700 text-sm leading-snug">{contributor.name}</p>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => toggleStoryVisibility(contributor.id)}
-                className={`transition-colors duration-150 ${
-                  isShown
-                    ? "text-indigo-500 hover:text-indigo-700"
-                    : "text-zinc-300 hover:text-zinc-500"
-                }`}
-              >
-                {isShown ? <EyeIcon /> : <EyeOffIcon />}
-              </button>
-            </div>
-          </div>
-        );
-      })()}
- 
-      {/* Metric series rows */}
-      {contributor && (
-        <>
-          <MetricSeriesRow
-            label="Weight"
-            color={METRIC_COLORS.weight}
-            ids={contributor.weights.map((w) => w.id)}
-            isShownFn={isWeightShown}
-            toggleFn={toggleWeightVisibility}
-          />
-          <MetricSeriesRow
-            label="Lag"
-            color={METRIC_COLORS.lag}
-            ids={contributor.lags.map((l) => l.id)}
-            isShownFn={isLagShown}
-            toggleFn={toggleLagVisibility}
-          />
-          <MetricSeriesRow
-            label="Relationship Value"
-            color={METRIC_COLORS.relationshipValue}
-            ids={contributor.relationships.map((r) => r.id)}
-            isShownFn={isRelationshipShown}
-            toggleFn={toggleRelationshipVisibility}
-          />
-        </>
-      )}
- 
-    </div>
-  );
-}
+type AnalysisEntry = { id: string; Name?: string; createdAt?: string };
 
-// ── Analysis Panel card ────────────────────────────────────────────────
-
-function AnalysisCard({ variant }: { variant: AnalysisRow }) {
+function AnalysisCard({
+  variant,
+  viewState,
+}: {
+  variant:   AnalysisEntry;
+  viewState: StoryViewState;
+}) {
   const { activeAnalysisId, setActiveAnalysisId } = useData();
-  const { isAnalysisShown, toggleAnalysisVisibility } = useUI();
-
   const isActive = activeAnalysisId === variant.id;
-  const isShown  = isAnalysisShown(variant.id);
+  const isShown  = viewState.shownAnalysisIds.has(variant.id);
 
   return (
     <div
@@ -254,17 +167,14 @@ function AnalysisCard({ variant }: { variant: AnalysisRow }) {
           : "bg-zinc-100 border border-transparent hover:border-zinc-200"
         }
       `}
-      onClick={() => setActiveAnalysisId(isActive ? null : variant.id)}
+      onClick={() => setActiveAnalysisId(isActive ? "RootAnalysis" : variant.id)}
     >
       <p className={`text-sm font-medium leading-snug ${isActive ? "text-indigo-700" : "text-zinc-700"}`}>
-        {variant.name ?? "Unnamed variant"}
+        {variant.Name ?? "Unnamed variant"}
       </p>
       <div className="flex items-center gap-2">
         <button
-          onClick={(e) => {
-            e.stopPropagation();
-            toggleAnalysisVisibility(variant.id);
-          }}
+          onClick={(e) => { e.stopPropagation(); viewState.onToggleAnalysis(variant.id); }}
           title={isShown ? "Hide from graph" : "Show on graph"}
           className={`transition-colors duration-150 ${
             isShown
@@ -279,161 +189,184 @@ function AnalysisCard({ variant }: { variant: AnalysisRow }) {
             Active
           </span>
         )}
-        <span className="text-xs text-zinc-400">
-          {new Date(variant.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-        </span>
+        {variant.createdAt && (
+          <span className="text-xs text-zinc-400">
+            {new Date(variant.createdAt).toLocaleDateString("en-US", {
+              month: "short", day: "numeric", year: "numeric",
+            })}
+          </span>
+        )}
       </div>
     </div>
   );
 }
 
-// ── Contributor Node ───────────────────────────────────────────────────
+// ── ContributorPanel ──────────────────────────────────────────────────────────
+// Shown when activeView === "contributor".
+// Story pair toggles shown at top; contributor pair + metrics below.
+
+function ContributorPanel({
+  storyName,
+  storyDataPointCount,
+  contributor,
+  viewState,
+}: {
+  storyName:           string;
+  storyDataPointCount: number;
+  contributor:         AssembledContributor;
+  viewState:           StoryViewState;
+}) {
+  const focalColor       = getTrendColor(0);
+  const contributorColor = getTrendColor(1);
+
+  return (
+    <div className="flex flex-col flex-1 overflow-y-auto">
+
+      {/* Back link */}
+      <button
+        onClick={() => viewState.onStoryView()}
+        className="flex items-center gap-1 text-xs text-zinc-400 hover:text-zinc-600 mb-2 transition-colors duration-150"
+      >
+        <ChevronLeftIcon />
+        Back to Contributors
+      </button>
+
+      {/* Contributor card — single pair toggle */}
+      <div
+        className="flex flex-col gap-1.5 py-2 px-3 rounded-md bg-zinc-100 mb-1.5"
+        style={{ borderLeft: `3px solid ${contributorColor}` }}
+      >
+        <p className="text-zinc-700 text-sm leading-snug">{contributor.name}</p>
+        <div className="flex items-center gap-2">
+          <EyeToggle
+            shown={viewState.shownContributorIds.has(contributor.id)}
+            onToggle={() => viewState.onToggleContributor(contributor.id)}
+          />
+          {contributor.meta && (
+            <span className="text-xs text-zinc-400">
+              {contributor.meta.unit}
+              {contributor.meta.denomination && contributor.meta.denomination !== 1
+                ? ` ×${contributor.meta.denomination.toLocaleString()}`
+                : ""}
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Metric series rows */}
+      <MetricSeriesRow
+        label="Weight"
+        color={METRIC_COLORS.weight}
+        ids={contributor.weightValues.map((w) => w.id)}
+        shownIds={viewState.shownWeightIds}
+        toggleFn={viewState.onToggleWeight}
+      />
+      <MetricSeriesRow
+        label="Lag"
+        color={METRIC_COLORS.lag}
+        ids={contributor.lagValues.map((l) => l.id)}
+        shownIds={viewState.shownLagIds}
+        toggleFn={viewState.onToggleLag}
+      />
+      <MetricSeriesRow
+        label="Relationship Value"
+        color={METRIC_COLORS.relationshipValue}
+        ids={contributor.relationshipValues.map((r) => r.id)}
+        shownIds={viewState.shownRelationshipIds}
+        toggleFn={viewState.onToggleRelationship}
+      />
+    </div>
+  );
+}
+
+// ── ContributorNode ───────────────────────────────────────────────────────────
+// One row per contributor in the story view list.
+// Single eye toggle controls the whole TrendData + analysis pair.
 
 function ContributorNode({
   contributor,
-  allContributors,
   colorIndex,
-  depth,
-  hiddenContributorIds,
-  onToggleSidebarVisibility,
+  viewState,
 }: {
-  contributor: ContributorWithDetail;
-  allContributors: ContributorWithDetail[];
-  colorIndex: number;
-  depth: number;
-  hiddenContributorIds: Set<string>;
-  onToggleSidebarVisibility: (id: string) => void;
+  contributor: AssembledContributor;
+  colorIndex:  number;
+  viewState:   StoryViewState;
 }) {
-  const [expanded, setExpanded] = useState(true);
-
-  const { isStoryShown, toggleStoryVisibility, activateContributorView } = useUI();
-
-  const story = contributor;
-  const trend = contributor.trend;
-  const color = getTrendColor(colorIndex);
-
-  const isShown          = isStoryShown(story.id);
-  const isChildrenHidden = hiddenContributorIds.has(story.id);
-
-  const children    = allContributors.filter((c) => c.focalStoryId === story.id);
-  const hasChildren = children.length > 0;
-
-  const latestWeight = contributor.weights.at(0)?.values.at(-1)?.value ?? null;
-  const relType      = contributor.type;
+  const color        = getTrendColor(colorIndex);
+  const isShown      = viewState.shownContributorIds.has(contributor.id);
+  const latestWeight = contributor.weightValues.at(-1)?.value ?? null;
+  const relType      = (contributor.relationshipTypeValues.at(-1)?.value as string) ?? null;
 
   return (
-    <div style={{ width: `calc(100% - ${depth * 10}px)` }}>
-      <div
-        className="flex flex-col gap-1.5 py-2 px-3 rounded-md bg-zinc-100 mb-1.5"
-        style={{ borderLeft: `3px solid ${color}` }}
-      >
-        <div className="flex items-center gap-1.5">
-          <p className="text-zinc-700 text-sm leading-snug">{story.name}</p>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => toggleStoryVisibility(story.id)}
-            title={isShown ? "Hide from graph" : "Show on graph"}
-            className={`transition-colors duration-150 ${
-              isShown
-                ? "text-indigo-500 hover:text-indigo-700"
-                : "text-zinc-300 hover:text-zinc-500"
-            }`}
-          >
-            {isShown ? <EyeIcon /> : <EyeOffIcon />}
-          </button>
-
-          <RelBadge type={relType} />
-
-          {latestWeight !== null && (
-            <button
-              onClick={() => activateContributorView(contributor.id)}
-              title="View contributor metrics"
-              className="flex items-center gap-1 text-xs text-indigo-500 hover:text-indigo-700 transition-colors duration-150"
-            >
-              <FilterIcon />
-              {latestWeight.toFixed(2)}
-            </button>
-          )}
-
-          <Stat icon={<ForkIcon />} value={children.length} />
-          <Stat icon={<BarIcon />} value={trend.values.length} />
-
-          {hasChildren && (
-            <button
-              onClick={() => onToggleSidebarVisibility(story.id)}
-              className="ml-auto text-xs font-medium text-zinc-400 hover:text-zinc-600"
-            >
-              {isChildrenHidden ? "Show" : "Hide"}
-            </button>
-          )}
-        </div>
+    <div
+      className="flex flex-col gap-1.5 py-2 px-3 rounded-md bg-zinc-100 mb-1.5"
+      style={{ borderLeft: `3px solid ${color}` }}
+    >
+      <div className="flex items-center gap-1.5">
+        <p className="text-zinc-700 text-sm leading-snug">{contributor.name}</p>
+        {relType && <RelBadge type={relType} />}
       </div>
 
-      {hasChildren && expanded && !isChildrenHidden && (
-        <div>
-          {children.map((child, i) => (
-            <ContributorNode
-              key={child.id}
-              contributor={child}
-              allContributors={allContributors}
-              colorIndex={colorIndex + i + 1}
-              depth={depth + 1}
-              hiddenContributorIds={hiddenContributorIds}
-              onToggleSidebarVisibility={onToggleSidebarVisibility}
-            />
-          ))}
-        </div>
-      )}
+      <div className="flex items-center gap-2">
+        <EyeToggle
+          shown={isShown}
+          onToggle={() => viewState.onToggleContributor(contributor.id)}
+        />
+
+        <button
+          onClick={() => viewState.onRelationshipView(contributor.id)}
+          title="View contributor metrics"
+          className="flex items-center gap-1 text-xs text-indigo-500 hover:text-indigo-700 transition-colors duration-150"
+        >
+          <FilterIcon />
+          <p className="text-indigo-500 text-sm leading-snug">Open Relationship</p>
+        </button>
+        
+
+      </div>
     </div>
   );
 }
 
-// ── StorySidebar ───────────────────────────────────────────────────────
+// ── StorySidebar ──────────────────────────────────────────────────────────────
 
-export default function StorySidebar() {
-  const [hiddenContributorIds, setHiddenContributorIds] = useState<Set<string>>(new Set());
-
+export default function StorySidebar({ viewState }: { viewState: StoryViewState }) {
   const {
-    activeView,
-    isStoryShown,
-    toggleStoryVisibility,
-    activateAnalysisView,
-    activateStoryView,
-  } = useUI();
-  const { rootStory, analyses, activeAnalysisId } = useData();
+    assembledStory,
+    activeStoryDoc,
+    activeAnalysisId,
+    perspectives,
+  } = useData();
 
-  if (!rootStory) return null;
+  if (!assembledStory) return null;
 
-  const { name: title, id: storyId, focalTrend, contributors } = rootStory;
+  const { id: storyId, name: title, trendDataValues, contributors } = assembledStory;
 
-  const perspective = (mockPerspectives as PerspectiveRow[]).find(
-    (p) => p.id === rootStory.perspectiveId
-  );
+  const perspective = perspectives.find((p) => p.id === activeStoryDoc?.perspectiveId);
 
-  const focalIsShown = isStoryShown(storyId);
-  const focalColor   = getTrendColor(0);
+  const activeAnalysisEntry = activeAnalysisId
+    ? { id: activeAnalysisId, ...(activeStoryDoc?.Analysis?.[activeAnalysisId] as any) }
+    : null;
 
-  function toggleSidebarVisibility(id: string) {
-    setHiddenContributorIds((prev) => {
-      const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
-      return next;
-    });
-  }
+  const analyses: AnalysisEntry[] = Object.entries(activeStoryDoc?.Analysis ?? {})
+    .sort(([a]) => a === "RootAnalysis" ? -1 : 1)
+    .map(([id, entry]) => ({ id, ...(entry as any) }));
 
-  const directContributors = contributors.filter((c) => c.focalStoryId === storyId);
+  const activeContributor = viewState.activeView === "contributor"
+    ? contributors.find((c) => viewState.shownContributorIds.has(c.id)) ?? null
+    : null;
+
+  const focalColor = getTrendColor(0);
 
   return (
     <div className="flex flex-col h-full">
 
-      {/* ── User header ───────────────────────────────────────────────── */}
+      {/* ── User header ───────────────────────────────────────────────────── */}
       <div className="flex items-center gap-2.5 mb-5">
         <Breadcrumb items={[
           { label: "Home", href: "/" },
           { label: "Perspectives", href: "/" },
-          { label: perspective?.name ?? "Perspective", href: `/perspective/${rootStory.perspectiveId}` },
+          { label: perspective?.name ?? "Perspective", href: `/perspective/${activeStoryDoc?.perspectiveId}` },
           { label: title },
         ]} />
         <div className="w-8 h-8 rounded-full bg-zinc-300 shrink-0 overflow-hidden" />
@@ -450,91 +383,82 @@ export default function StorySidebar() {
         </button>
       </div>
 
-      {/* ── Contributors view (default) ───────────────────────────────── */}
-      {activeView === "story" && (
+      {/* ── Story view ────────────────────────────────────────────────────── */}
+      {viewState.activeView === "story" && (
         <div className="flex flex-col flex-1 overflow-y-auto">
 
-          {/* Active analysis pill — click to open analysis panel */}
-          {activeAnalysisId && (() => {
-            const activeAnalysis = analyses.find((a) => a.id === activeAnalysisId);
-            return activeAnalysis ? (
-              <button
-                onClick={() => activateAnalysisView()}
-                className="flex items-center gap-1.5 px-3 py-1.5 mb-3 rounded-md border border-indigo-200 bg-indigo-50 text-indigo-600 text-xs font-medium w-full text-left"
-              >
-                <ForkIcon />
-                <span className="flex-1 truncate">{activeAnalysis.name}</span>
-                <span>→</span>
-              </button>
-            ) : null;
-          })()}
-
-          {/* Focal story card */}
+          {/* Focal story card — two independent toggles */}
           <div
             className="flex flex-col gap-2 mb-2 px-3 py-2 rounded-md bg-zinc-100"
             style={{ borderLeft: `3px solid ${focalColor}` }}
           >
             <p className="text-zinc-800 font-semibold text-sm leading-snug">{title}</p>
             <div className="flex items-center gap-3">
-              <button
-                onClick={() => toggleStoryVisibility(storyId)}
-                title={focalIsShown ? "Hide from graph" : "Show on graph"}
-                className={`transition-colors duration-150 ${
-                  focalIsShown
-                    ? "text-indigo-500 hover:text-indigo-700"
-                    : "text-zinc-300 hover:text-zinc-500"
-                }`}
-              >
-                {focalIsShown ? <EyeIcon /> : <EyeOffIcon />}
-              </button>
-              <Stat icon={<ForkIcon />} value={contributors.length} />
-              <Stat icon={<BarIcon />} value={focalTrend.values.length} />
+              <EyeToggle
+                shown={viewState.shownStoryAnalysis}
+                onToggle={viewState.onToggleStoryAnalysis}
+                label="Analyzed"
+              />
+              <EyeToggle
+                shown={viewState.shownStoryTrend}
+                onToggle={viewState.onToggleStoryTrend}
+                label="Root Data"
+              />
             </div>
           </div>
 
-          {/* Contributor count label */}
+          {/* Active analysis pill */}
+          {activeAnalysisEntry && (
+            <button
+              onClick={() => viewState.onAnalysisView()}
+              className="flex items-center gap-1.5 px-3 py-1.5 mb-3 rounded-md border border-indigo-200 bg-indigo-50 text-indigo-600 text-xs font-medium w-full text-left"
+            >
+              <ForkIcon />
+              <span className="flex-1 truncate">{activeAnalysisEntry.Name ?? activeAnalysisEntry.id}</span>
+              <span>→</span>
+            </button>
+          )}
+
+          {/* Calculation  label */}
           <p className="text-xs text-zinc-400 mb-2 px-1">
-            {directContributors.length} Contributor{directContributors.length !== 1 ? "s" : ""}
+            Standard Calculation Algo
           </p>
 
-          {directContributors.map((contributor, i) => (
+          {/* Contributor count label */}
+          <p className="text-xs text-zinc-400 mb-2 px-1">
+            {contributors.length} Contributor{contributors.length !== 1 ? "s" : ""}
+          </p>
+
+          {/* Contributor nodes */}
+          {contributors.map((contributor, i) => (
             <ContributorNode
               key={contributor.id}
               contributor={contributor}
-              allContributors={contributors}
               colorIndex={i + 1}
-              depth={0}
-              hiddenContributorIds={hiddenContributorIds}
-              onToggleSidebarVisibility={toggleSidebarVisibility}
+              viewState={viewState}
             />
           ))}
         </div>
       )}
 
-      {/* ── Analysis view ─────────────────────────────────────────────── */}
-      {activeView === "analysis" && (
+      {/* ── Analysis view ─────────────────────────────────────────────────── */}
+      {viewState.activeView === "analysis" && (
         <div className="flex flex-col flex-1 overflow-y-auto">
 
-          {/* Focal story card with back link */}
+          {/* Story card — trend toggle is the base reference line */}
           <div
             className="flex flex-col gap-2 mb-3 px-3 py-2 rounded-md bg-zinc-100"
             style={{ borderLeft: `3px solid ${focalColor}` }}
           >
             <p className="text-zinc-800 font-semibold text-sm leading-snug">{title}</p>
             <div className="flex items-center gap-3">
+              <EyeToggle
+                shown={viewState.shownStoryTrend}
+                onToggle={viewState.onToggleStoryTrend}
+                label="Root Data"
+              />
               <button
-                onClick={() => toggleStoryVisibility(storyId)}
-                title={focalIsShown ? "Hide from graph" : "Show on graph"}
-                className={`transition-colors duration-150 ${
-                  focalIsShown
-                    ? "text-indigo-500 hover:text-indigo-700"
-                    : "text-zinc-300 hover:text-zinc-500"
-                }`}
-              >
-                {focalIsShown ? <EyeIcon /> : <EyeOffIcon />}
-              </button>
-              <button
-                onClick={() => activateStoryView()}
+                onClick={() => viewState.onStoryView()}
                 className="ml-auto text-xs text-indigo-500 hover:text-indigo-700 transition-colors duration-150"
               >
                 Back to Story →
@@ -543,7 +467,7 @@ export default function StorySidebar() {
           </div>
 
           <p className="text-xs text-zinc-400 mb-2 px-1">
-            {analyses.length} Variant{analyses.length !== 1 ? "s" : ""} for Story
+            {analyses.length} Analysis{analyses.length !== 1 ? "s" : ""} for Story
           </p>
 
           {analyses.length === 0 ? (
@@ -551,32 +475,62 @@ export default function StorySidebar() {
               No analyses yet
             </div>
           ) : (
-            analyses.map((analysis: AnalysisRow) => (
-              <AnalysisCard key={analysis.id} variant={analysis} />
+            analyses.map((analysis) => (
+              <AnalysisCard key={analysis.id} variant={analysis} viewState={viewState} />
             ))
           )}
         </div>
       )}
 
-      {/* ── Contributor view ──────────────────────────────────────────── */}
-      {activeView === "contributor" && (
+      {/* ── Contributor view ──────────────────────────────────────────────── */}
+      {viewState.activeView === "contributor" && (
         <div className="flex flex-col flex-1 overflow-y-auto">
-          {/* Active analysis pill — click to open analysis panel */}
-          {activeAnalysisId && (() => {
-            const activeAnalysis = analyses.find((a) => a.id === activeAnalysisId);
-            return activeAnalysis ? (
-              <button
-                onClick={() => activateAnalysisView()}
-                className="flex items-center gap-1.5 px-3 py-1.5 mb-3 rounded-md border border-indigo-200 bg-indigo-50 text-indigo-600 text-xs font-medium w-full text-left"
-              >
-                <ForkIcon />
-                <span className="flex-1 truncate">{activeAnalysis.name}</span>
-                <span>→</span>
-              </button>
-            ) : null;
-          })()}
 
-          <ContributorPanel />
+          {/* Focal story card — two independent toggles */}
+          <div
+            className="flex flex-col gap-2 mb-2 px-3 py-2 rounded-md bg-zinc-100"
+            style={{ borderLeft: `3px solid ${focalColor}` }}
+          >
+            <p className="text-zinc-800 font-semibold text-sm leading-snug">{title}</p>
+            <div className="flex items-center gap-3">
+              <EyeToggle
+                shown={viewState.shownStoryAnalysis}
+                onToggle={viewState.onToggleStoryAnalysis}
+                label="Analyzed"
+              />
+              <EyeToggle
+                shown={viewState.shownStoryTrend}
+                onToggle={viewState.onToggleStoryTrend}
+                label="Root Data"
+              />
+            </div>
+          </div>
+
+          {/* Active analysis pill */}
+          {activeAnalysisEntry && (
+            <button
+              onClick={() => viewState.onAnalysisView()}
+              className="flex items-center gap-1.5 px-3 py-1.5 mb-3 rounded-md border border-indigo-200 bg-indigo-50 text-indigo-600 text-xs font-medium w-full text-left"
+            >
+              <ForkIcon />
+              <span className="flex-1 truncate">{activeAnalysisEntry.Name ?? activeAnalysisEntry.id}</span>
+              <span>→</span>
+            </button>
+          )}
+          
+          {/* Calculation  label */}
+          <p className="text-xs text-zinc-400 mb-2 px-1">
+            Standard Calculation Algo
+          </p>
+
+          {activeContributor && (
+            <ContributorPanel
+              storyName={title}
+              storyDataPointCount={trendDataValues.length}
+              contributor={activeContributor}
+              viewState={viewState}
+            />
+          )}
         </div>
       )}
 
