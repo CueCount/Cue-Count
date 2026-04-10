@@ -31,6 +31,9 @@ export type StoryViewState = {
   // ── Contributor toggles (whole pair per contributor) ──────────────────────
   shownContributorIds:   Set<string>;
 
+  // ── Active contributor (panel identity, independent of graph visibility) ──
+  activeContributorId:   string | null;
+
   // ── Metric toggles (contributor view only) ────────────────────────────────
   shownWeightIds:        Set<string>;
   shownLagIds:           Set<string>;
@@ -74,6 +77,7 @@ function StoryPageInner({ storyId }: { storyId: string }) {
   const [shownLagIds,          setShownLagIds]          = useState<Set<string>>(new Set());
   const [shownRelationshipIds, setShownRelationshipIds] = useState<Set<string>>(new Set());
   const [shownAnalysisIds,     setShownAnalysisIds]     = useState<Set<string>>(new Set());
+  const [activeContributorId,  setActiveContributorId]  = useState<string | null>(null);
 
   // ── Init ───────────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -111,6 +115,7 @@ function StoryPageInner({ storyId }: { storyId: string }) {
     setShownStoryTrend(true);
     setShownStoryAnalysis(true);
     setShownContributorIds(new Set([contributorId]));
+    setActiveContributorId(contributorId);
 
     const c = assembledStory.contributors.find((c) => c.id === contributorId);
     if (c) {
@@ -162,6 +167,7 @@ function StoryPageInner({ storyId }: { storyId: string }) {
     shownLagIds,
     shownRelationshipIds,
     shownAnalysisIds,
+    activeContributorId,
     onStoryView,
     onRelationshipView,
     onAnalysisView,

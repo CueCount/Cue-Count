@@ -218,6 +218,7 @@ function ContributorPanel({
 }) {
   const focalColor       = getTrendColor(0);
   const contributorColor = getTrendColor(1);
+  const isShown      = viewState.shownContributorIds.has(contributor.id);
 
   return (
     <div className="flex flex-col flex-1 overflow-y-auto">
@@ -239,7 +240,7 @@ function ContributorPanel({
         <p className="text-zinc-700 text-sm leading-snug">{contributor.name}</p>
         <div className="flex items-center gap-2">
           <EyeToggle
-            shown={viewState.shownContributorIds.has(contributor.id)}
+            shown={isShown}
             onToggle={() => viewState.onToggleContributor(contributor.id)}
           />
           {contributor.meta && (
@@ -321,8 +322,6 @@ function ContributorNode({
           <FilterIcon />
           <p className="text-indigo-500 text-sm leading-snug">Open Relationship</p>
         </button>
-        
-
       </div>
     </div>
   );
@@ -353,7 +352,7 @@ export default function StorySidebar({ viewState }: { viewState: StoryViewState 
     .map(([id, entry]) => ({ id, ...(entry as any) }));
 
   const activeContributor = viewState.activeView === "contributor"
-    ? contributors.find((c) => viewState.shownContributorIds.has(c.id)) ?? null
+    ? contributors.find((c) => c.id === viewState.activeContributorId) ?? null
     : null;
 
   const focalColor = getTrendColor(0);
@@ -517,7 +516,7 @@ export default function StorySidebar({ viewState }: { viewState: StoryViewState 
               <span>→</span>
             </button>
           )}
-          
+
           {/* Calculation  label */}
           <p className="text-xs text-zinc-400 mb-2 px-1">
             Standard Calculation Algo

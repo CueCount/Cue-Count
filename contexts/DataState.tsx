@@ -328,11 +328,11 @@ export function DataProvider({ children }: { children: ReactNode }) {
       const allAnalysisEntries = Object.entries(storyDoc.Analysis ?? {});
 
       for (const [aId, entry] of allAnalysisEntries) {
-        const storyDataId = (entry as any).Story?.dataId;
+        const storyDataId = (entry as any).Story?.DataId;
         if (storyDataId) allDataIdSet.add(storyDataId);
 
         for (const contributor of Object.values((entry as any).Contributors ?? {})) {
-          const dataId = (contributor as any).dataId;
+          const dataId = (contributor as any).DataId;
           if (dataId) allDataIdSet.add(dataId);
         }
       }
