@@ -170,4 +170,5 @@ export type AssembledStory = {
   dataValues:       DataRow[];
   contributors:     AssembledContributor[];
   analyses:         AssembledAnalysis[];
+  calculatedDataValues: { timestamp: string; value: number }[];
 };

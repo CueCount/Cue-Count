@@ -17,6 +17,7 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { calculateStoryValues } from "@/lib/storyCalculation";
 import type {
   PerspectiveDocument,
   StoryDocument,
@@ -581,18 +582,22 @@ export function DataProvider({ children }: { children: ReactNode }) {
       };
     });
 
+    // ── Calculated story values ───────────────────────────────────────────────
+    // Live recalc from contributor values. Rebuilds any time a contributor's
+    // merged data, weight, lag, relationship, or relationshipType changes.
+    // trendDataValues is the unmodified baseline passed as the starting point.
+    const calculatedDataValues = calculateStoryValues(storyTrendDataValues, contributors);
+
     return {
-      id:                activeStoryDoc.id,
-      name:              activeStoryDoc.name,
-      trendId:           storyTrendId,
-      dataId:            storyDataId,
+      id:                   activeStoryDoc.id,
+      name:                 activeStoryDoc.name,
+      trendId:              storyTrendId,
+      dataId:               storyDataId,
       activeAnalysisId,
-      // Trend metadata for the story's focal trend
-      meta:              storyMeta,
-      // Shared TrendData rows for the focal trend
-      trendDataValues:   storyTrendDataValues,
-      // User-specific data for the focal trend in this analysis
-      dataValues:        allDataValues.filter(v => v.dataId === storyDataId),
+      meta:                 storyMeta,
+      trendDataValues:      storyTrendDataValues,
+      dataValues:           allDataValues.filter(v => v.dataId === storyDataId),
+      calculatedDataValues,
       contributors,
       analyses,
     };

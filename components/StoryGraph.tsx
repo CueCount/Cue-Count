@@ -375,8 +375,12 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
       // Story analysis — draggable, full axis so every slot is a drag target
       datasets.push(makeDataset(
         "Analyzed",
-        toPoints(assembledStory.dataValues),
-        storyColor, shownStoryAnalysis ? 1 : 0, "solid", false, storyAxis, storyDataId,
+        toPoints(
+          assembledStory.calculatedDataValues.length > 0
+            ? assembledStory.calculatedDataValues
+            : assembledStory.dataValues
+        ),
+        storyColor, shownStoryAnalysis ? 1 : 0, "dashed", false, storyAxis,
       ));
       assembledStory.contributors.forEach((c, i) => {
         const color   = getTrendColor(i + 1);
@@ -404,7 +408,11 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
       ));
       datasets.push(makeDataset(
         "Analyzed",
-        toPoints(assembledStory.dataValues),
+        toPoints(
+          assembledStory.calculatedDataValues.length > 0
+            ? assembledStory.calculatedDataValues
+            : assembledStory.dataValues
+        ),
         storyColor, shownStoryAnalysis ? 0.75 : 0, "dashed", false, storyAxis,
       ));
 
