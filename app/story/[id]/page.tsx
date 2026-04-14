@@ -44,6 +44,14 @@ export type StoryViewState = {
   // ── Analysis view toggles ─────────────────────────────────────────────────
   shownAnalysisIds:      Set<string>;
 
+  // ── Edit state ───────────────────────────────────────────────────────────
+  activeEditSeries:    ActiveEditSeries;
+  isDirty:             boolean;
+  onSelectEditSeries:  (series: ActiveEditSeries) => void;
+  onPointEdited:       () => void;
+  onSave:              () => void;
+  onSaveAsNew:         () => void;
+
   // ── View transitions ──────────────────────────────────────────────────────
   onStoryView:           (contributorIds?: string[]) => void;
   onRelationshipView:    (contributorId: string) => void;
@@ -80,6 +88,8 @@ function StoryPageInner({ storyId }: { storyId: string }) {
   const [shownRelationshipIds, setShownRelationshipIds] = useState<Set<string>>(new Set());
   const [shownAnalysisIds,     setShownAnalysisIds]     = useState<Set<string>>(new Set());
   const [activeContributorId,  setActiveContributorId]  = useState<string | null>(null);
+  const [activeEditSeries, setActiveEditSeries] = useState<ActiveEditSeries>("merged");
+  const [isDirty,          setIsDirty]          = useState(false);
 
   // ── Init ───────────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -118,6 +128,7 @@ function StoryPageInner({ storyId }: { storyId: string }) {
     setShownStoryAnalysis(true);
     setShownContributorIds(new Set([contributorId]));
     setActiveContributorId(contributorId);
+    setActiveEditSeries("merged");
 
     const c = assembledStory.contributors.find((c) => c.id === contributorId);
     if (c) {
@@ -152,6 +163,10 @@ function StoryPageInner({ storyId }: { storyId: string }) {
     });
 
   const onToggleStoryTrend    = useCallback(() => setShownStoryTrend(v => !v),    []);
+  const onSelectEditSeries = useCallback((s: ActiveEditSeries) => setActiveEditSeries(s), []);
+  const onPointEdited      = useCallback(() => setIsDirty(true), []);
+  const onSave             = useCallback(() => { /* TODO: persist */ setIsDirty(false); }, []);
+  const onSaveAsNew        = useCallback(() => { /* TODO: create new analysis */ }, []);
   const onToggleStoryAnalysis = useCallback(() => setShownStoryAnalysis(v => !v), []);
   const onToggleContributor   = useCallback(makeToggle(setShownContributorIds),   []);
   const onToggleWeight        = useCallback(makeToggle(setShownWeightIds),        []);
@@ -170,10 +185,16 @@ function StoryPageInner({ storyId }: { storyId: string }) {
     shownRelationshipIds,
     shownAnalysisIds,
     activeContributorId,
+    activeEditSeries,
+    isDirty,
     onStoryView,
     onRelationshipView,
     onAnalysisView,
     onToggleStoryTrend,
+    onSelectEditSeries,
+    onPointEdited,
+    onSave,
+    onSaveAsNew,
     onToggleStoryAnalysis,
     onToggleContributor,
     onToggleWeight,
@@ -184,14 +205,12 @@ function StoryPageInner({ storyId }: { storyId: string }) {
 
   return (
     <div className="flex min-h-screen w-full">
-      <aside className="w-96 shrink-0 border-r border-zinc-100 px-5 py-6 overflow-y-auto">
+      <aside className="w-96 shrink-0 px-5 py-6 overflow-y-auto">
         <StorySidebar viewState={viewState} />
       </aside>
-      <div className="flex flex-col flex-1">
-        <main className="flex-1 overflow-hidden">
-          <StoryGraph viewState={viewState} />
-        </main>
-      </div>
+      <main className="flex-1 overflow-hidden">
+        <StoryGraph viewState={viewState} />
+      </main>
     </div>
   );
 }

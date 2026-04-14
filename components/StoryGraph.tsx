@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState, useCallback } from "react";
+import { useMemo, useRef, useState, useCallback, useEffect } from "react";
 import {
   Chart as ChartJS,
   TimeScale,
@@ -24,7 +24,7 @@ import zoomPlugin from "chartjs-plugin-zoom";
 
 // ── Register Chart.js components ──────────────────────────────────────────────
 ChartJS.register(
-  TimeScale,         // replaces CategoryScale
+  TimeScale,
   LinearScale,
   PointElement,
   LineElement,
@@ -52,6 +52,21 @@ function rgba(hex: string, alpha: number): string {
 
 // ── TimePoint — the data shape Chart.js expects with TimeScale ───────────────
 type TimePoint = { x: string; y: number };
+
+function normalizeTs(ts: string): string {
+  return ts.slice(0, 10); // "2024-01-01T00:00:00Z" → "2024-01-01"
+}
+
+function futureMonths(lastTs: string, count: number): string[] {
+  const result: string[] = [];
+  const d = new Date(lastTs);
+  for (let i = 1; i <= count; i++) {
+    const next = new Date(d);
+    next.setMonth(next.getMonth() + i);
+    result.push(next.toISOString().slice(0, 10));
+  }
+  return result;
+}
 
 // ── axisId: deterministic y-axis ID from unit + denomination ─────────────────
 function axisId(unit: string | null | undefined, denomination: number | null | undefined): string {
@@ -100,7 +115,7 @@ function makeDataset(
     data,
     yAxisID,
     _dataId,                          // custom field — used by onDragEnd for insert/update
-    spanGaps:             false,
+    spanGaps:             true,
     borderColor:          rgba(color, opacity),
     backgroundColor:      rgba(color, opacity * 0.08),
     borderWidth:          2,
@@ -118,7 +133,7 @@ function makeDataset(
 // Returns only the timestamps that have actual data. On a TimeScale, Chart.js
 // naturally leaves visual gaps when x positions are non-contiguous.
 function toPoints(rows: { timestamp: string; value: number }[]): TimePoint[] {
-  return rows.map((v) => ({ x: v.timestamp, y: v.value }));
+  return rows.map(v => ({ x: normalizeTs(v.timestamp), y: v.value }));  // ← normalize here
 }
 
 // ── toFullPoints: full-axis population for draggable series ───────────────────
@@ -131,7 +146,9 @@ function toFullPoints(
   rows: { timestamp: string; value: number }[],
   timeAxis: string[],
 ): { x: string; y: number | null }[] {
-  const byTimestamp = new Map(rows.map(r => [r.timestamp, r.value]));
+  const byTimestamp = new Map(
+    rows.map(r => [normalizeTs(r.timestamp), r.value])  // ← normalize here
+  );
   return timeAxis.map(ts => ({
     x: ts,
     y: byTimestamp.has(ts) ? byTimestamp.get(ts)! : null,
@@ -230,6 +247,40 @@ function RangeSlider({
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// GraphToolBar
+//
+// Whatever look at me I'm the GraphToolBar, I bet you like that don't you
+// ─────────────────────────────────────────────────────────────────────────────
+function GraphToolbar({ viewState }: { viewState: StoryViewState }) {
+  const isEditing = viewState.activeView === "contributor";
+  return (
+    <div className="shrink-0 flex items-center justify-between gap-2 px-3 py-1.5">
+      {/* Left — edit mode indicator */}
+      <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium border ${
+        isEditing ? "border-indigo-300 bg-indigo-50 text-indigo-600" : "border-zinc-200 text-zinc-300"
+      }`}>
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <path d="M2 1l8 5-4.5 1L4 11 2 1z" fill="currentColor"/>
+        </svg>
+        Edit Points
+      </div>
+
+      {/* Right — save actions */}
+      <div className="flex items-center gap-2">
+        {viewState.isDirty && <span className="text-xs text-zinc-400">Unsaved changes</span>}
+        <button
+          onClick={viewState.onSave}
+          disabled={!viewState.isDirty}
+          className="text-sm px-3 py-1.5 text-zinc-600 hover:border-zinc-300 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // StoryGraph
 // ─────────────────────────────────────────────────────────────────────────────
 export default function StoryGraph({ viewState }: { viewState: StoryViewState }) {
@@ -239,6 +290,12 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
     activeAnalysisId,
     allDataValues,
     setAllDataValues,
+    allWeightValues,
+    setAllWeightValues,
+    allLagValues,
+    setAllLagValues,
+    allRelationshipValues,
+    setAllRelationshipValues,
   } = useData();
 
   const chartRef = useRef<ChartJS<"line", any[]>>(null);
@@ -252,7 +309,12 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
     shownLagIds,
     shownRelationshipIds,
     shownAnalysisIds,
+    activeEditSeries,
+    onPointEdited,
   } = viewState;
+
+  const activeEditSeriesRef = useRef(activeEditSeries);
+  useEffect(() => { activeEditSeriesRef.current = activeEditSeries; }, [activeEditSeries]);
 
   // ── Handle range slider → zoom the chart ───────────────────────────────────
   // Receives actual timestamp strings, converts to ms for TimeScale zoom.
@@ -283,7 +345,11 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
       c.trendDataValues.forEach((v) => allTimestamps.add(v.timestamp));
       c.mergedDataValues.forEach((v) => allTimestamps.add(v.timestamp));
     });
-    const timeAxis = Array.from(allTimestamps).sort();
+    let timeAxis = Array.from(allTimestamps).sort();
+    if (activeView === "contributor" && timeAxis.length > 0) {
+      const extensions = futureMonths(timeAxis[timeAxis.length - 1], 3);
+      timeAxis = [...timeAxis, ...extensions];
+    }
 
     const datasets: ReturnType<typeof makeDataset>[] = [];
     const storyColor = getTrendColor(0);
@@ -309,8 +375,8 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
       // Story analysis — draggable, full axis so every slot is a drag target
       datasets.push(makeDataset(
         "Analyzed",
-        toFullPoints(assembledStory.dataValues, timeAxis),
-        storyColor, shownStoryAnalysis ? 0.75 : 0, "dashed", true, storyAxis, storyDataId,
+        toPoints(assembledStory.dataValues),
+        storyColor, shownStoryAnalysis ? 1 : 0, "solid", false, storyAxis, storyDataId,
       ));
       assembledStory.contributors.forEach((c, i) => {
         const color   = getTrendColor(i + 1);
@@ -322,14 +388,15 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
         // Contributor merged — draggable, full axis
         datasets.push(makeDataset(
           c.meta?.name ?? c.name,
-          toFullPoints(c.mergedDataValues, timeAxis),
-          color, opacity, "solid", true, cAxis, c.dataId,
+          toPoints(c.mergedDataValues),
+          color, opacity, "solid", false, cAxis, c.dataId,
         ));
       });
     }
 
     // ── CONTRIBUTOR VIEW ──────────────────────────────────────────────────────
     if (activeView === "contributor") {
+      // Story context lines — always read-only
       datasets.push(makeDataset(
         assembledStory.meta?.name ?? assembledStory.name,
         toPoints(assembledStory.trendDataValues),
@@ -337,8 +404,8 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
       ));
       datasets.push(makeDataset(
         "Analyzed",
-        toFullPoints(assembledStory.dataValues, timeAxis),
-        storyColor, shownStoryAnalysis ? 0.75 : 0, "dashed", true, storyAxis, storyDataId,
+        toPoints(assembledStory.dataValues),
+        storyColor, shownStoryAnalysis ? 0.75 : 0, "dashed", false, storyAxis,
       ));
 
       const contributor = assembledStory.contributors.find((c) =>
@@ -351,23 +418,53 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
         const cDen    = contributor.meta?.denomination ?? 1;
         const cAxis   = axisId(cUnit, cDen);
         axisRegistry.set(cAxis, { unit: cUnit, denomination: cDen });
+
+        // Merged contributor data — draggable only if activeEditSeries === "merged"
+        const mergedIsActive = activeEditSeries === "merged";
         datasets.push(makeDataset(
           contributor.meta?.name ?? contributor.name,
-          toFullPoints(contributor.mergedDataValues, timeAxis),
-          color, opacity, "solid", true, cAxis, contributor.dataId,
+          mergedIsActive
+            ? toFullPoints(contributor.mergedDataValues, timeAxis)
+            : toPoints(contributor.mergedDataValues),
+          color, opacity, "solid", mergedIsActive, cAxis,
+          mergedIsActive ? contributor.dataId : undefined,
         ));
-        // Weight/Lag/Relationship — read-only modifiers, sparse points
+
+        // Weight — draggable only if activeEditSeries === "weight"
         if (shownWeightIds.size > 0) {
           axisRegistry.set("y_ratio", { unit: "ratio", denomination: 1 });
-          datasets.push(makeDataset("Weight", toPoints(contributor.weightValues), METRIC_COLORS.weight, 1, "dashed", false, "y_ratio"));
+          const isActive = activeEditSeries === "weight";
+          datasets.push(makeDataset(
+            "Weight",
+            isActive ? toFullPoints(contributor.weightValues, timeAxis) : toPoints(contributor.weightValues),
+            METRIC_COLORS.weight, 1, "dashed", isActive, "y_ratio",
+            isActive ? contributor.dataId : undefined,
+          ));
         }
+        
+
+        // Lag — draggable only if activeEditSeries === "lag"
         if (shownLagIds.size > 0) {
           axisRegistry.set("y_days", { unit: "days", denomination: 1 });
-          datasets.push(makeDataset("Lag", toPoints(contributor.lagValues), METRIC_COLORS.lag, 1, "dashed", false, "y_days"));
+          const isActive = activeEditSeries === "lag";
+          datasets.push(makeDataset(
+            "Lag",
+            isActive ? toFullPoints(contributor.lagValues, timeAxis) : toPoints(contributor.lagValues),
+            METRIC_COLORS.lag, 1, "dashed", isActive, "y_days",
+            isActive ? contributor.dataId : undefined,
+          ));
         }
+
+        // Relationship — draggable only if activeEditSeries === "relationship"
         if (shownRelationshipIds.size > 0) {
           axisRegistry.set("y_ratio", { unit: "ratio", denomination: 1 });
-          datasets.push(makeDataset("Relationship", toPoints(contributor.relationshipValues), METRIC_COLORS.relationship, 1, "dashed", false, "y_ratio"));
+          const isActive = activeEditSeries === "relationship";
+          datasets.push(makeDataset(
+            "Relationship",
+            isActive ? toFullPoints(contributor.relationshipValues, timeAxis) : toPoints(contributor.relationshipValues),
+            METRIC_COLORS.relationship, 1, "dashed", isActive, "y_ratio",
+            isActive ? contributor.dataId : undefined,
+          ));
         }
       }
     }
@@ -386,10 +483,10 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
           const isShown = shownAnalysisIds.has(analysis.id);
           datasets.push(makeDataset(
             analysis.name,
-            toFullPoints(analysis.dataValues, timeAxis),
+            toPoints(analysis.dataValues),
             color, isShown ? 1 : 0,
             analysis.id === "RootAnalysis" ? "solid" : "dashed",
-            true, storyAxis, analysis.dataId,
+            false, storyAxis, analysis.dataId,
           ));
         });
     }
@@ -408,6 +505,7 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
     shownLagIds,
     shownRelationshipIds,
     shownAnalysisIds,
+    activeEditSeries,
   ]);
 
   // ── Dynamic y-scales from axisRegistry ───────────────────────────────────
@@ -435,28 +533,44 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
       dragData: {
         round:       2,
         showTooltip: true,
-        onDragEnd: (_e: any, datasetIndex: number, index: number, value: number) => {
+        onDragEnd: (_e: any, datasetIndex: number, index: number, value: any) => {
+          const numericValue = typeof value === "object" && value !== null ? value.y : value;
           const ds = datasets[datasetIndex];
           if (!ds?.dragData) return;
 
           const point = (ds.data as { x: string; y: number | null }[])[index];
           if (!point?.x) return;
-          const timestamp = point.x;
-          const dataId    = (ds as any)._dataId as string | undefined;
+          const timestamp = normalizeTs(point.x);
+          const dataId = (ds as any)._dataId as string | undefined;
           if (!dataId) return;
 
-          const existingIdx = allDataValues.findIndex(
-            r => r.dataId === dataId && r.timestamp === timestamp
+          // Read current series type from ref — never stale
+          const series = activeEditSeriesRef.current;
+
+          const allValues =
+            series === "weight"       ? allWeightValues :
+            series === "lag"          ? allLagValues :
+            series === "relationship" ? allRelationshipValues :
+            allDataValues;
+
+          const setter: any =
+            series === "weight"       ? setAllWeightValues :
+            series === "lag"          ? setAllLagValues :
+            series === "relationship" ? setAllRelationshipValues :
+            setAllDataValues;
+
+          const existingIdx = allValues.findIndex(
+            r => r.dataId === dataId && normalizeTs(r.timestamp) === timestamp
           );
+
           if (existingIdx >= 0) {
-            // Update existing analysis override row
-            setAllDataValues(allDataValues.map((row, i) =>
-              i === existingIdx ? { ...row, value } : row
-            ));
+            setter((prev: any[]) =>
+              prev.map((row: any, i: number) => i === existingIdx ? { ...row, value: numericValue } : row)
+            );
           } else {
-            // Create new analysis override for this timestamp
-            setAllDataValues([...allDataValues, { timestamp, value, dataId }]);
+            setter((prev: any[]) => [...prev, { timestamp, value: numericValue, dataId }]);
           }
+          onPointEdited();
         },
       },
 
@@ -507,8 +621,7 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
       },
       ...yScales,
     },
-  }), [datasets, allDataValues, setAllDataValues, axisRegistry, yScales]);
-
+  }), [datasets, allDataValues, setAllDataValues, allWeightValues, setAllWeightValues, allLagValues, setAllLagValues, allRelationshipValues, setAllRelationshipValues, axisRegistry, yScales]);
   // ── Render ──────────────────────────────────────────────────────────────────
   if (!assembledStory) {
     return (
@@ -522,8 +635,9 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
 
   return (
     <div className="flex flex-col w-full h-full px-2 py-2">
+      <GraphToolbar viewState={viewState} />
 
-      <div className="flex-1 min-h-0">
+      <div className="flex-1 min-h-0 px-2 pt-1">
         <Line
           key={activeView}
           ref={chartRef}

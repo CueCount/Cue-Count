@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useData } from "@/contexts/DataState";
 import Breadcrumb from "@/components/Breadcrumb";
 import type { AssembledContributor } from "@/types/db";
@@ -37,17 +36,6 @@ const METRIC_COLORS = {
   relationshipValue: "#10b981",
 };
 
-// ── Stat pill ─────────────────────────────────────────────────────────────────
-
-function Stat({ icon, value }: { icon: React.ReactNode; value: string | number }) {
-  return (
-    <span className="flex items-center gap-1 text-xs text-indigo-500">
-      {icon}
-      {value}
-    </span>
-  );
-}
-
 // ── Eye toggle button ─────────────────────────────────────────────────────────
 
 function EyeToggle({
@@ -77,24 +65,6 @@ function EyeToggle({
   );
 }
 
-// ── Relationship type badge ───────────────────────────────────────────────────
-
-const REL_COLORS: Record<string, string> = {
-  direct:     "bg-emerald-50 text-emerald-600 border-emerald-200",
-  inverse:    "bg-rose-50 text-rose-600 border-rose-200",
-  correlated: "bg-blue-50 text-blue-600 border-blue-200",
-  lagged:     "bg-amber-50 text-amber-600 border-amber-200",
-};
-
-function RelBadge({ type }: { type: string }) {
-  const cls = REL_COLORS[type] ?? "bg-zinc-50 text-zinc-500 border-zinc-200";
-  return (
-    <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded border capitalize ${cls}`}>
-      {type}
-    </span>
-  );
-}
-
 // ── Metric series row ─────────────────────────────────────────────────────────
 
 function MetricSeriesRow({
@@ -103,12 +73,16 @@ function MetricSeriesRow({
   ids,
   shownIds,
   toggleFn,
+  isActiveEdit = false,
+  onSelectEdit,
 }: {
-  label:    string;
-  color:    string;
-  ids:      string[];
-  shownIds: Set<string>;
-  toggleFn: (id: string) => void;
+  label:         string;
+  color:         string;
+  ids:           string[];
+  shownIds:      Set<string>;
+  toggleFn:      (id: string) => void;
+  isActiveEdit?: boolean;
+  onSelectEdit?: () => void;
 }) {
   const isShown = ids.length > 0 && ids.some((id) => shownIds.has(id));
 
@@ -122,11 +96,15 @@ function MetricSeriesRow({
 
   return (
     <div
-      className="flex items-center gap-2 py-2 px-3 rounded-md bg-zinc-100 mb-1.5"
-      style={{ borderLeft: `3px solid ${color}` }}
+      className={`flex items-center gap-2 py-2 px-3 rounded-md mb-1.5 cursor-pointer transition-colors ${
+        isActiveEdit ? "bg-indigo-50" : "bg-zinc-100 hover:bg-zinc-50"
+      }`}
+      style={{ borderLeft: `3px solid ${isActiveEdit ? "#6366f1" : color}` }}
+      onClick={onSelectEdit}
+      title={onSelectEdit ? "Click to select for editing" : undefined}
     >
       <button
-        onClick={toggle}
+        onClick={(e) => { e.stopPropagation(); toggle(); }}
         title={isShown ? "Hide from graph" : "Show on graph"}
         className={`transition-colors duration-150 ${
           isShown
@@ -136,7 +114,14 @@ function MetricSeriesRow({
       >
         {isShown ? <EyeIcon /> : <EyeOffIcon />}
       </button>
-      <p className="text-zinc-700 text-sm">{label}</p>
+      <p className={`text-sm ${isActiveEdit ? "text-indigo-700 font-medium" : "text-zinc-700"}`}>
+        {label}
+      </p>
+      {isActiveEdit && (
+        <span className="text-[10px] font-medium px-1.5 py-0.5 rounded border bg-indigo-100 text-indigo-600 border-indigo-200 ml-1">
+          Editing
+        </span>
+      )}
       <span className="ml-auto text-xs text-zinc-400">{ids.length} pts</span>
     </div>
   );
@@ -254,6 +239,27 @@ function ContributorPanel({
         </div>
       </div>
 
+      {/* Data Points row — selects "merged" as the active edit series */}
+      <div
+        className={`flex items-center gap-2 py-2 px-3 rounded-md mb-1.5 cursor-pointer transition-colors ${
+          viewState.activeEditSeries === "merged" ? "bg-indigo-50" : "bg-zinc-100 hover:bg-zinc-50"
+        }`}
+        style={{ borderLeft: `3px solid ${viewState.activeEditSeries === "merged" ? "#6366f1" : contributorColor}` }}
+        onClick={() => viewState.onSelectEditSeries("merged")}
+        title="Click to edit data points"
+      >
+        <span className="text-indigo-500"><EyeIcon /></span>
+        <p className={`text-sm ${viewState.activeEditSeries === "merged" ? "text-indigo-700 font-medium" : "text-zinc-700"}`}>
+          Data Points
+        </p>
+        {viewState.activeEditSeries === "merged" && (
+          <span className="text-[10px] font-medium px-1.5 py-0.5 rounded border bg-indigo-100 text-indigo-600 border-indigo-200 ml-1">
+            Editing
+          </span>
+        )}
+        <span className="ml-auto text-xs text-zinc-400">{contributor.mergedDataValues.length} pts</span>
+      </div>
+
       {/* Metric series rows */}
       <MetricSeriesRow
         label="Weight"
@@ -261,6 +267,8 @@ function ContributorPanel({
         ids={contributor.weightValues.map((w) => w.id)}
         shownIds={viewState.shownWeightIds}
         toggleFn={viewState.onToggleWeight}
+        isActiveEdit={viewState.activeEditSeries === "weight"}
+        onSelectEdit={() => viewState.onSelectEditSeries("weight")}
       />
       <MetricSeriesRow
         label="Lag"
@@ -268,6 +276,8 @@ function ContributorPanel({
         ids={contributor.lagValues.map((l) => l.id)}
         shownIds={viewState.shownLagIds}
         toggleFn={viewState.onToggleLag}
+        isActiveEdit={viewState.activeEditSeries === "lag"}
+        onSelectEdit={() => viewState.onSelectEditSeries("lag")}
       />
       <MetricSeriesRow
         label="Relationship Value"
@@ -275,6 +285,8 @@ function ContributorPanel({
         ids={contributor.relationshipValues.map((r) => r.id)}
         shownIds={viewState.shownRelationshipIds}
         toggleFn={viewState.onToggleRelationship}
+        isActiveEdit={viewState.activeEditSeries === "relationship"}
+        onSelectEdit={() => viewState.onSelectEditSeries("relationship")}
       />
     </div>
   );
@@ -305,7 +317,6 @@ function ContributorNode({
     >
       <div className="flex items-center gap-1.5">
         <p className="text-zinc-700 text-sm leading-snug">{contributor.name}</p>
-        {relType && <RelBadge type={relType} />}
       </div>
 
       <div className="flex items-center gap-2">
@@ -336,25 +347,18 @@ export default function StorySidebar({ viewState }: { viewState: StoryViewState 
     activeAnalysisId,
     perspectives,
   } = useData();
-
   if (!assembledStory) return null;
-
   const { id: storyId, name: title, trendDataValues, contributors } = assembledStory;
-
   const perspective = perspectives.find((p) => p.id === activeStoryDoc?.perspectiveId);
-
   const activeAnalysisEntry = activeAnalysisId
     ? { id: activeAnalysisId, ...(activeStoryDoc?.Analysis?.[activeAnalysisId] as any) }
     : null;
-
   const analyses: AnalysisEntry[] = Object.entries(activeStoryDoc?.Analysis ?? {})
     .sort(([a]) => a === "RootAnalysis" ? -1 : 1)
     .map(([id, entry]) => ({ id, ...(entry as any) }));
-
   const activeContributor = viewState.activeView === "contributor"
     ? contributors.find((c) => c.id === viewState.activeContributorId) ?? null
     : null;
-
   const focalColor = getTrendColor(0);
 
   return (

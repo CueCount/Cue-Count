@@ -116,11 +116,11 @@ type DataState = {
   allRelationshipTypeValues: RelationshipTypeRow[];
 
   // ── Flat slice setters ────────────────────────────────────────────────────
-  setAllDataValues:             (rows: DataRow[]) => void;
-  setAllWeightValues:           (rows: WeightRow[]) => void;
-  setAllLagValues:              (rows: LagRow[]) => void;
-  setAllRelationshipValues:     (rows: RelationshipRow[]) => void;
-  setAllRelationshipTypeValues: (rows: RelationshipTypeRow[]) => void;
+  setAllDataValues:             (rows: DataRow[] | ((prev: DataRow[]) => DataRow[])) => void;
+  setAllWeightValues:           (rows: WeightRow[] | ((prev: WeightRow[]) => WeightRow[])) => void;
+  setAllLagValues:              (rows: LagRow[] | ((prev: LagRow[]) => LagRow[])) => void;
+  setAllRelationshipValues:     (rows: RelationshipRow[] | ((prev: RelationshipRow[]) => RelationshipRow[])) => void;
+  setAllRelationshipTypeValues: (rows: RelationshipTypeRow[] | ((prev: RelationshipTypeRow[]) => RelationshipTypeRow[])) => void;
 
   // ── Derived view — read only ──────────────────────────────────────────────
   assembledStory: AssembledStory | null;
@@ -522,14 +522,18 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
       const contributorDataValues = allDataValues.filter(v => v.dataId === dataId);
 
-      // Index overrides by timestamp for O(1) lookup
+      // Normalize to YYYY-MM-DD so timestamps match regardless of whether
+      // source data is "2024-01-01T00:00:00Z" or "2024-01-01"
+      const normTs = (ts: string) => ts.slice(0, 10);
+
+      // Index overrides by normalized timestamp for O(1) lookup
       const overrideByTimestamp = new Map<string, number>();
       for (const row of contributorDataValues) {
-        overrideByTimestamp.set(row.timestamp, row.value);
+        overrideByTimestamp.set(normTs(row.timestamp), row.value);
       }
 
-      // Track which timestamps exist in the trend to detect analysis-only points
-      const trendTimestampSet = new Set(trendDataValues.map(v => v.timestamp));
+      // Track which normalized timestamps exist in the trend
+      const trendTimestampSet = new Set(trendDataValues.map(v => normTs(v.timestamp)));
 
       // Build merged timeline:
       //   Step 1 — walk trend, substitute analysis overrides where they exist
@@ -538,14 +542,14 @@ export function DataProvider({ children }: { children: ReactNode }) {
       //   Sort chronologically so the line renders correctly regardless of order
       const mergedDataValues: MergedDataPoint[] = [
         ...trendDataValues.map(tdv => {
-          const override = overrideByTimestamp.get(tdv.timestamp);
+          const override = overrideByTimestamp.get(normTs(tdv.timestamp));
           return override !== undefined
-            ? { timestamp: tdv.timestamp, value: override, isOverride: true  }
-            : { timestamp: tdv.timestamp, value: tdv.value,  isOverride: false };
+            ? { timestamp: normTs(tdv.timestamp), value: override, isOverride: true  }
+            : { timestamp: normTs(tdv.timestamp), value: tdv.value,  isOverride: false };
         }),
         ...contributorDataValues
-          .filter(v => !trendTimestampSet.has(v.timestamp))
-          .map(v => ({ timestamp: v.timestamp, value: v.value, isOverride: true })),
+          .filter(v => !trendTimestampSet.has(normTs(v.timestamp)))
+          .map(v => ({ timestamp: normTs(v.timestamp), value: v.value, isOverride: true })),
       ].sort((a, b) => a.timestamp.localeCompare(b.timestamp));
 
       return {
