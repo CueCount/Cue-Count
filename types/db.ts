@@ -76,7 +76,6 @@ export type TrendRow = {
 
 // Data — time series values for trends.
 export type TrendDataRow = {
-  id: string;
   timestamp: string;
   value: number;
   trendDataId: string; // FK → TrendRow.dataId
@@ -84,10 +83,9 @@ export type TrendDataRow = {
 
 // Data — time series values for trends.
 export type DataRow = {
-  id: string;
   timestamp: string;
   value: number;
-  dataId: string; // FK → TrendRow.dataId
+  dataId: string;
 };
 
 // WeightData — contributor influence weight over time.
@@ -130,18 +128,32 @@ export type RelationshipTypeRow = {
 // AssembledContributor — one contributor with all its value rows attached,
 // scoped to the active analysis. Built inside assembledStory useMemo.
 // Objects inside each array are references to flat slice rows — not copies.
+export type MergedDataPoint = {
+  timestamp: string;
+  value: number;
+  isOverride: boolean;  // true = came from dataValues (analysis), false = came from trendDataValues
+};
+
 export type AssembledContributor = {
-  id:                     string;
-  name:                   string;
-  trendId:                string;
-  dataId:                 string;
-  meta:                   TrendRow | null;
-  trendDataValues:        TrendDataRow[];
-  dataValues:             DataRow[];
-  weightValues:           WeightRow[];
-  lagValues:              LagRow[];
-  relationshipValues:     RelationshipRow[];
+  id: string;
+  name: string;
+  trendId: string | null;
+  dataId: string;
+  meta: TrendRow | null;
+  trendDataValues: TrendDataRow[];
+  dataValues: DataRow[];
+  mergedDataValues: MergedDataPoint[];  // ← NEW
+  weightValues: WeightRow[];
+  lagValues: LagRow[];
+  relationshipValues: RelationshipRow[];
   relationshipTypeValues: RelationshipTypeRow[];
+};
+
+export type AssembledAnalysis = {
+  id: string;
+  name: string;
+  dataId: string;
+  dataValues: DataRow[];
 };
 
 // AssembledStory — the fully assembled story for the active analysis.
@@ -157,4 +169,5 @@ export type AssembledStory = {
   trendDataValues:  TrendDataRow[];
   dataValues:       DataRow[];
   contributors:     AssembledContributor[];
+  analyses:         AssembledAnalysis[];
 };

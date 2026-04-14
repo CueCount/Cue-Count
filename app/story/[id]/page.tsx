@@ -6,6 +6,8 @@ import { DataProvider, useData } from "@/contexts/DataState";
 import StorySidebar from "@/components/StorySidebar";
 import StoryGraph from "@/components/StoryGraph";
 
+export type ActiveEditSeries = "merged" | "weight" | "lag" | "relationship" | "relationshipType";
+
 // ─────────────────────────────────────────────────────────────────────────────
 // StoryViewState
 //

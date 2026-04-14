@@ -28,7 +28,9 @@ import type {
   RelationshipRow,
   RelationshipTypeRow,
   AssembledContributor,
+  AssembledAnalysis,
   AssembledStory,
+  MergedDataPoint, 
 } from "@/types/db";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -347,7 +349,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
       // SWAP TO POSTGRES: replace each filter with your ORM query using allDataIds.
       const dataIdSet = new Set(allDataIds);
 
-      const dataValues    = (dataJson             as DataRow[])             .filter(r => dataIdSet.has(r.dataId));
+      const dataValues    = (dataJson              as DataRow[])             .filter(r => dataIdSet.has(r.dataId));
       const weightValues  = (weightDataJson        as WeightRow[])           .filter(r => dataIdSet.has(r.dataId));
       const lagValues     = (lagDataJson           as LagRow[])              .filter(r => dataIdSet.has(r.dataId));
       const relValues     = (relationshipDataJson  as RelationshipRow[])     .filter(r => dataIdSet.has(r.dataId));
@@ -439,9 +441,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
         r => r.trendDataId === newTrendMeta.trendDataId
       );
       setAllTrendDataValues(prev => {
-        const existingIds = new Set(prev.map(r => r.id));
-        const fresh = newTrendDataRows.filter(r => !existingIds.has(r.id));
-        return [...prev, ...fresh];
+        const alreadyLoaded = prev.some(r => r.trendDataId === newTrendMeta.trendDataId);
+        return alreadyLoaded ? prev : [...prev, ...newTrendDataRows];
       });
 
       console.log(`[DataState] ✓ addContributor — TrendMeta + ${newTrendDataRows.length} TrendData rows patched`);
@@ -457,7 +458,11 @@ export function DataProvider({ children }: { children: ReactNode }) {
     const newRelValues     = (relationshipDataJson as RelationshipRow[])     .filter(r => r.dataId === dataId);
     const newRelTypeValues = (relTypeDataJson      as RelationshipTypeRow[]) .filter(r => r.dataId === dataId);
 
-    setAllDataValues(prev             => [...prev, ...newDataValues]);
+    setAllDataValues(prev => {
+      const existingKeys = new Set(prev.map(r => `${r.dataId}|${r.timestamp}`));
+      const fresh = newDataValues.filter(r => !existingKeys.has(`${r.dataId}|${r.timestamp}`));
+      return [...prev, ...fresh];
+    });
     setAllWeightValues(prev           => [...prev, ...newWeightValues]);
     setAllLagValues(prev              => [...prev, ...newLagValues]);
     setAllRelationshipValues(prev     => [...prev, ...newRelValues]);
@@ -515,21 +520,60 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
       const { meta, trendDataValues } = resolveTrendMeta(trendId);
 
+      const contributorDataValues = allDataValues.filter(v => v.dataId === dataId);
+
+      // Index overrides by timestamp for O(1) lookup
+      const overrideByTimestamp = new Map<string, number>();
+      for (const row of contributorDataValues) {
+        overrideByTimestamp.set(row.timestamp, row.value);
+      }
+
+      // Track which timestamps exist in the trend to detect analysis-only points
+      const trendTimestampSet = new Set(trendDataValues.map(v => v.timestamp));
+
+      // Build merged timeline:
+      //   Step 1 — walk trend, substitute analysis overrides where they exist
+      //   Step 2 — append any analysis points that fall outside the trend timeline
+      //            (e.g. analysis data extending 2025–2026 when trend ends 2024)
+      //   Sort chronologically so the line renders correctly regardless of order
+      const mergedDataValues: MergedDataPoint[] = [
+        ...trendDataValues.map(tdv => {
+          const override = overrideByTimestamp.get(tdv.timestamp);
+          return override !== undefined
+            ? { timestamp: tdv.timestamp, value: override, isOverride: true  }
+            : { timestamp: tdv.timestamp, value: tdv.value,  isOverride: false };
+        }),
+        ...contributorDataValues
+          .filter(v => !trendTimestampSet.has(v.timestamp))
+          .map(v => ({ timestamp: v.timestamp, value: v.value, isOverride: true })),
+      ].sort((a, b) => a.timestamp.localeCompare(b.timestamp));
+
       return {
         id:                     contributorId,
         name:                   rootContributor?.Name ?? contributorId,
         trendId,
         dataId,
-        // Trend metadata — stamped once, inherited by all data arrays below
         meta,
-        // Shared TrendData rows (read-only, multi-user)
         trendDataValues,
-        // User-specific modifier rows
-        dataValues:             allDataValues.filter(v => v.dataId === dataId),
+        dataValues:             contributorDataValues,
+        mergedDataValues,    
         weightValues:           allWeightValues.filter(v => v.dataId === dataId),
         lagValues:              allLagValues.filter(v => v.dataId === dataId),
         relationshipValues:     allRelationshipValues.filter(v => v.dataId === dataId),
         relationshipTypeValues: allRelationshipTypeValues.filter(v => v.dataId === dataId),
+      };
+    });
+
+    const analyses: AssembledAnalysis[] = Object.entries(
+      activeStoryDoc.Analysis ?? {}
+    ).map(([analysisId, entry]: [string, any]) => {
+      const dataId     = entry?.Story?.DataId ?? "";
+      const dataValues = allDataValues.filter(v => v.dataId === dataId);
+      return {
+        id:         analysisId,
+        name:       entry?.Name ?? analysisId,
+        dataId,
+        dataValues,
       };
     });
 
@@ -546,6 +590,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
       // User-specific data for the focal trend in this analysis
       dataValues:        allDataValues.filter(v => v.dataId === storyDataId),
       contributors,
+      analyses,
     };
   }, [
     activeStoryDoc,
