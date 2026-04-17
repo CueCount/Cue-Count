@@ -50,6 +50,14 @@ function rgba(hex: string, alpha: number): string {
   return `rgba(${r},${g},${b},${alpha})`;
 }
 
+// ── Clamp a value to its valid range for a given series type ─────────────────
+function clampForSeries(series: string, value: number): number {
+  if (series === "weight")      return Math.max(0, Math.min(1, value));
+  if (series === "correlation") return Math.max(-1, Math.min(1, value));
+  if (series === "lag")         return Math.max(0, value);
+  return value; // merged — no hard clamp
+}
+
 // ── TimePoint — the data shape Chart.js expects with TimeScale ───────────────
 type TimePoint = { x: string; y: number };
 
@@ -300,6 +308,18 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
 
   const chartRef = useRef<ChartJS<"line", any[]>>(null);
 
+  // ── Point selection ────────────────────────────────────────────────────────
+  const [selectedPoints, setSelectedPoints] = useState<Map<string, number>>(new Map());
+  const [overlayAnchor,  setOverlayAnchor]  = useState<{ x: number; y: number } | null>(null);
+  const [inputValue,     setInputValue]     = useState("");
+
+  const chartWrapperRef   = useRef<HTMLDivElement>(null);
+  const mouseDownInfo     = useRef<{ x: number; y: number; time: number } | null>(null);
+  const dragStartValue    = useRef<number | null>(null);
+  const isDraggingPoint   = useRef(false);
+  const datasetsRef       = useRef<ReturnType<typeof makeDataset>[]>([]);
+  const selectedPointsRef = useRef<Map<string, number>>(new Map());
+
   const {
     activeView,
     shownStoryTrend,
@@ -317,6 +337,13 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
   const activeEditSeriesRef = useRef(activeEditSeries);
   useEffect(() => { activeEditSeriesRef.current = activeEditSeries; }, [activeEditSeries]);
 
+  // Clear selection when user switches view or edit series
+  useEffect(() => {
+    setSelectedPoints(new Map());
+    setOverlayAnchor(null);
+    setInputValue("");
+  }, [activeView, activeEditSeries]);
+
   // ── Handle range slider → zoom the chart ───────────────────────────────────
   // Receives actual timestamp strings, converts to ms for TimeScale zoom.
   const handleRangeChange = useCallback((minTime: string, maxTime: string) => {
@@ -328,6 +355,143 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
       "default",
     );
   }, []);
+
+  // ── writePoint — shared by drag and input apply ────────────────────────────
+  const writePoint = useCallback((
+    series: string,
+    dataId: string,
+    timestamp: string,
+    value: number,
+  ) => {
+    const allValues =
+      series === "weight"      ? allWeightValues :
+      series === "lag"         ? allLagValues :
+      series === "correlation" ? allCorrelationValues :
+      allDataValues;
+
+    const setter: any =
+      series === "weight"      ? setAllWeightValues :
+      series === "lag"         ? setAllLagValues :
+      series === "correlation" ? setAllCorrelationValues :
+      setAllDataValues;
+
+    const existingIdx = allValues.findIndex(
+      r => r.dataId === dataId && normalizeTs(r.timestamp) === timestamp
+    );
+    if (existingIdx >= 0) {
+      setter((prev: any[]) =>
+        prev.map((row: any, i: number) => i === existingIdx ? { ...row, value } : row)
+      );
+    } else {
+      setter((prev: any[]) => [...prev, { timestamp, value, dataId }]);
+    }
+  }, [allDataValues, allWeightValues, allLagValues, allCorrelationValues,
+      setAllDataValues, setAllWeightValues, setAllLagValues, setAllCorrelationValues]);
+
+  // ── applyInputValue — commit input field value to selected points ──────────
+  const applyInputValue = useCallback(() => {
+    const parsed = parseFloat(inputValue);
+    if (isNaN(parsed)) return;
+    const series = activeEditSeriesRef.current;
+    const pts    = selectedPointsRef.current;
+    const isMulti = pts.size > 1;
+
+    pts.forEach((currentVal, key) => {
+      const [dsIdx, ptIdx] = key.split(":").map(Number);
+      const ds = datasetsRef.current[dsIdx] as any;
+      if (!ds?._dataId) return;
+      const point = (ds.data as any[])[ptIdx];
+      if (!point?.x) return;
+      const newValue = clampForSeries(series, isMulti ? currentVal + parsed : parsed);
+      writePoint(series, ds._dataId, normalizeTs(point.x), newValue);
+    });
+
+    setSelectedPoints(prev => {
+      const next = new Map(prev);
+      next.forEach((val, key) => {
+        next.set(key, clampForSeries(series, next.size > 1 ? val + parsed : parsed));
+      });
+      return next;
+    });
+
+    if (isMulti) setInputValue("");
+    onPointEdited();
+  }, [inputValue, writePoint, onPointEdited]);
+
+  useEffect(() => {
+    const canvas = chartRef.current?.canvas;
+    if (!canvas) return;
+
+    const onDown = (e: MouseEvent) => {
+      console.log("[click] onDown fired", e.clientX, e.clientY);
+      mouseDownInfo.current = { x: e.clientX, y: e.clientY, time: Date.now() };
+    };
+
+    const onUp = (e: MouseEvent) => {
+      console.log("[click] onUp fired");
+      const down = mouseDownInfo.current;
+      mouseDownInfo.current = null;
+      if (!down) return;
+      const dist    = Math.hypot(e.clientX - down.x, e.clientY - down.y);
+      const elapsed = Date.now() - down.time;
+      console.log("[click] dist:", dist, "elapsed:", elapsed);
+      if (dist > 6 || elapsed > 300) return;
+
+      const chart = chartRef.current;
+      if (!chart) return;
+
+      const elements = chart.getElementsAtEventForMode(
+        e, "nearest", { intersect: true }, false
+      );
+      console.log("[click] elements found:", elements.length, elements);
+
+      if (elements.length === 0) {
+        setSelectedPoints(new Map());
+        setOverlayAnchor(null);
+        setInputValue("");
+        return;
+      }
+
+      const { datasetIndex, index } = elements[0];
+      const ds = datasetsRef.current[datasetIndex] as any;
+      if (!ds?.dragData) return;
+      const point = (ds.data as any[])[index];
+      if (!point || point.y === null || point.y === undefined) return;
+
+      const key          = `${datasetIndex}:${index}`;
+      const currentValue = point.y as number;
+
+      setSelectedPoints(prev => {
+        if (e.shiftKey) {
+          const next = new Map(prev);
+          next.has(key) ? next.delete(key) : next.set(key, currentValue);
+          return next.size > 0 ? next : new Map();
+        }
+        if (prev.size === 1 && prev.has(key)) return new Map();
+        return new Map([[key, currentValue]]);
+      });
+
+      const meta     = chart.getDatasetMeta(datasetIndex);
+      const pointEl  = meta.data[index] as any;
+      const wrapRect = chartWrapperRef.current?.getBoundingClientRect();
+      const canvRect = canvas.getBoundingClientRect();
+      if (pointEl && wrapRect) {
+        setOverlayAnchor({
+          x: canvRect.left - wrapRect.left + pointEl.x,
+          y: canvRect.top  - wrapRect.top  + pointEl.y,
+        });
+      }
+      setInputValue(currentValue.toFixed(2));
+    };
+
+    // capture: true fires BEFORE dragData/zoom bubble-phase listeners
+    canvas.addEventListener("mousedown", onDown, { capture: true });
+    document.addEventListener("pointerup", onUp, { capture: true });
+    return () => {
+      canvas.removeEventListener("mousedown", onDown, { capture: true });
+      document.removeEventListener("pointerup", onUp, { capture: true });
+    };
+  }, [assembledStory?.id, activeView]); // re-attach when chart is recreated
 
   // ── Build timeAxis + datasets ───────────────────────────────────────────────
   const { timeAxis, datasets, axisRegistry } = useMemo(() => {
@@ -506,7 +670,27 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
         });
     }
 
-    return { timeAxis, datasets, axisRegistry };
+    // ── Highlight selected points ─────────────────────────────────────────────
+    if (selectedPoints.size > 0) {
+      selectedPoints.forEach((_val, key) => {
+        const [dsIdx, ptIdx] = key.split(":").map(Number);
+        const ds = datasets[dsIdx] as any;
+        if (!ds) return;
+        const len = (ds.data as any[]).length;
+        if (!Array.isArray(ds.pointBackgroundColor)) {
+          ds.pointBackgroundColor = Array(len).fill(ds.pointBackgroundColor);
+        }
+        if (!Array.isArray(ds.pointRadius)) {
+          ds.pointRadius = Array(len).fill(ds.pointRadius ?? 4);
+        }
+        if (ptIdx < len) {
+          ds.pointBackgroundColor[ptIdx] = "#ffffff";
+          ds.pointRadius[ptIdx] = 8;
+        }
+      });
+    }
+
+    return { timeAxis, datasets, axisRegistry};
   }, [
     assembledStory,
     activeStoryDoc,
@@ -522,6 +706,10 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
     shownAnalysisIds,
     activeEditSeries,
   ]);
+
+  // Keep refs in sync with latest render values
+  datasetsRef.current       = datasets;
+  selectedPointsRef.current = selectedPoints;
 
   // ── Dynamic y-scales from axisRegistry ───────────────────────────────────
   const yScales = useMemo(() => {
@@ -546,9 +734,15 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
 
       // ── Drag ─────────────────────────────────────────────────────────────
       dragData: {
-        round:       2,
+        round: 2,
         showTooltip: true,
+        onDragStart: (_e: any, _datasetIndex: number, _index: number, value: any) => {
+          isDraggingPoint.current = true;
+          dragStartValue.current  = typeof value === "object" ? value?.y : value;
+        },
         onDragEnd: (_e: any, datasetIndex: number, index: number, value: any) => {
+          setTimeout(() => { isDraggingPoint.current = false; }, 50);
+
           const numericValue = typeof value === "object" && value !== null ? value.y : value;
           const ds = datasets[datasetIndex];
           if (!ds?.dragData) return;
@@ -556,34 +750,39 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
           const point = (ds.data as { x: string; y: number | null }[])[index];
           if (!point?.x) return;
           const timestamp = normalizeTs(point.x);
-          const dataId = (ds as any)._dataId as string | undefined;
+          const dataId    = (ds as any)._dataId as string | undefined;
           if (!dataId) return;
 
-          // Read current series type from ref — never stale
-          const series = activeEditSeriesRef.current;
+          const series          = activeEditSeriesRef.current;
+          const key             = `${datasetIndex}:${index}`;
+          const currentSelected = selectedPointsRef.current;
+          const isMultiDrag     = currentSelected.has(key) && currentSelected.size > 1;
 
-          const allValues =
-            series === "weight"       ? allWeightValues :
-            series === "lag"          ? allLagValues :
-            series === "correlation"  ? allCorrelationValues :
-            allDataValues;
-
-          const setter: any =
-            series === "weight"       ? setAllWeightValues :
-            series === "lag"          ? setAllLagValues :
-            series === "correlation"  ? setAllCorrelationValues :
-            setAllDataValues;
-
-          const existingIdx = allValues.findIndex(
-            r => r.dataId === dataId && normalizeTs(r.timestamp) === timestamp
-          );
-
-          if (existingIdx >= 0) {
-            setter((prev: any[]) =>
-              prev.map((row: any, i: number) => i === existingIdx ? { ...row, value: numericValue } : row)
-            );
+          if (isMultiDrag && dragStartValue.current !== null) {
+            // Apply same delta to all selected points
+            const delta = numericValue - dragStartValue.current;
+            currentSelected.forEach((currentVal, selKey) => {
+              const [selDsIdx, selPtIdx] = selKey.split(":").map(Number);
+              const selDs = datasetsRef.current[selDsIdx] as any;
+              if (!selDs?._dataId) return;
+              const selPoint = (selDs.data as any[])[selPtIdx];
+              if (!selPoint?.x) return;
+              writePoint(series, selDs._dataId, normalizeTs(selPoint.x),
+                clampForSeries(series, currentVal + delta));
+            });
+            setSelectedPoints(prev => {
+              const next = new Map(prev);
+              next.forEach((val, k) => next.set(k, clampForSeries(series, val + delta)));
+              return next;
+            });
           } else {
-            setter((prev: any[]) => [...prev, { timestamp, value: numericValue, dataId }]);
+            // Single point drag
+            const clamped = clampForSeries(series, numericValue);
+            writePoint(series, dataId, timestamp, clamped);
+            if (currentSelected.has(key)) {
+              setSelectedPoints(prev => new Map(prev).set(key, clamped));
+            }
+            setInputValue(clamped.toFixed(2));
           }
           onPointEdited();
         },
@@ -636,7 +835,7 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
       },
       ...yScales,
     },
-  }), [datasets, allDataValues, setAllDataValues, allWeightValues, setAllWeightValues, allLagValues, setAllLagValues, allCorrelationValues, axisRegistry, yScales]);
+  }), [datasets, allDataValues, setAllDataValues, allWeightValues, setAllWeightValues, allLagValues, setAllLagValues, allCorrelationValues, axisRegistry, yScales, writePoint, selectedPoints]);
   
   // ── Render ──────────────────────────────────────────────────────────────────
   if (!assembledStory) {
@@ -653,13 +852,79 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
     <div className="flex flex-col w-full h-full px-2 py-2">
       <GraphToolbar viewState={viewState} />
 
-      <div className="flex-1 min-h-0 px-2 pt-1">
+      <div
+        ref={chartWrapperRef}
+        className="flex-1 min-h-0 px-2 pt-1 relative"
+      >
         <Line
           key={activeView}
           ref={chartRef}
           data={chartData}
           options={options}
         />
+
+        {/* ── Point selection overlay ────────────────────────────────────────── */}
+        {overlayAnchor && selectedPoints.size > 0 && (
+          <div
+            className="absolute z-20 bg-white rounded-xl shadow-lg border border-zinc-200 p-3 flex flex-col gap-2 min-w-[148px]"
+            style={{
+              left:      overlayAnchor.x,
+              top:       Math.max(4, overlayAnchor.y - 100),
+              transform: "translateX(-50%)",
+            }}
+            onMouseDown={e => e.stopPropagation()}
+          >
+            {selectedPoints.size === 1 ? (
+              <>
+                <p className="text-[10px] font-medium text-zinc-400 uppercase tracking-wide">
+                  {({ merged: "Data Value", weight: "Weight", lag: "Lag (days)", correlation: "Correlation" } as any)[activeEditSeries] ?? "Value"}
+                </p>
+                <input
+                  type="number"
+                  value={inputValue}
+                  onChange={e => setInputValue(e.target.value)}
+                  onKeyDown={e => {
+                    if (e.key === "Enter")  applyInputValue();
+                    if (e.key === "Escape") { setSelectedPoints(new Map()); setOverlayAnchor(null); }
+                  }}
+                  className="w-full text-sm font-medium text-zinc-800 border border-zinc-200 rounded-md px-2 py-1.5 outline-none focus:border-indigo-400"
+                  step="0.01"
+                  autoFocus
+                />
+                <p className="text-[10px] text-zinc-400">Enter to apply · Esc to dismiss</p>
+              </>
+            ) : (
+              <>
+                <p className="text-[10px] font-medium text-zinc-400 uppercase tracking-wide">
+                  {selectedPoints.size} points selected
+                </p>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs text-zinc-500 shrink-0">+/−</span>
+                  <input
+                    type="number"
+                    value={inputValue}
+                    onChange={e => setInputValue(e.target.value)}
+                    onKeyDown={e => {
+                      if (e.key === "Enter")  applyInputValue();
+                      if (e.key === "Escape") { setSelectedPoints(new Map()); setOverlayAnchor(null); }
+                    }}
+                    className="flex-1 text-sm font-medium text-zinc-800 border border-zinc-200 rounded-md px-2 py-1.5 outline-none focus:border-indigo-400"
+                    step="0.01"
+                    placeholder="0.00"
+                    autoFocus
+                  />
+                </div>
+                <button
+                  onClick={applyInputValue}
+                  className="text-xs font-medium text-white bg-indigo-500 hover:bg-indigo-600 rounded-md px-2 py-1.5 transition-colors"
+                >
+                  Apply to all
+                </button>
+                <p className="text-[10px] text-zinc-400">Enter to apply · Esc to dismiss</p>
+              </>
+            )}
+          </div>
+        )}
       </div>
 
       {timeAxis.length > 0 && (
