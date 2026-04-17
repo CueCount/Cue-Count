@@ -15,6 +15,8 @@ import {
   getDocs,
   query,
   where,
+  updateDoc, 
+  deleteField
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { calculateStoryValues } from "@/lib/storyCalculation";
@@ -26,8 +28,7 @@ import type {
   DataRow,
   WeightRow,
   LagRow,
-  RelationshipRow,
-  RelationshipTypeRow,
+  CorrelationRow,
   AssembledContributor,
   AssembledAnalysis,
   AssembledStory,
@@ -35,31 +36,34 @@ import type {
 } from "@/types/db";
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Mock data imports
-// SWAP TO POSTGRES: replace each import+filter with your ORM query.
+// Data source flag
+// Set NEXT_PUBLIC_USE_MOCK=true in .env.local to use JSON mock data.
+// Remove or set to false to use Firebase Data Connect (Postgres).
 // ─────────────────────────────────────────────────────────────────────────────
-//
-// trends.json       — Trends table: metadata per TrendId (shared, multi-user)
-//                     Fields: id, name, unit, denomination, source, frequency,
-//                             trendDataId, apiDataId, createdBy, createdAt, updatedAt
-//
-// trendData.json    — TrendData table: time-series values keyed by trendDataId
-//                     Shared across all users. An error here affects everyone
-//                     who uses that trend — kept separate from user Data for
-//                     exactly this reason.
-//
-// data.json         — Data table: user-specific time-series values keyed by dataId
-//                     An error here affects only the one user who owns that dataId.
-//
-// weight/lag/relationship/relationshipType — all user-specific, keyed by dataId.
-//
+const USE_MOCK = process.env.NEXT_PUBLIC_USE_MOCK === "true";
+
 import trendsJson           from "@/data/mock/trend.json";
 import trendDataJson        from "@/data/mock/trendData.json";
 import dataJson             from "@/data/mock/data.json";
 import weightDataJson       from "@/data/mock/weight.json";
 import lagDataJson          from "@/data/mock/lag.json";
-import relationshipDataJson from "@/data/mock/relationship.json";
-import relTypeDataJson      from "@/data/mock/relationshipType.json";
+import correlationDataJson  from "@/data/mock/correlation.json";
+
+// ── Data Connect SDK imports (only used when USE_MOCK=false) ──────────────────
+// NOTE: verify this import path matches your generated SDK location after
+// running: firebase dataconnect:sdk:generate
+import {
+  getTrendsByIds,
+  getTrendDataByTrendDataIds,
+  getDataByDataIds,
+  getWeightDataByDataIds,
+  getLagDataByDataIds,
+  getCorrelationDataByDataIds,
+  deleteDataByDataId,
+  deleteWeightDataByDataId,
+  deleteLagDataByDataId,
+  deleteCorrelationDataByDataId,
+} from "@/src/dataconnect-generated";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // DataState shape
@@ -113,15 +117,13 @@ type DataState = {
   allDataValues:             DataRow[];
   allWeightValues:           WeightRow[];
   allLagValues:              LagRow[];
-  allRelationshipValues:     RelationshipRow[];
-  allRelationshipTypeValues: RelationshipTypeRow[];
+  allCorrelationValues:      CorrelationRow[];
 
   // ── Flat slice setters ────────────────────────────────────────────────────
   setAllDataValues:             (rows: DataRow[] | ((prev: DataRow[]) => DataRow[])) => void;
   setAllWeightValues:           (rows: WeightRow[] | ((prev: WeightRow[]) => WeightRow[])) => void;
   setAllLagValues:              (rows: LagRow[] | ((prev: LagRow[]) => LagRow[])) => void;
-  setAllRelationshipValues:     (rows: RelationshipRow[] | ((prev: RelationshipRow[]) => RelationshipRow[])) => void;
-  setAllRelationshipTypeValues: (rows: RelationshipTypeRow[] | ((prev: RelationshipTypeRow[]) => RelationshipTypeRow[])) => void;
+  setAllCorrelationValues:      (rows: CorrelationRow[] | ((prev: CorrelationRow[]) => CorrelationRow[])) => void;
 
   // ── Derived view — read only ──────────────────────────────────────────────
   assembledStory: AssembledStory | null;
@@ -138,6 +140,15 @@ type DataState = {
     name: string,
     trendId: string,
     dataId: string
+  ) => Promise<void>;
+
+  linkContributor: (
+    name: string,
+    trendId: string,
+  ) => Promise<void>;
+
+  unlinkContributor: (
+    contributorId: string,
   ) => Promise<void>;
 };
 
@@ -176,8 +187,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const [allDataValues,             setAllDataValues]             = useState<DataRow[]>([]);
   const [allWeightValues,           setAllWeightValues]           = useState<WeightRow[]>([]);
   const [allLagValues,              setAllLagValues]              = useState<LagRow[]>([]);
-  const [allRelationshipValues,     setAllRelationshipValues]     = useState<RelationshipRow[]>([]);
-  const [allRelationshipTypeValues, setAllRelationshipTypeValues] = useState<RelationshipTypeRow[]>([]);
+  const [allCorrelationValues,      setAllCorrelationValues]      = useState<CorrelationRow[]>([]);
 
   // ── fetchPerspectives ─────────────────────────────────────────────────────
   // SWAP TO POSTGRES: replace getDocs with your ORM query filtered by uid.
@@ -273,16 +283,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
       setActiveAnalysisId(analysisId);
 
       // ── Step 2.5 — resolve TrendIds → metadata + TrendData values ─────────
-      //
-      // Collect TrendIds from:
-      //   • storyDoc.trendId            — the story's focal trend
-      //   • storyDoc.contributors[*].trendId — every contributor on the story
-      //
-      // Note: we use the root contributors map here (not the analysis entry)
-      // because TrendId lives on the contributor definition, not the analysis.
-      // All analyses share the same contributors; what varies per-analysis is
-      // the DataId and modifier values, not which trend a contributor represents.
-      //
+      
       const storyTrendId = storyDoc.trendId;
       const contributorTrendIds = Object.values(storyDoc.Contributors ?? {})
         .map((c: any) => c.trendId)
@@ -292,35 +293,33 @@ export function DataProvider({ children }: { children: ReactNode }) {
       console.log(`[DataState] ✓ Step 2.5 — ${allTrendIds.length} TrendIds collected`);
 
       // Fetch Trend metadata records
-      // SWAP TO POSTGRES: prisma.trends.findMany({ where: { id: { in: allTrendIds } } })
-      const trendIdSet = new Set(allTrendIds);
-      const trendMeta = (trendsJson as TrendRow[]).filter(t => trendIdSet.has(t.id));
+      let trendMeta: TrendRow[];
+      if (USE_MOCK) {
+        const trendIdSet = new Set(allTrendIds);
+        trendMeta = (trendsJson as TrendRow[]).filter(t => trendIdSet.has(t.trendId));      
+      } else {
+        const result = await getTrendsByIds({ ids: allTrendIds });
+        trendMeta = result.data.trends as TrendRow[];
+      }
       console.log(`[DataState] ✓ Step 2.5 — ${trendMeta.length} Trend records resolved`);
 
-      // Extract trendDataIds from the resolved Trend records
       const trendDataIdSet = new Set(
         trendMeta.map(t => t.trendDataId).filter(Boolean) as string[]
       );
 
-      // Fetch TrendData rows (shared time-series values)
-      // SWAP TO POSTGRES: prisma.trendData.findMany({ where: { trendDataId: { in: [...trendDataIdSet] } } })
-      const trendDataValues = (trendDataJson as TrendDataRow[]).filter(
-        r => trendDataIdSet.has(r.trendDataId)
-      );
+      // Fetch TrendData rows
+      let trendDataValues: TrendDataRow[];
+      if (USE_MOCK) {
+        trendDataValues = (trendDataJson as TrendDataRow[]).filter(
+          r => trendDataIdSet.has(r.trendDataId)
+        );
+      } else {
+        const result = await getTrendDataByTrendDataIds({ trendDataIds: [...trendDataIdSet] });
+        trendDataValues = result.data.trendDatas as TrendDataRow[];
+      }
       console.log(`[DataState] ✓ Step 2.5 — ${trendDataValues.length} TrendData rows fetched`);
 
       // ── Step 3 — collect DataIds from ALL analysis entries ────────────────
-      //
-      // We iterate every analysisId in the map (RootAnalysis + all children)
-      // and collect their DataIds into one unified Set. Duplicates are
-      // deduplicated automatically — rows shared across analyses are only
-      // fetched once. This means every subsequent analysis switch is instant:
-      // assembledStory filters against already-populated slices with no
-      // additional fetch required.
-      //
-      // The active analysisEntry is still resolved separately so we can guard
-      // against a missing analysisId early and use it in logging below.
-      //
       const analysisEntry = storyDoc.Analysis?.[analysisId];
       if (!analysisEntry) {
         console.warn(`[DataState] ✗ initStory — analysis "${analysisId}" not found in document`);
@@ -347,14 +346,29 @@ export function DataProvider({ children }: { children: ReactNode }) {
       );
 
       // ── Step 4 — fetch user value rows by DataId ──────────────────────────
-      // SWAP TO POSTGRES: replace each filter with your ORM query using allDataIds.
-      const dataIdSet = new Set(allDataIds);
+      let dataValues:    DataRow[];
+      let weightValues:  WeightRow[];
+      let lagValues:     LagRow[];
+      let corValues:     CorrelationRow[];
 
-      const dataValues    = (dataJson              as DataRow[])             .filter(r => dataIdSet.has(r.dataId));
-      const weightValues  = (weightDataJson        as WeightRow[])           .filter(r => dataIdSet.has(r.dataId));
-      const lagValues     = (lagDataJson           as LagRow[])              .filter(r => dataIdSet.has(r.dataId));
-      const relValues     = (relationshipDataJson  as RelationshipRow[])     .filter(r => dataIdSet.has(r.dataId));
-      const relTypeValues = (relTypeDataJson       as RelationshipTypeRow[]) .filter(r => dataIdSet.has(r.dataId));
+      if (USE_MOCK) {
+        const dataIdSet = new Set(allDataIds);
+        dataValues    = (dataJson              as DataRow[])            .filter(r => dataIdSet.has(r.dataId));
+        weightValues  = (weightDataJson        as WeightRow[])          .filter(r => dataIdSet.has(r.dataId));
+        lagValues     = (lagDataJson           as LagRow[])             .filter(r => dataIdSet.has(r.dataId));
+        corValues     = (correlationDataJson   as CorrelationRow[])     .filter(r => dataIdSet.has(r.dataId));
+      } else {
+        const [d, w, l, r] = await Promise.all([
+          getDataByDataIds({                 dataIds: allDataIds }),
+          getWeightDataByDataIds({           dataIds: allDataIds }),
+          getLagDataByDataIds({              dataIds: allDataIds }),
+          getCorrelationDataByDataIds({      dataIds: allDataIds }),
+        ]);
+        dataValues    = d.data.datas                  as DataRow[];
+        weightValues  = w.data.weightDatas            as WeightRow[];
+        lagValues     = l.data.lagDatas               as LagRow[];
+        corValues     = r.data.correlationDatas       as CorrelationRow[];
+      }
 
       // ── Step 5 — commit all slices to state ───────────────────────────────
       setActiveStoryDoc(storyDoc);
@@ -364,8 +378,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
       setAllDataValues(dataValues);
       setAllWeightValues(weightValues);
       setAllLagValues(lagValues);
-      setAllRelationshipValues(relValues);
-      setAllRelationshipTypeValues(relTypeValues);
+      setAllCorrelationValues(corValues);
 
       console.log(
         `[DataState] ✓ initStory committed — ` +
@@ -427,50 +440,185 @@ export function DataProvider({ children }: { children: ReactNode }) {
     });
 
     // b. Resolve the new TrendId — fetch metadata and TrendData rows
-    // SWAP TO POSTGRES: prisma.trends.findFirst({ where: { id: trendId } })
-    const newTrendMeta = (trendsJson as TrendRow[]).find(t => t.id === trendId);
+    let newTrendMeta: TrendRow | undefined;
+    if (USE_MOCK) {
+      newTrendMeta = (trendsJson as TrendRow[]).find(t => t.id === trendId);
+    } else {
+      const result = await getTrendsByIds({ ids: [trendId] });
+      newTrendMeta = result.data.trends[0] as TrendRow | undefined;
+    }
+
     if (newTrendMeta) {
-      // Patch allTrendMeta — avoid duplicates if trendId was already present
       setAllTrendMeta(prev => {
         const exists = prev.some(t => t.id === trendId);
-        return exists ? prev : [...prev, newTrendMeta];
+        return exists ? prev : [...prev, newTrendMeta!];
       });
 
-      // Fetch and append TrendData rows for this trend's trendDataId
-      // SWAP TO POSTGRES: prisma.trendData.findMany({ where: { trendDataId: newTrendMeta.trendDataId } })
-      const newTrendDataRows = (trendDataJson as TrendDataRow[]).filter(
-        r => r.trendDataId === newTrendMeta.trendDataId
-      );
+      let newTrendDataRows: TrendDataRow[];
+      if (USE_MOCK) {
+        newTrendDataRows = (trendDataJson as TrendDataRow[]).filter(
+          r => r.trendDataId === newTrendMeta!.trendDataId
+        );
+      } else {
+        const result = await getTrendDataByTrendDataIds({ trendDataIds: [newTrendMeta.trendDataId] });
+        newTrendDataRows = result.data.trendDatas as TrendDataRow[];
+      }
+
       setAllTrendDataValues(prev => {
-        const alreadyLoaded = prev.some(r => r.trendDataId === newTrendMeta.trendDataId);
+        const alreadyLoaded = prev.some(r => r.trendDataId === newTrendMeta!.trendDataId);
         return alreadyLoaded ? prev : [...prev, ...newTrendDataRows];
       });
-
       console.log(`[DataState] ✓ addContributor — TrendMeta + ${newTrendDataRows.length} TrendData rows patched`);
     } else {
-      console.warn(`[DataState] ✗ addContributor — TrendId not found in mock: ${trendId}`);
+      console.warn(`[DataState] ✗ addContributor — TrendId not found: ${trendId}`);
     }
 
     // c. Append user value rows for the new dataId
-    // SWAP TO POSTGRES: fetch each table filtered by the new dataId
-    const newDataValues    = (dataJson            as DataRow[])             .filter(r => r.dataId === dataId);
-    const newWeightValues  = (weightDataJson       as WeightRow[])           .filter(r => r.dataId === dataId);
-    const newLagValues     = (lagDataJson          as LagRow[])              .filter(r => r.dataId === dataId);
-    const newRelValues     = (relationshipDataJson as RelationshipRow[])     .filter(r => r.dataId === dataId);
-    const newRelTypeValues = (relTypeDataJson      as RelationshipTypeRow[]) .filter(r => r.dataId === dataId);
+    let newDataValues:    DataRow[];
+    let newWeightValues:  WeightRow[];
+    let newLagValues:     LagRow[];
+    let newCorValues:     CorrelationRow[];
+
+    if (USE_MOCK) {
+      newDataValues    = (dataJson            as DataRow[])            .filter(r => r.dataId === dataId);
+      newWeightValues  = (weightDataJson      as WeightRow[])          .filter(r => r.dataId === dataId);
+      newLagValues     = (lagDataJson         as LagRow[])             .filter(r => r.dataId === dataId);
+      newCorValues     = (correlationDataJson as CorrelationRow[])     .filter(r => r.dataId === dataId);
+    } else {
+      const [d, w, l, r] = await Promise.all([
+        getDataByDataIds({                 dataIds: [dataId] }),
+        getWeightDataByDataIds({           dataIds: [dataId] }),
+        getLagDataByDataIds({              dataIds: [dataId] }),
+        getCorrelationDataByDataIds({      dataIds: [dataId] }),
+      ]);
+      newDataValues    = d.data.datas                  as DataRow[];
+      newWeightValues  = w.data.weightDatas            as WeightRow[];
+      newLagValues     = l.data.lagDatas               as LagRow[];
+      newCorValues     = r.data.correlationDatas       as CorrelationRow[];
+    }
 
     setAllDataValues(prev => {
       const existingKeys = new Set(prev.map(r => `${r.dataId}|${r.timestamp}`));
       const fresh = newDataValues.filter(r => !existingKeys.has(`${r.dataId}|${r.timestamp}`));
       return [...prev, ...fresh];
     });
-    setAllWeightValues(prev           => [...prev, ...newWeightValues]);
-    setAllLagValues(prev              => [...prev, ...newLagValues]);
-    setAllRelationshipValues(prev     => [...prev, ...newRelValues]);
-    setAllRelationshipTypeValues(prev => [...prev, ...newRelTypeValues]);
+    setAllWeightValues(prev       => [...prev, ...newWeightValues]);
+    setAllLagValues(prev          => [...prev, ...newLagValues]);
+    setAllCorrelationValues(prev  => [...prev, ...newCorValues]);
 
     console.log(`[DataState] ✓ addContributor — value rows patched for dataId: ${dataId}`);
   }, []);
+
+  // ── linkContributor ───────────────────────────────────────────────────────
+  //
+  // Public-facing action called from the Add Contributor modal.
+  // Generates IDs, persists to Firebase, then delegates state patching
+  // to addContributor (which is also used by initStory).
+  //
+  const linkContributor = useCallback(async (
+    name: string,
+    trendId: string,
+  ) => {
+    if (!activeStoryDoc) return;
+
+    const contributorId = `contrib-${crypto.randomUUID().slice(0, 8)}`;
+    const dataId        = `data-${crypto.randomUUID().slice(0, 8)}-${crypto.randomUUID().slice(0, 8)}`;
+
+    console.log(`[DataState] ▶ linkContributor() — name: ${name}, trendId: ${trendId}`);
+
+    // Persist to Firebase — root Contributors map + RootAnalysis in one write
+    const storyRef = doc(db, "stories", activeStoryDoc.id);
+    await updateDoc(storyRef, {
+      [`Contributors.${contributorId}`]: { Name: name, trendId },
+      [`Analysis.RootAnalysis.Contributors.${contributorId}`]: { DataId: dataId },
+    });
+
+    // Delegate all state patching to addContributor
+    await addContributor(contributorId, name, trendId, dataId);
+
+    console.log(`[DataState] ✓ linkContributor complete — contributorId: ${contributorId}, dataId: ${dataId}`);
+  }, [activeStoryDoc, addContributor]);
+
+  // ── unlinkContributor ─────────────────────────────────────────────────────
+  //
+  // Removes a contributor entirely:
+  //   1. Collects all dataIds across every analysis (not just active)
+  //   2. Deletes all Postgres value rows for those dataIds
+  //   3. Removes from Firebase root map + every analysis in one atomic write
+  //   4. Patches all in-session flat slices + activeStoryDoc
+  //   5. Cleans up allTrendMeta if no remaining contributor shares the trendId
+  //
+  const unlinkContributor = useCallback(async (
+    contributorId: string,
+  ) => {
+    if (!activeStoryDoc) return;
+
+    console.log(`[DataState] ▶ unlinkContributor() — contributorId: ${contributorId}`);
+
+    // 1. Collect ALL dataIds for this contributor across every analysis
+    const allDataIds = Object.values(activeStoryDoc.Analysis ?? {})
+      .map((entry: any) => entry?.Contributors?.[contributorId]?.DataId)
+      .filter(Boolean) as string[];
+
+    console.log(`[DataState] ✓ unlinkContributor — ${allDataIds.length} dataIds to clean up`);
+
+    // 2. Delete all Postgres value rows in parallel
+    if (!USE_MOCK) {
+      await Promise.all(allDataIds.flatMap(dataId => [
+        deleteDataByDataId({            dataId }),
+        deleteWeightDataByDataId({      dataId }),
+        deleteLagDataByDataId({         dataId }),
+        deleteCorrelationDataByDataId({ dataId }),
+      ]));
+    }
+
+    // 3. Remove from Firebase — root map + every analysis in one atomic write
+    const storyRef = doc(db, "stories", activeStoryDoc.id);
+    const firebaseUpdates: Record<string, any> = {
+      [`Contributors.${contributorId}`]: deleteField(),
+    };
+    for (const analysisId of Object.keys(activeStoryDoc.Analysis ?? {})) {
+      firebaseUpdates[`Analysis.${analysisId}.Contributors.${contributorId}`] = deleteField();
+    }
+    await updateDoc(storyRef, firebaseUpdates);
+
+    // 4. Patch activeStoryDoc in-session
+    const removedTrendId = (activeStoryDoc.Contributors?.[contributorId] as any)?.trendId;
+
+    setActiveStoryDoc(prev => {
+      if (!prev) return prev;
+      const nextContributors = { ...prev.Contributors };
+      delete nextContributors[contributorId];
+      const nextAnalysis = Object.fromEntries(
+        Object.entries(prev.Analysis ?? {}).map(([aId, entry]: [string, any]) => {
+          const nextContribs = { ...(entry.Contributors ?? {}) };
+          delete nextContribs[contributorId];
+          return [aId, { ...entry, Contributors: nextContribs }];
+        })
+      );
+      return { ...prev, Contributors: nextContributors, Analysis: nextAnalysis };
+    });
+
+    // 4b. Remove value rows from all flat slices
+    const dataIdSet = new Set(allDataIds);
+    setAllDataValues(prev        => prev.filter(r => !dataIdSet.has(r.dataId)));
+    setAllWeightValues(prev      => prev.filter(r => !dataIdSet.has(r.dataId)));
+    setAllLagValues(prev         => prev.filter(r => !dataIdSet.has(r.dataId)));
+    setAllCorrelationValues(prev => prev.filter(r => !dataIdSet.has(r.dataId)));
+
+    // 5. Clean up allTrendMeta + TrendData if no remaining contributor uses this trendId
+    if (removedTrendId) {
+      const stillUsed = Object.values(activeStoryDoc.Contributors ?? {})
+        .some((c: any) => c.trendId === removedTrendId && c !== activeStoryDoc.Contributors[contributorId]);
+      if (!stillUsed) {
+        const staleMeta = allTrendMeta.find(t => t.trendId === removedTrendId);
+        setAllTrendMeta(prev       => prev.filter(t => t.trendId !== removedTrendId));
+        setAllTrendDataValues(prev => prev.filter(r => r.trendDataId !== staleMeta?.trendDataId));
+      }
+    }
+
+    console.log(`[DataState] ✓ unlinkContributor complete — contributorId: ${contributorId}`);
+  }, [activeStoryDoc, allTrendMeta]);
 
   // ── assembledStory ────────────────────────────────────────────────────────
   //
@@ -492,7 +640,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
     // ── Helper: resolve meta + trendDataValues for a given TrendId ───────────
     const resolveTrendMeta = (trendId: string) => {
-      const meta = allTrendMeta.find(t => t.id === trendId) ?? null;
+      const meta = allTrendMeta.find(t => t.trendId === trendId) ?? null;
       const trendDataValues = meta
         ? allTrendDataValues.filter(r => r.trendDataId === meta.trendDataId)
         : [];
@@ -564,8 +712,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
         mergedDataValues,    
         weightValues:           allWeightValues.filter(v => v.dataId === dataId),
         lagValues:              allLagValues.filter(v => v.dataId === dataId),
-        relationshipValues:     allRelationshipValues.filter(v => v.dataId === dataId),
-        relationshipTypeValues: allRelationshipTypeValues.filter(v => v.dataId === dataId),
+        correlationValues:      allCorrelationValues.filter(v => v.dataId === dataId),
       };
     });
 
@@ -609,8 +756,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     allDataValues,
     allWeightValues,
     allLagValues,
-    allRelationshipValues,
-    allRelationshipTypeValues,
+    allCorrelationValues,
   ]);
 
   // ── Context value ──────────────────────────────────────────────────────────
@@ -631,16 +777,16 @@ export function DataProvider({ children }: { children: ReactNode }) {
       allDataValues,
       allWeightValues,
       allLagValues,
-      allRelationshipValues,
-      allRelationshipTypeValues,
+      allCorrelationValues,
       setAllDataValues,
       setAllWeightValues,
       setAllLagValues,
-      setAllRelationshipValues,
-      setAllRelationshipTypeValues,
+      setAllCorrelationValues,
       assembledStory,
       initStory,
       addContributor,
+      linkContributor,
+      unlinkContributor,
     }),
     [
       perspectives,
@@ -657,11 +803,12 @@ export function DataProvider({ children }: { children: ReactNode }) {
       allDataValues,
       allWeightValues,
       allLagValues,
-      allRelationshipValues,
-      allRelationshipTypeValues,
+      allCorrelationValues,
       assembledStory,
       initStory,
       addContributor,
+      linkContributor,
+      unlinkContributor,
     ]
   );
 

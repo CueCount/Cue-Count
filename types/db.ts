@@ -61,15 +61,14 @@ export type StoryDocument = {
 // apiDataId is set for externally sourced trends, null for manually created ones.
 export type TrendRow = {
   id: string;
+  trendId: string;
   trendDataId: string;
   name: string;
   unit: string | null;
   denomination: number | null;
   frequency: string;
-
   source: string;
-  apiDataId: string | null; 
-  createdBy: string;
+  apiDataId: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -90,7 +89,6 @@ export type DataRow = {
 
 // WeightData — contributor influence weight over time.
 export type WeightRow = {
-  id: string;
   timestamp: string;
   value: number; // 0.0–1.0
   dataId: string; // FK → StoryDocument contributor dataId
@@ -98,28 +96,17 @@ export type WeightRow = {
 
 // LagData — contributor lag offset over time (in days).
 export type LagRow = {
-  id: string;
   timestamp: string;
   value: number;
   dataId: string; // FK → StoryDocument contributor dataId
 };
 
-// RelationshipData — contributor relationship strength over time.
-export type RelationshipRow = {
-  id: string;
+export type CorrelationRow = {
   timestamp: string;
-  value: number;
+  value: number; // -1.0 to 1.0
   dataId: string; // FK → StoryDocument contributor dataId
 };
-
-// RelationshipTypeData — contributor relationship type over time.
-// value is "correlated" | "inversely_correlated"
-export type RelationshipTypeRow = {
-  id: string;
-  timestamp: string;
-  value: string;
-  dataId: string; // FK → StoryDocument contributor dataId
-};
+ 
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Composed types — built by DataState, never stored in the DB
@@ -145,8 +132,7 @@ export type AssembledContributor = {
   mergedDataValues: MergedDataPoint[];  // ← NEW
   weightValues: WeightRow[];
   lagValues: LagRow[];
-  relationshipValues: RelationshipRow[];
-  relationshipTypeValues: RelationshipTypeRow[];
+  correlationValues: CorrelationRow[];
 };
 
 export type AssembledAnalysis = {

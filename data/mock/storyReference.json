@@ -1,0 +1,10 @@
+[
+  {
+    "id": "storyref_001",
+    "name": "Should I place my monthly investment of 500$ into AbCellera right now?",
+    "analysisNumber": 3,
+    "contributorNumber": 4,
+    "storyDocId": "story_abcellera_001",
+    "trendId": "trend_abcellera_stock"
+  }
+]

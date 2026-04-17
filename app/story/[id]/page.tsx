@@ -6,7 +6,7 @@ import { DataProvider, useData } from "@/contexts/DataState";
 import StorySidebar from "@/components/StorySidebar";
 import StoryGraph from "@/components/StoryGraph";
 
-export type ActiveEditSeries = "merged" | "weight" | "lag" | "relationship" | "relationshipType";
+export type ActiveEditSeries = "merged" | "weight" | "lag" | "correlation" ;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // StoryViewState
@@ -24,7 +24,7 @@ export type ActiveEditSeries = "merged" | "weight" | "lag" | "relationship" | "r
 // ─────────────────────────────────────────────────────────────────────────────
 
 export type StoryViewState = {
-  activeView:            "story" | "contributor" | "analysis";
+  activeView: "story" | "contributor" | "analysis";
 
   // ── Story toggles (independent) ───────────────────────────────────────────
   shownStoryTrend:       boolean;   // TrendData baseline
@@ -39,7 +39,8 @@ export type StoryViewState = {
   // ── Metric toggles (contributor view only) ────────────────────────────────
   shownWeightIds:        Set<string>;
   shownLagIds:           Set<string>;
-  shownRelationshipIds:  Set<string>;
+  shownCorrelationIds:  Set<string>;
+  shownContributorTrendIds: Set<string>;
 
   // ── Analysis view toggles ─────────────────────────────────────────────────
   shownAnalysisIds:      Set<string>;
@@ -60,10 +61,11 @@ export type StoryViewState = {
   // ── Toggles ───────────────────────────────────────────────────────────────
   onToggleStoryTrend:    () => void;
   onToggleStoryAnalysis: () => void;
+  onToggleContributorTrend: (id: string) => void;
   onToggleContributor:   (id: string) => void;
   onToggleWeight:        (id: string) => void;
   onToggleLag:           (id: string) => void;
-  onToggleRelationship:  (id: string) => void;
+  onToggleCorrelation:   (id: string) => void;
   onToggleAnalysis:      (id: string) => void;
 };
 
@@ -85,11 +87,12 @@ function StoryPageInner({ storyId }: { storyId: string }) {
   const [shownContributorIds,  setShownContributorIds]  = useState<Set<string>>(new Set());
   const [shownWeightIds,       setShownWeightIds]       = useState<Set<string>>(new Set());
   const [shownLagIds,          setShownLagIds]          = useState<Set<string>>(new Set());
-  const [shownRelationshipIds, setShownRelationshipIds] = useState<Set<string>>(new Set());
+  const [shownCorrelationIds,  setShownCorrelationIds]  = useState<Set<string>>(new Set());
+  const [shownContributorTrendIds, setShownContributorTrendIds] = useState<Set<string>>(new Set());
   const [shownAnalysisIds,     setShownAnalysisIds]     = useState<Set<string>>(new Set());
   const [activeContributorId,  setActiveContributorId]  = useState<string | null>(null);
-  const [activeEditSeries, setActiveEditSeries] = useState<ActiveEditSeries>("merged");
-  const [isDirty,          setIsDirty]          = useState(false);
+  const [activeEditSeries,     setActiveEditSeries]     = useState<ActiveEditSeries>("merged");
+  const [isDirty,              setIsDirty]              = useState(false);
 
   // ── Init ───────────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -108,6 +111,7 @@ function StoryPageInner({ storyId }: { storyId: string }) {
     setActiveView("story");
     setShownStoryTrend(true);
     setShownStoryAnalysis(true);
+    setShownContributorTrendIds(new Set());
     setShownContributorIds(
       contributorIds
         ? new Set(contributorIds)
@@ -115,7 +119,7 @@ function StoryPageInner({ storyId }: { storyId: string }) {
     );
     setShownWeightIds(new Set());
     setShownLagIds(new Set());
-    setShownRelationshipIds(new Set());
+    setShownCorrelationIds(new Set());
   }, [assembledStory]);
 
   // ── relationshipView ───────────────────────────────────────────────────────
@@ -126,15 +130,23 @@ function StoryPageInner({ storyId }: { storyId: string }) {
     setActiveView("contributor");
     setShownStoryTrend(true);
     setShownStoryAnalysis(true);
+    setShownContributorTrendIds(new Set([contributorId]));
     setShownContributorIds(new Set([contributorId]));
     setActiveContributorId(contributorId);
     setActiveEditSeries("merged");
 
     const c = assembledStory.contributors.find((c) => c.id === contributorId);
     if (c) {
-      setShownWeightIds(      new Set(c.weightValues.map((w) => w.id)));
-      setShownLagIds(         new Set(c.lagValues.map((l) => l.id)));
-      setShownRelationshipIds(new Set(c.relationshipValues.map((r) => r.id)));
+      setShownWeightIds(      new Set(c.weightValues.length > 0      ? [c.dataId] : []));
+      setShownLagIds(         new Set(c.lagValues.length > 0         ? [c.dataId] : []));
+      setShownCorrelationIds( new Set(c.correlationValues.length > 0 ? [c.dataId] : []));
+
+      // ── temporary debug ──
+      console.log("[debug] contributorId:", contributorId);
+      console.log("[debug] dataId:", c.dataId);
+      console.log("[debug] weightValues.length:", c.weightValues.length);
+      console.log("[debug] lagValues.length:", c.lagValues.length);
+      console.log("[debug] correlationValues.length:", c.correlationValues.length);
     }
   }, [assembledStory]);
 
@@ -145,10 +157,11 @@ function StoryPageInner({ storyId }: { storyId: string }) {
     setActiveView("analysis");
     setShownStoryTrend(true);
     setShownStoryAnalysis(false);
+    setShownContributorTrendIds(new Set());
     setShownContributorIds(new Set());
     setShownWeightIds(new Set());
     setShownLagIds(new Set());
-    setShownRelationshipIds(new Set());
+    setShownCorrelationIds(new Set());
     setShownAnalysisIds(
       new Set(Object.keys(activeStoryDoc?.Analysis ?? {}))
     );
@@ -162,17 +175,18 @@ function StoryPageInner({ storyId }: { storyId: string }) {
       return next;
     });
 
-  const onToggleStoryTrend    = useCallback(() => setShownStoryTrend(v => !v),    []);
-  const onSelectEditSeries = useCallback((s: ActiveEditSeries) => setActiveEditSeries(s), []);
-  const onPointEdited      = useCallback(() => setIsDirty(true), []);
-  const onSave             = useCallback(() => { /* TODO: persist */ setIsDirty(false); }, []);
-  const onSaveAsNew        = useCallback(() => { /* TODO: create new analysis */ }, []);
-  const onToggleStoryAnalysis = useCallback(() => setShownStoryAnalysis(v => !v), []);
-  const onToggleContributor   = useCallback(makeToggle(setShownContributorIds),   []);
-  const onToggleWeight        = useCallback(makeToggle(setShownWeightIds),        []);
-  const onToggleLag           = useCallback(makeToggle(setShownLagIds),           []);
-  const onToggleRelationship  = useCallback(makeToggle(setShownRelationshipIds),  []);
-  const onToggleAnalysis      = useCallback(makeToggle(setShownAnalysisIds),      []);
+  const onToggleStoryTrend      = useCallback(() => setShownStoryTrend(v => !v),    []);
+  const onSelectEditSeries      = useCallback((s: ActiveEditSeries) => setActiveEditSeries(s), []);
+  const onPointEdited           = useCallback(() => setIsDirty(true), []);
+  const onSave                  = useCallback(() => { /* TODO: persist */ setIsDirty(false); }, []);
+  const onSaveAsNew             = useCallback(() => { /* TODO: create new analysis */ }, []);
+  const onToggleStoryAnalysis    = useCallback(() => setShownStoryAnalysis(v => !v), []);
+  const onToggleContributorTrend = useCallback(makeToggle(setShownContributorTrendIds), []);
+  const onToggleContributor     = useCallback(makeToggle(setShownContributorIds),   []);
+  const onToggleWeight          = useCallback(makeToggle(setShownWeightIds),        []);
+  const onToggleLag             = useCallback(makeToggle(setShownLagIds),           []);
+  const onToggleCorrelation     = useCallback(makeToggle(setShownCorrelationIds),  []);
+  const onToggleAnalysis        = useCallback(makeToggle(setShownAnalysisIds),      []);
 
   // ── View state bundle ──────────────────────────────────────────────────────
   const viewState: StoryViewState = {
@@ -182,11 +196,12 @@ function StoryPageInner({ storyId }: { storyId: string }) {
     shownContributorIds,
     shownWeightIds,
     shownLagIds,
-    shownRelationshipIds,
+    shownCorrelationIds,
     shownAnalysisIds,
     activeContributorId,
     activeEditSeries,
     isDirty,
+    shownContributorTrendIds,
     onStoryView,
     onRelationshipView,
     onAnalysisView,
@@ -196,10 +211,11 @@ function StoryPageInner({ storyId }: { storyId: string }) {
     onSave,
     onSaveAsNew,
     onToggleStoryAnalysis,
+    onToggleContributorTrend,
     onToggleContributor,
     onToggleWeight,
     onToggleLag,
-    onToggleRelationship,
+    onToggleCorrelation,
     onToggleAnalysis,
   };
 

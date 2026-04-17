@@ -39,7 +39,7 @@ ChartJS.register(
 const METRIC_COLORS = {
   weight:       "#f59e0b",
   lag:          "#06b6d4",
-  relationship: "#10b981",
+  correlation: "#10b981",
 };
 
 // ── Helper: hex color → rgba string ──────────────────────────────────────────
@@ -294,8 +294,8 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
     setAllWeightValues,
     allLagValues,
     setAllLagValues,
-    allRelationshipValues,
-    setAllRelationshipValues,
+    allCorrelationValues,
+    setAllCorrelationValues,
   } = useData();
 
   const chartRef = useRef<ChartJS<"line", any[]>>(null);
@@ -305,9 +305,10 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
     shownStoryTrend,
     shownStoryAnalysis,
     shownContributorIds,
+    shownContributorTrendIds,
     shownWeightIds,
     shownLagIds,
-    shownRelationshipIds,
+    shownCorrelationIds,
     shownAnalysisIds,
     activeEditSeries,
     onPointEdited,
@@ -427,7 +428,14 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
         const cAxis   = axisId(cUnit, cDen);
         axisRegistry.set(cAxis, { unit: cUnit, denomination: cDen });
 
-        // Merged contributor data — draggable only if activeEditSeries === "merged"
+        // Contributor root — uneditable baseline, controlled by shownContributorTrendIds
+        datasets.push(makeDataset(
+          `${contributor.meta?.name ?? contributor.name} (Root)`,
+          toPoints(contributor.trendDataValues),
+          color, shownContributorTrendIds.has(contributor.id) ? opacity * 0.4 : 0, "dotted", false, cAxis,
+        ));
+
+        // Contributor merged — editable analysis line, controlled by shownContributorIds
         const mergedIsActive = activeEditSeries === "merged";
         datasets.push(makeDataset(
           contributor.meta?.name ?? contributor.name,
@@ -438,7 +446,7 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
           mergedIsActive ? contributor.dataId : undefined,
         ));
 
-        // Weight — draggable only if activeEditSeries === "weight"
+        // Weight
         if (shownWeightIds.size > 0) {
           axisRegistry.set("y_ratio", { unit: "ratio", denomination: 1 });
           const isActive = activeEditSeries === "weight";
@@ -449,9 +457,8 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
             isActive ? contributor.dataId : undefined,
           ));
         }
-        
 
-        // Lag — draggable only if activeEditSeries === "lag"
+        // Lag
         if (shownLagIds.size > 0) {
           axisRegistry.set("y_days", { unit: "days", denomination: 1 });
           const isActive = activeEditSeries === "lag";
@@ -463,14 +470,14 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
           ));
         }
 
-        // Relationship — draggable only if activeEditSeries === "relationship"
-        if (shownRelationshipIds.size > 0) {
-          axisRegistry.set("y_ratio", { unit: "ratio", denomination: 1 });
-          const isActive = activeEditSeries === "relationship";
+        // Correlation
+        if (shownCorrelationIds.size > 0) {
+          axisRegistry.set("y_correlation", { unit: "correlation", denomination: 1 });
+          const isActive = activeEditSeries === "correlation";
           datasets.push(makeDataset(
-            "Relationship",
-            isActive ? toFullPoints(contributor.relationshipValues, timeAxis) : toPoints(contributor.relationshipValues),
-            METRIC_COLORS.relationship, 1, "dashed", isActive, "y_ratio",
+            "Correlation to Story",
+            isActive ? toFullPoints(contributor.correlationValues, timeAxis) : toPoints(contributor.correlationValues),
+            METRIC_COLORS.correlation, 1, "dashed", isActive, "y_correlation",
             isActive ? contributor.dataId : undefined,
           ));
         }
@@ -511,7 +518,7 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
     shownContributorIds,
     shownWeightIds,
     shownLagIds,
-    shownRelationshipIds,
+    shownCorrelationIds,
     shownAnalysisIds,
     activeEditSeries,
   ]);
@@ -558,13 +565,13 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
           const allValues =
             series === "weight"       ? allWeightValues :
             series === "lag"          ? allLagValues :
-            series === "relationship" ? allRelationshipValues :
+            series === "correlation"  ? allCorrelationValues :
             allDataValues;
 
           const setter: any =
             series === "weight"       ? setAllWeightValues :
             series === "lag"          ? setAllLagValues :
-            series === "relationship" ? setAllRelationshipValues :
+            series === "correlation"  ? setAllCorrelationValues :
             setAllDataValues;
 
           const existingIdx = allValues.findIndex(
@@ -629,7 +636,8 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
       },
       ...yScales,
     },
-  }), [datasets, allDataValues, setAllDataValues, allWeightValues, setAllWeightValues, allLagValues, setAllLagValues, allRelationshipValues, setAllRelationshipValues, axisRegistry, yScales]);
+  }), [datasets, allDataValues, setAllDataValues, allWeightValues, setAllWeightValues, allLagValues, setAllLagValues, allCorrelationValues, axisRegistry, yScales]);
+  
   // ── Render ──────────────────────────────────────────────────────────────────
   if (!assembledStory) {
     return (

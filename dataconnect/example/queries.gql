@@ -1,228 +1,121 @@
 # queries.gql — Firebase Data Connect
-# ─────────────────────────────────────────────────────────────────────────────
-# Query conventions:
-#   - GetStory fetches base data only (variantId = null relationships/trends)
-#   - GetStoryVariant fetches a single variant's overrides, merged in DataState
-#   - Variant trend overrides are fetched separately and resolved in DataState
-#     via getEffectiveTrend() — queries never pre-merge base + override
-# ─────────────────────────────────────────────────────────────────────────────
+# Mirrors DataState initStory steps exactly.
+# Step 2.5 → GetTrendsByIds + GetTrendDataByTrendDataIds
+# Step 4   → GetDataByDataIds + GetWeightDataByDataIds + GetLagDataByDataIds
+#            + GetCorrelationDataByDataIds
+# Search   → SearchTrends + SearchStoryReferences
 
-# ── Perspective ───────────────────────────────────────────────────────────────
-
-query GetPerspective($id: UUID!) @auth(level: USER) {
-  perspective(id: $id) {
+# ── GetTrendsByIds ────────────────────────────────────────────────────────────
+# initStory Step 2.5 — resolve trendId → Trend metadata
+query GetTrendsByIds($ids: [String!]!) @auth(level: USER) {
+  trends(where: { trendId: { in: $ids } }) {
     id
-    name
-    slug
-    plan
-    createdAt
-  }
-}
-
-query GetPerspectiveMembers($perspectiveId: UUID!) @auth(level: USER) {
-  perspectiveMembers(where: { perspectiveId: { eq: $perspectiveId } }) {
-    userId
-    role
-    createdAt
-  }
-}
-
-query GetStoriesByPerspective($perspectiveId: UUID!) @auth(level: USER) {
-  stories(where: { perspectiveId: { eq: $perspectiveId } }) {
-    id
-    name
-    createdAt
-    updatedAt
-    focalTrend {
-      id
-      name
-      unit
-      denomination
-      frequency
-    }
-  }
-}
-
-# ── Trend ─────────────────────────────────────────────────────────────────────
-
-query GetTrend($id: UUID!) @auth(level: USER) {
-  trend(id: $id) {
-    id
+    trendId
+    trendDataId
     name
     unit
     denomination
-    description
-    source
     frequency
-    externalId
-    variantId
-    baseTrendId
+    source
+    apiDataId
     createdAt
     updatedAt
   }
 }
 
-# Fetch all values for a single trend (base or override)
-query GetTrendValues($trendId: UUID!) @auth(level: USER) {
-  trendValues(
-    where: { trendId: { eq: $trendId } }
+# ── GetTrendDataByTrendDataIds ────────────────────────────────────────────────
+# initStory Step 2.5 — fetch time-series rows for resolved trends
+query GetTrendDataByTrendDataIds($trendDataIds: [String!]!) @auth(level: USER) {
+  trendDatas(
+    where: { trendDataId: { in: $trendDataIds } }
     orderBy: { timestamp: ASC }
   ) {
-    id
+    trendDataId
     value
     timestamp
   }
 }
 
-query SearchTrends($name: String!) @auth(level: USER) {
+# ── GetDataByDataIds ──────────────────────────────────────────────────────────
+# initStory Step 4 — user-specific analysis data values
+query GetDataByDataIds($dataIds: [String!]!) @auth(level: USER) {
+  datas(
+    where: { dataId: { in: $dataIds } }
+    orderBy: { timestamp: ASC }
+  ) {
+    id
+    dataId
+    value
+    timestamp
+  }
+}
+
+# ── GetWeightDataByDataIds ────────────────────────────────────────────────────
+query GetWeightDataByDataIds($dataIds: [String!]!) @auth(level: USER) {
+  weightDatas(
+    where: { dataId: { in: $dataIds } }
+    orderBy: { timestamp: ASC }
+  ) {
+    id
+    dataId
+    value
+    timestamp
+  }
+}
+
+# ── GetLagDataByDataIds ───────────────────────────────────────────────────────
+query GetLagDataByDataIds($dataIds: [String!]!) @auth(level: USER) {
+  lagDatas(
+    where: { dataId: { in: $dataIds } }
+    orderBy: { timestamp: ASC }
+  ) {
+    id
+    dataId
+    value
+    timestamp
+  }
+}
+
+# ── GetCorrelationDataByDataIds ───────────────────────────────────────────────
+query GetCorrelationDataByDataIds($dataIds: [String!]!) @auth(level: USER) {
+  correlationDatas(
+    where: { dataId: { in: $dataIds } }
+    orderBy: { timestamp: ASC }
+  ) {
+    id
+    dataId
+    value
+    timestamp
+  }
+}
+
+# ── SearchTrends ──────────────────────────────────────────────────────────────
+# Add Contributor modal — search Trend table by name
+query SearchTrends($query: String!) @auth(level: USER) {
   trends(
-    where: {
-      name: { contains: $name }
-      variantId: { isNull: true }   # search base trends only
-    }
+    where: { name: { contains: $query } }
+    limit: 10
   ) {
     id
     name
     unit
     denomination
-    description
-    frequency
     source
+    trendDataId
   }
 }
 
-# ── Story ─────────────────────────────────────────────────────────────────────
-
-# Fetches a story with its focal trend values and all BASE contributors
-# (variantId = null relationships only). Variant data is loaded separately
-# via GetStoryVariants + GetVariantRelationships.
-query GetStory($id: UUID!) @auth(level: USER) {
-  story(id: $id) {
-    id
-    name
-    perspectiveId
-    createdAt
-    updatedAt
-    focalTrend {
-      id
-      name
-      unit
-      denomination
-      description
-      source
-      frequency
-      variantId
-      baseTrendId
-      trendValues_on_trend(orderBy: { timestamp: ASC }) {
-        id
-        value
-        timestamp
-      }
-    }
-    # Base relationships only — variant = null
-    relationships_on_focalStory(
-      where: { variantId: { isNull: true } }
-    ) {
-      id
-      type
-      createdAt
-      contributorStory {
-        id
-        name
-        focalTrend {
-          id
-          name
-          unit
-          denomination
-          frequency
-          variantId
-          baseTrendId
-          trendValues_on_trend(orderBy: { timestamp: ASC }) {
-            id
-            value
-            timestamp
-          }
-        }
-      }
-      weights_on_relationship(orderBy: { timestamp: ASC }) {
-        id
-        value
-        timestamp
-      }
-      relationshipValues_on_relationship(orderBy: { timestamp: ASC }) {
-        id
-        value
-        timestamp
-      }
-      lagValues_on_relationship(orderBy: { timestamp: ASC }) {
-        id
-        value
-        timestamp
-      }
-    }
-  }
-}
-
-# ── Variants ──────────────────────────────────────────────────────────────────
-
-# Load all variants for a root story — populates the variant list in the sidebar.
-# storyId must always be the ROOT focal story ID.
-query GetStoryVariants($storyId: UUID!) @auth(level: USER) {
-  variants(
-    where: { storyId: { eq: $storyId } }
-    orderBy: { createdAt: ASC }
+# ── SearchStoryReferences ─────────────────────────────────────────────────────
+# Add Contributor modal — search StoryReference table by name
+query SearchStoryReferences($query: String!) @auth(level: USER) {
+  storyReferences(
+    where: { name: { contains: $query } }
+    limit: 10
   ) {
     id
     name
-    createdAt
-  }
-}
-
-# Load all relationship rows for a specific variant.
-# DataState merges these on top of base relationships via getEffectiveRelationships().
-query GetVariantRelationships($variantId: UUID!) @auth(level: USER) {
-  relationships(where: { variantId: { eq: $variantId } }) {
-    id
-    focalStoryId
-    contributorStoryId
-    variantId
-    type
-    createdAt
-    weights_on_relationship(orderBy: { timestamp: ASC }) {
-      id
-      value
-      timestamp
-    }
-    relationshipValues_on_relationship(orderBy: { timestamp: ASC }) {
-      id
-      value
-      timestamp
-    }
-    lagValues_on_relationship(orderBy: { timestamp: ASC }) {
-      id
-      value
-      timestamp
-    }
-  }
-}
-
-# Load all override trends for a specific variant (trend rows where variantId is set).
-# DataState resolves which to show via getEffectiveTrend(baseTrendId).
-query GetVariantTrends($variantId: UUID!) @auth(level: USER) {
-  trends(where: { variantId: { eq: $variantId } }) {
-    id
-    name
-    unit
-    denomination
-    description
-    source
-    frequency
-    variantId
-    baseTrendId
-    trendValues_on_trend(orderBy: { timestamp: ASC }) {
-      id
-      value
-      timestamp
-    }
+    analysisNumber
+    contributorNumber
+    storyDocId
   }
 }

@@ -10,8 +10,7 @@
 //     + Σ contributors:
 //         contributorMergedValue(t - lagDays)   ← snapped to nearest point
 //         × (weight / 100)                       ← weight is stored as 0–100
-//         × relationship                         ← correlation scalar 0–1
-//         × direction                            ← +1 direct, -1 inverse
+//         × correlation                          ← signed -1.0 to 1.0; negative = inverse, positive = direct
 // ─────────────────────────────────────────────────────────────────────────────
 
 type TimeSeriesPoint = { timestamp: string; value: number };
@@ -53,11 +52,10 @@ function snapToNearest(values: TimeSeriesPoint[], targetTs: string): TimeSeriesP
 // ── ContributorForCalc ────────────────────────────────────────────────────────
 // Matches the shape of AssembledContributor — only the fields we need.
 export type ContributorForCalc = {
-  mergedDataValues:       TimeSeriesPoint[];
-  weightValues:           AnyValuePoint[];
-  lagValues:              AnyValuePoint[];
-  relationshipValues:     AnyValuePoint[];
-  relationshipTypeValues: AnyValuePoint[];
+  mergedDataValues: TimeSeriesPoint[];
+  weightValues:     AnyValuePoint[];
+  lagValues:        AnyValuePoint[];
+  correlationValues: AnyValuePoint[];
 };
 
 // ── calculateStoryValues ──────────────────────────────────────────────────────
@@ -77,17 +75,15 @@ export function calculateStoryValues(
       // Skip this contributor entirely if weight is 0 — default state
       if (weight === 0) continue;
 
-      const lagDays    = getLatestAtOrBefore(contributor.lagValues,         timestamp, 0);
-      const relationship = getLatestAtOrBefore(contributor.relationshipValues, timestamp, 1);
-      const relType    = getLatestAtOrBefore(contributor.relationshipTypeValues, timestamp, "direct");
-      const direction  = relType === "inverse" ? -1 : 1;
+      const lagDays    = getLatestAtOrBefore(contributor.lagValues,          timestamp, 0);
+      const correlation = getLatestAtOrBefore(contributor.correlationValues, timestamp, 0);
 
       // Shift the lookup timestamp back by lag, snap to nearest contributor point
       const laggedTs  = lagDays > 0 ? subtractDays(timestamp, lagDays) : timestamp;
       const nearest   = snapToNearest(contributor.mergedDataValues, laggedTs);
       if (!nearest) continue;
 
-      totalEffect += nearest.value * weight * relationship * direction;
+      totalEffect += nearest.value * weight * correlation;
     }
 
     return { timestamp, value: baselineValue + totalEffect };

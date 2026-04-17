@@ -2,9 +2,10 @@
 
 import { useData } from "@/contexts/DataState";
 import Breadcrumb from "@/components/Breadcrumb";
+import AddContributorModal from "@/components/AddContributor";
 import type { AssembledContributor } from "@/types/db";
 import type { StoryViewState } from "@/app/story/[id]/page";
-
+import { useState } from "react";
 import {
   EyeIcon,
   EyeOffIcon,
@@ -15,7 +16,6 @@ import {
 } from "@/components/icons";
 
 // ── Colors ────────────────────────────────────────────────────────────────────
-
 export const TREND_COLORS = [
   "#c026d3",
   "#06b6d4",
@@ -33,11 +33,10 @@ export function getTrendColor(index: number): string {
 const METRIC_COLORS = {
   weight:            "#f59e0b",
   lag:               "#06b6d4",
-  relationshipValue: "#10b981",
+  correlationValue: "#10b981",
 };
 
 // ── Eye toggle button ─────────────────────────────────────────────────────────
-
 function EyeToggle({
   shown,
   onToggle,
@@ -66,11 +65,11 @@ function EyeToggle({
 }
 
 // ── Metric series row ─────────────────────────────────────────────────────────
-
 function MetricSeriesRow({
   label,
   color,
-  ids,
+  count,
+  dataId,
   shownIds,
   toggleFn,
   isActiveEdit = false,
@@ -78,20 +77,17 @@ function MetricSeriesRow({
 }: {
   label:         string;
   color:         string;
-  ids:           string[];
+  count:         number;
+  dataId:        string;
   shownIds:      Set<string>;
   toggleFn:      (id: string) => void;
   isActiveEdit?: boolean;
   onSelectEdit?: () => void;
 }) {
-  const isShown = ids.length > 0 && ids.some((id) => shownIds.has(id));
+  const isShown = count > 0 && shownIds.has(dataId);
 
   function toggle() {
-    ids.forEach((id) => {
-      const currentlyShown = shownIds.has(id);
-      if (isShown && currentlyShown)   toggleFn(id);
-      if (!isShown && !currentlyShown) toggleFn(id);
-    });
+    toggleFn(dataId); 
   }
 
   return (
@@ -118,17 +114,15 @@ function MetricSeriesRow({
         {label}
       </p>
       {isActiveEdit && (
-        <span className="text-[10px] font-medium px-1.5 py-0.5 rounded border bg-indigo-100 text-indigo-600 border-indigo-200 ml-1">
-          Editing
+        <span className="ml-auto text-indigo-400">
+          <PenIcon />
         </span>
       )}
-      <span className="ml-auto text-xs text-zinc-400">{ids.length} pts</span>
     </div>
   );
 }
 
 // ── Analysis card ─────────────────────────────────────────────────────────────
-
 type AnalysisEntry = { id: string; Name?: string; createdAt?: string };
 
 function AnalysisCard({
@@ -189,7 +183,6 @@ function AnalysisCard({
 // ── ContributorPanel ──────────────────────────────────────────────────────────
 // Shown when activeView === "contributor".
 // Story pair toggles shown at top; contributor pair + metrics below.
-
 function ContributorPanel({
   storyName,
   storyDataPointCount,
@@ -225,8 +218,9 @@ function ContributorPanel({
         <p className="text-zinc-700 text-sm leading-snug">{contributor.name}</p>
         <div className="flex items-center gap-2">
           <EyeToggle
-            shown={isShown}
-            onToggle={() => viewState.onToggleContributor(contributor.id)}
+            shown={viewState.shownContributorTrendIds.has(contributor.id)}
+            onToggle={() => viewState.onToggleContributorTrend(contributor.id)}
+            label="Root Data"
           />
           {contributor.meta && (
             <span className="text-xs text-zinc-400">
@@ -248,23 +242,31 @@ function ContributorPanel({
         onClick={() => viewState.onSelectEditSeries("merged")}
         title="Click to edit data points"
       >
-        <span className="text-indigo-500"><EyeIcon /></span>
+        <button
+          onClick={(e) => { e.stopPropagation(); viewState.onToggleContributor(contributor.id); }}
+          title={viewState.shownContributorIds.has(contributor.id) ? "Hide from graph" : "Show on graph"}
+          className={`transition-colors duration-150 ${
+            viewState.shownContributorIds.has(contributor.id)
+              ? "text-indigo-500 hover:text-indigo-700"
+              : "text-zinc-300 hover:text-zinc-500"
+          }`}
+        >
+          {viewState.shownContributorIds.has(contributor.id) ? <EyeIcon /> : <EyeOffIcon />}
+        </button>
         <p className={`text-sm ${viewState.activeEditSeries === "merged" ? "text-indigo-700 font-medium" : "text-zinc-700"}`}>
           Data Points
         </p>
         {viewState.activeEditSeries === "merged" && (
-          <span className="text-[10px] font-medium px-1.5 py-0.5 rounded border bg-indigo-100 text-indigo-600 border-indigo-200 ml-1">
-            Editing
-          </span>
+          <span className="ml-auto text-indigo-400"><PenIcon /></span>
         )}
-        <span className="ml-auto text-xs text-zinc-400">{contributor.mergedDataValues.length} pts</span>
       </div>
 
       {/* Metric series rows */}
       <MetricSeriesRow
         label="Weight"
         color={METRIC_COLORS.weight}
-        ids={contributor.weightValues.map((w) => w.id)}
+        count={contributor.weightValues.length}
+        dataId={contributor.dataId}  
         shownIds={viewState.shownWeightIds}
         toggleFn={viewState.onToggleWeight}
         isActiveEdit={viewState.activeEditSeries === "weight"}
@@ -273,21 +275,84 @@ function ContributorPanel({
       <MetricSeriesRow
         label="Lag"
         color={METRIC_COLORS.lag}
-        ids={contributor.lagValues.map((l) => l.id)}
+        count={contributor.lagValues.length}
+        dataId={contributor.dataId}  
         shownIds={viewState.shownLagIds}
         toggleFn={viewState.onToggleLag}
         isActiveEdit={viewState.activeEditSeries === "lag"}
         onSelectEdit={() => viewState.onSelectEditSeries("lag")}
       />
       <MetricSeriesRow
-        label="Relationship Value"
-        color={METRIC_COLORS.relationshipValue}
-        ids={contributor.relationshipValues.map((r) => r.id)}
-        shownIds={viewState.shownRelationshipIds}
-        toggleFn={viewState.onToggleRelationship}
-        isActiveEdit={viewState.activeEditSeries === "relationship"}
-        onSelectEdit={() => viewState.onSelectEditSeries("relationship")}
+        label="Correlation"
+        color={METRIC_COLORS.correlationValue}
+        count={contributor.correlationValues.length}
+        dataId={contributor.dataId}  
+        shownIds={viewState.shownCorrelationIds}
+        toggleFn={viewState.onToggleCorrelation}
+        isActiveEdit={viewState.activeEditSeries === "correlation"}
+        onSelectEdit={() => viewState.onSelectEditSeries("correlation")}
       />
+    </div>
+  );
+}
+
+// ── Icons ──────────────────────────────────────────────────────────────────
+function MoreIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <circle cx="12" cy="5"  r="1" fill="currentColor" />
+      <circle cx="12" cy="12" r="1" fill="currentColor" />
+      <circle cx="12" cy="19" r="1" fill="currentColor" />
+    </svg>
+  );
+}
+
+function PenIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+    </svg>
+  );
+}
+ 
+// ── UnlinkConfirmModal ────────────────────────────────────────────────────────
+function UnlinkConfirmModal({
+  contributorName,
+  onConfirm,
+  onCancel,
+}: {
+  contributorName: string;
+  onConfirm:       () => void;
+  onCancel:        () => void;
+}) {
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm"
+      onClick={(e) => { if (e.target === e.currentTarget) onCancel(); }}
+    >
+      <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm flex flex-col gap-4">
+        <p className="text-sm font-semibold text-zinc-800">Remove Contributor?</p>
+        <p className="text-sm text-zinc-500 leading-relaxed">
+          <span className="font-medium text-zinc-700">{contributorName}</span> will be removed
+          from this story. All weight, lag, and correlation edits for this contributor
+          will be permanently deleted.
+        </p>
+        <div className="flex items-center gap-2 justify-end">
+          <button
+            onClick={onCancel}
+            className="px-3 py-1.5 text-sm text-zinc-500 hover:text-zinc-700 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            className="px-3 py-1.5 text-sm font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg transition-colors"
+          >
+            Remove
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -305,17 +370,25 @@ function ContributorNode({
   colorIndex:  number;
   viewState:   StoryViewState;
 }) {
+  const { unlinkContributor } = useData();
   const color        = getTrendColor(colorIndex);
   const isShown      = viewState.shownContributorIds.has(contributor.id);
-  const latestWeight = contributor.weightValues.at(-1)?.value ?? null;
-  const relType      = (contributor.relationshipTypeValues.at(-1)?.value as string) ?? null;
+  const [menuOpen,        setMenuOpen]        = useState(false);
+  const [confirmingUnlink, setConfirmingUnlink] = useState(false);
+
+  async function handleUnlink() {
+    setConfirmingUnlink(false);
+    await unlinkContributor(contributor.id);
+  }
 
   return (
+    <>
+
     <div
       className="flex flex-col gap-1.5 py-2 px-3 rounded-md bg-zinc-100 mb-1.5"
       style={{ borderLeft: `3px solid ${color}` }}
     >
-      <div className="flex items-center gap-1.5">
+      <div className="flex items-center gap-2">
         <p className="text-zinc-700 text-sm leading-snug">{contributor.name}</p>
       </div>
 
@@ -331,10 +404,47 @@ function ContributorNode({
           className="flex items-center gap-1 text-xs text-indigo-500 hover:text-indigo-700 transition-colors duration-150"
         >
           <FilterIcon />
-          <p className="text-indigo-500 text-sm leading-snug">Open Relationship</p>
+          <p className="text-indigo-500 text-sm leading-snug">Edit Contributor</p>
         </button>
+
+        <div className="relative">
+            <button
+              onClick={() => setMenuOpen(v => !v)}
+              className="text-zinc-400 hover:text-zinc-600 transition-colors p-0.5 rounded"
+            >
+              <MoreIcon />
+            </button>
+
+            {menuOpen && (
+              <>
+                {/* Click-away backdrop */}
+                <div
+                  className="fixed inset-0 z-10"
+                  onClick={() => setMenuOpen(false)}
+                />
+                <div className="absolute right-0 top-6 z-20 w-36 bg-white rounded-lg shadow-lg border border-zinc-100 py-1 overflow-hidden">
+                  <button
+                    onClick={() => { setMenuOpen(false); setConfirmingUnlink(true); }}
+                    className="w-full text-left px-3 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
       </div>
     </div>
+
+    {confirmingUnlink && (
+      <UnlinkConfirmModal
+        contributorName={contributor.name}
+        onConfirm={handleUnlink}
+        onCancel={() => setConfirmingUnlink(false)}
+      />
+    )}
+    
+    </>
   );
 }
 
@@ -347,6 +457,7 @@ export default function StorySidebar({ viewState }: { viewState: StoryViewState 
     activeAnalysisId,
     perspectives,
   } = useData();
+  const [showAddModal, setShowAddModal] = useState(false);
   if (!assembledStory) return null;
   const { id: storyId, name: title, trendDataValues, contributors } = assembledStory;
   const perspective = perspectives.find((p) => p.id === activeStoryDoc?.perspectiveId);
@@ -441,6 +552,15 @@ export default function StorySidebar({ viewState }: { viewState: StoryViewState 
               viewState={viewState}
             />
           ))}
+
+          {/* Add New Contributor button */}
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="flex items-center justify-center gap-1.5 w-full mt-3 px-3 py-2 rounded-md border border-dashed border-zinc-300 text-xs font-medium text-zinc-400 hover:border-indigo-300 hover:text-indigo-500 transition-colors"
+          >
+            Add New Contributor
+            <span className="text-base leading-none">+</span>
+          </button>
         </div>
       )}
 
@@ -537,6 +657,12 @@ export default function StorySidebar({ viewState }: { viewState: StoryViewState 
         </div>
       )}
 
+      {/* ── Add Contributor Modal ──────────────────────────────────────── */}
+      {showAddModal && (
+        <AddContributorModal onClose={() => setShowAddModal(false)} />
+      )}
+
     </div>
+
   );
 }
