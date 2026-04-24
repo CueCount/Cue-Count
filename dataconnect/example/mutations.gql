@@ -66,6 +66,38 @@ mutation UpsertCorrelationData(
   })
 }
 
+mutation UpsertTrendData(
+  $trendDataId: String!
+  $timestamp:   Timestamp!
+  $value:       Float!
+) @auth(level: PUBLIC) {
+  trendData_insert(data: {
+    trendDataId: $trendDataId
+    timestamp:   $timestamp
+    value:       $value
+  })
+}
+
+mutation UpdateTrend(
+  $trendDataId:  String!
+  $frequency:    String
+  $unit:         String
+  $denomination: Float
+  $syncedAt:     Timestamp
+  $updatedAt:    Timestamp!
+) @auth(level: PUBLIC) {
+  trend_updateMany(
+    where: { trendDataId: { eq: $trendDataId } }
+    data: {
+      frequency:    $frequency
+      unit:         $unit
+      denomination: $denomination
+      syncedAt:     $syncedAt
+      updatedAt:    $updatedAt
+    }
+  )
+}
+
 # ── DeleteData ────────────────────────────────────────────────────────────────
 # Used when unlinking a contributor — clean up all its value rows
 mutation DeleteDataByDataId($dataId: String!) @auth(level: USER) {

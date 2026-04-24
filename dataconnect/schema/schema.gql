@@ -11,6 +11,7 @@ type Trend @table {
   apiDataId:    String
   createdAt:    Timestamp! @default(expr: "request.time")
   updatedAt:    Timestamp! @default(expr: "request.time")
+  syncedAt:     Timestamp
 }
 
 # ── TrendData ─────────────────────────────────────────────────────────────────

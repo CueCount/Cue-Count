@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useData } from "@/contexts/DataState";
 import { searchContributors, type ContributorSearchResult } from "@/lib/searchContributors";
 
@@ -101,23 +101,50 @@ function ResultCard({
 export default function AddContributorModal({ onClose }: { onClose: () => void }) {
   const { linkContributor } = useData();
   const [query,      setQuery]      = useState("");
+  const [results,    setResults]    = useState<ContributorSearchResult[]>([]);
+  const [loading,    setLoading]    = useState(false);
   const [activeTag,  setActiveTag]  = useState<string | null>(null);
   const [addingId,   setAddingId]   = useState<string | null>(null);
   const [addedIds,   setAddedIds]   = useState<Set<string>>(new Set());
 
-  const results = useMemo(() => searchContributors(query), [query]);
+  // Debounced async search — runs whenever query changes
+  const runSearch = useCallback(async (q: string) => {
+    setLoading(true);
+    try {
+      const data = await searchContributors(q);
+      setResults(data);
+    } catch (err) {
+      console.error("[AddContributor] search failed:", err);
+      setResults([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Debounce: wait 300ms after the user stops typing before querying
+  useEffect(() => {
+    const timer = setTimeout(() => runSearch(query), 300);
+    return () => clearTimeout(timer);
+  }, [query, runSearch]);
+
+  // Initial load — fetch all results on mount
+  useEffect(() => { runSearch(""); }, [runSearch]);
 
   async function handleAdd(result: ContributorSearchResult) {
     if (addedIds.has(result.id)) return;
     setAddingId(result.id);
     try {
-      // Generate a stable contributorId and a placeholder dataId
-      const contributorId = `contributor_${result.id}`;
-      const dataId        = `data_${result.id}_${Date.now()}`;
-      const trendId       = result.type === "trend"
-        ? result.id
-        : (result as any).trendId ?? result.id;
-
+      // For trends, use the business-key trendId — NOT the Postgres row UUID (result.id).
+      // For storyReferences, there is no trendId; fall back to result.id (story reference PK).
+      const trendId = result.type === "trend"
+        ? result.trendId
+        : result.id;
+ 
+      if (!trendId) {
+        console.error("[AddContributor] missing trendId on result:", result);
+        return;
+      }
+ 
       await linkContributor(result.name, trendId);
       setAddedIds(prev => new Set(prev).add(result.id));
     } finally {
@@ -126,7 +153,6 @@ export default function AddContributorModal({ onClose }: { onClose: () => void }
   }
 
   return (
-    // ── Backdrop ───────────────────────────────────────────────────────────
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
@@ -144,7 +170,7 @@ export default function AddContributorModal({ onClose }: { onClose: () => void }
           <p className="text-sm font-semibold text-zinc-800 flex-1 text-center">
             Add Contributor
           </p>
-          <div className="w-5" /> {/* spacer to center title */}
+          <div className="w-5" />
         </div>
 
         {/* ── Search bar ─────────────────────────────────────────────────── */}
@@ -154,11 +180,14 @@ export default function AddContributorModal({ onClose }: { onClose: () => void }
             <input
               autoFocus
               type="text"
-              placeholder="Search perspectives"
+              placeholder="Search trends and stories"
               value={query}
               onChange={e => setQuery(e.target.value)}
               className="flex-1 bg-transparent text-sm text-zinc-800 placeholder:text-zinc-400 outline-none"
             />
+            {loading && (
+              <span className="text-zinc-300 text-xs">searching...</span>
+            )}
           </div>
         </div>
 
@@ -182,7 +211,11 @@ export default function AddContributorModal({ onClose }: { onClose: () => void }
 
         {/* ── Results ────────────────────────────────────────────────────── */}
         <div className="flex-1 overflow-y-auto">
-          {results.length === 0 ? (
+          {loading && results.length === 0 ? (
+            <div className="flex items-center justify-center py-12 text-zinc-400 text-sm">
+              Loading...
+            </div>
+          ) : results.length === 0 ? (
             <div className="flex items-center justify-center py-12 text-zinc-400 text-sm">
               No results found
             </div>

@@ -40,7 +40,7 @@ import type {
 // Set NEXT_PUBLIC_USE_MOCK=true in .env.local to use JSON mock data.
 // Remove or set to false to use Firebase Data Connect (Postgres).
 // ─────────────────────────────────────────────────────────────────────────────
-const USE_MOCK = process.env.NEXT_PUBLIC_USE_MOCK === "true";
+const USE_MOCK = process.env.NEXT_PUBLIC_USE_MOCK === "false";
 
 import trendsJson           from "@/data/mock/trend.json";
 import trendDataJson        from "@/data/mock/trendData.json";
@@ -442,7 +442,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     // b. Resolve the new TrendId — fetch metadata and TrendData rows
     let newTrendMeta: TrendRow | undefined;
     if (USE_MOCK) {
-      newTrendMeta = (trendsJson as TrendRow[]).find(t => t.id === trendId);
+      newTrendMeta = (trendsJson as TrendRow[]).find(t => t.trendId === trendId);
     } else {
       const result = await getTrendsByIds({ ids: [trendId] });
       newTrendMeta = result.data.trends[0] as TrendRow | undefined;
@@ -450,7 +450,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
     if (newTrendMeta) {
       setAllTrendMeta(prev => {
-        const exists = prev.some(t => t.id === trendId);
+        const exists = prev.some(t => t.trendId === trendId);
         return exists ? prev : [...prev, newTrendMeta!];
       });
 
@@ -521,7 +521,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
   ) => {
     if (!activeStoryDoc) return;
 
-    const contributorId = `contrib-${crypto.randomUUID().slice(0, 8)}`;
+    const contributorId = `contributor-${crypto.randomUUID().slice(0, 8)}`;
     const dataId        = `data-${crypto.randomUUID().slice(0, 8)}-${crypto.randomUUID().slice(0, 8)}`;
 
     console.log(`[DataState] ▶ linkContributor() — name: ${name}, trendId: ${trendId}`);
@@ -733,7 +733,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     // Live recalc from contributor values. Rebuilds any time a contributor's
     // merged data, weight, lag, relationship, or relationshipType changes.
     // trendDataValues is the unmodified baseline passed as the starting point.
-    const calculatedDataValues = calculateStoryValues(storyTrendDataValues, contributors);
+    const calculatedDataValues = calculateStoryValues(storyTrendDataValues, contributors, storyMeta?.frequency ?? "monthly",);
 
     return {
       id:                   activeStoryDoc.id,

@@ -28,11 +28,29 @@ query GetTrendsByIds($ids: [String!]!) @auth(level: USER) {
 query GetTrendDataByTrendDataIds($trendDataIds: [String!]!) @auth(level: USER) {
   trendDatas(
     where: { trendDataId: { in: $trendDataIds } }
-    orderBy: { timestamp: ASC }
+    orderBy: [{ timestamp: ASC }]
+    limit: 100000
   ) {
     trendDataId
-    value
     timestamp
+    value
+  }
+}
+
+# Fetch a single trend by its trendDataId — used by importTrend.ts
+query GetTrendByTrendDataId($trendDataId: String!) @auth(level: PUBLIC) {
+  trends(where: { trendDataId: { eq: $trendDataId } }, limit: 1) {
+    id
+    trendDataId
+    name
+    unit
+    denomination
+    frequency
+    source
+    apiDataId
+    syncedAt
+    createdAt
+    updatedAt
   }
 }
 
@@ -42,6 +60,7 @@ query GetDataByDataIds($dataIds: [String!]!) @auth(level: USER) {
   datas(
     where: { dataId: { in: $dataIds } }
     orderBy: { timestamp: ASC }
+    limit: 100000
   ) {
     id
     dataId
@@ -55,6 +74,7 @@ query GetWeightDataByDataIds($dataIds: [String!]!) @auth(level: USER) {
   weightDatas(
     where: { dataId: { in: $dataIds } }
     orderBy: { timestamp: ASC }
+    limit: 100000
   ) {
     id
     dataId
@@ -68,6 +88,7 @@ query GetLagDataByDataIds($dataIds: [String!]!) @auth(level: USER) {
   lagDatas(
     where: { dataId: { in: $dataIds } }
     orderBy: { timestamp: ASC }
+    limit: 100000
   ) {
     id
     dataId
@@ -81,6 +102,7 @@ query GetCorrelationDataByDataIds($dataIds: [String!]!) @auth(level: USER) {
   correlationDatas(
     where: { dataId: { in: $dataIds } }
     orderBy: { timestamp: ASC }
+    limit: 100000
   ) {
     id
     dataId
@@ -97,6 +119,7 @@ query SearchTrends($query: String!) @auth(level: USER) {
     limit: 10
   ) {
     id
+    trendId
     name
     unit
     denomination
@@ -117,5 +140,15 @@ query SearchStoryReferences($query: String!) @auth(level: USER) {
     analysisNumber
     contributorNumber
     storyDocId
+  }
+}
+
+query GetLatestTrendDataTimestamp($trendDataId: String!) @auth(level: PUBLIC) {
+  trendDatas(
+    where: { trendDataId: { eq: $trendDataId } }
+    orderBy: { timestamp: DESC }
+    limit: 1
+  ) {
+    timestamp
   }
 }

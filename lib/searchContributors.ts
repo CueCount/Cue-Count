@@ -1,58 +1,58 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // searchContributors.ts
 //
-// Pure search function — no React. Queries both the Trends and StoryReferences
-// mock tables and returns up to 10 combined results.
-//
-// SWAP TO POSTGRES:
-//   Replace the json imports + filter logic with two parallel ORM queries:
-//     prisma.trends.findMany({ where: { name: { contains: query } }, take: 10 })
-//     prisma.storyReferences.findMany({ where: { name: { contains: query } }, take: 10 })
+// Queries both Trends and StoryReferences from Postgres via the DataConnect
+// generated SDK. Returns combined results for the AddContributor modal.
 // ─────────────────────────────────────────────────────────────────────────────
 
-import trendsJson          from "@/data/mock/trend.json";
-import storyRefsJson       from "@/data/mock/storyReference.json";
+import { searchTrends, searchStoryReferences } from "@/src/dataconnect-generated";
 
 export type ContributorSearchResult = {
-  id:                string;
-  name:              string;
-  type:              "trend" | "storyReference";
+  id:                 string;
+  name:               string;
+  type:               "trend" | "storyReference";
   // Trend-specific
-  unit?:             string;
-  denomination?:     number;
-  source?:           string;
-  trendDataId?:      string;
+  trendId?:           string;
+  unit?:              string;
+  denomination?:      number;
+  source?:            string;
+  trendDataId?:       string;
   // StoryReference-specific
-  analysisNumber?:   number;
+  analysisNumber?:    number;
   contributorNumber?: number;
-  storyDocId?:       string;
+  storyDocId?:        string;
 };
 
-export function searchContributors(query: string): ContributorSearchResult[] {
-  const q = query.trim().toLowerCase();
+export async function searchContributors(query: string): Promise<ContributorSearchResult[]> {
+  const q = query.trim() || "";
 
-  const trendResults: ContributorSearchResult[] = (trendsJson as any[])
-    .filter(t => !q || t.name?.toLowerCase().includes(q))
-    .map(t => ({
-      id:            t.id,
-      name:          t.name,
-      type:          "trend" as const,
-      unit:          t.unit,
-      denomination:  t.denomination,
-      source:        t.source,
-      trendDataId:   t.trendDataId,
-    }));
+  const [trendsResult, storyRefsResult] = await Promise.all([
+    searchTrends({ query: q }),
+    searchStoryReferences({ query: q }),
+  ]);
 
-  const storyRefResults: ContributorSearchResult[] = (storyRefsJson as any[])
-    .filter(s => !q || s.name?.toLowerCase().includes(q))
-    .map(s => ({
-      id:                s.id,
-      name:              s.name,
-      type:              "storyReference" as const,
-      analysisNumber:    s.analysisNumber,
-      contributorNumber: s.contributorNumber,
-      storyDocId:        s.storyDocId,
-    }));
+  const trends = trendsResult?.data?.trends ?? [];
+  const storyRefs = storyRefsResult?.data?.storyReferences ?? [];
+
+  const trendResults: ContributorSearchResult[] = trends.map((t: any) => ({
+    id:           t.id,
+    name:         t.name,
+    trendId:      t.trendId,
+    type:         "trend" as const,
+    unit:         t.unit,
+    denomination: t.denomination,
+    source:       t.source,
+    trendDataId:  t.trendDataId,
+  }));
+
+  const storyRefResults: ContributorSearchResult[] = (storyRefsResult?.data?.storyReferences ?? []).map((s: any) => ({
+    id:                s.id,
+    name:              s.name,
+    type:              "storyReference" as const,
+    analysisNumber:    s.analysisNumber,
+    contributorNumber: s.contributorNumber,
+    storyDocId:        s.storyDocId,
+  }));
 
   // Interleave results and cap at 10
   const combined: ContributorSearchResult[] = [];

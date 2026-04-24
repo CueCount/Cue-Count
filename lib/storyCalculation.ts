@@ -6,26 +6,26 @@
 // story values. Called inside DataState's assembledStory useMemo.
 //
 // Formula per timestamp t:
-//   storyValue(t) = trendValue(t)
+//   storyValue(t) = baseline(t)                  ← step-forward from last trend value if future
 //     + Σ contributors:
-//         contributorMergedValue(t - lagDays)   ← snapped to nearest point
-//         × (weight / 100)                       ← weight is stored as 0–100
-//         × correlation                          ← signed -1.0 to 1.0; negative = inverse, positive = direct
+//         contributorMergedValue(t - lagDays)     ← snapped to nearest point
+//         × (weight / 100)                        ← weight is stored as 0–100
+//         × correlation                           ← signed -1.0 to 1.0
+//
+// The timeline is the union of storyTrendValues timestamps + all contributor
+// mergedDataValues timestamps, so future points automatically extend the calc.
 // ─────────────────────────────────────────────────────────────────────────────
 
 type TimeSeriesPoint = { timestamp: string; value: number };
 type AnyValuePoint   = { timestamp: string; value: any };
 
-// ── Subtract N days from a YYYY-MM-DD timestamp ───────────────────────────────
 function subtractDays(timestamp: string, days: number): string {
-  const d = new Date(timestamp);
-  d.setDate(d.getDate() - Math.round(days));
+  const d = new Date(timestamp.slice(0, 10) + "T00:00:00Z");
+  d.setUTCDate(d.getUTCDate() - Math.round(days));
   return d.toISOString().slice(0, 10);
 }
 
 // ── Get the most recent value at or before a timestamp (step function) ────────
-// Used for weight, lag, relationship, relationshipType — these are sparse and
-// we want the last known value to apply forward until the next edit.
 function getLatestAtOrBefore(values: AnyValuePoint[], timestamp: string, defaultValue: any): any {
   let best: AnyValuePoint | null = null;
   for (const v of values) {
@@ -36,9 +36,6 @@ function getLatestAtOrBefore(values: AnyValuePoint[], timestamp: string, default
   return best?.value ?? defaultValue;
 }
 
-// ── Snap to nearest timestamp in a list ──────────────────────────────────────
-// Used for finding the contributor value at (t - lag) where an exact match
-// may not exist.
 function snapToNearest(values: TimeSeriesPoint[], targetTs: string): TimeSeriesPoint | null {
   if (values.length === 0) return null;
   const targetMs = new Date(targetTs).getTime();
@@ -49,38 +46,55 @@ function snapToNearest(values: TimeSeriesPoint[], targetTs: string): TimeSeriesP
   });
 }
 
-// ── ContributorForCalc ────────────────────────────────────────────────────────
-// Matches the shape of AssembledContributor — only the fields we need.
 export type ContributorForCalc = {
-  mergedDataValues: TimeSeriesPoint[];
-  weightValues:     AnyValuePoint[];
-  lagValues:        AnyValuePoint[];
+  mergedDataValues:  TimeSeriesPoint[];
+  weightValues:      AnyValuePoint[];
+  lagValues:         AnyValuePoint[];
   correlationValues: AnyValuePoint[];
 };
 
 // ── calculateStoryValues ──────────────────────────────────────────────────────
-// Main export. Takes the story's baseline trend values and all assembled
-// contributors. Returns a new time series representing the calculated story.
+// Iterates over the UNION of story trend timestamps and all contributor future
+// timestamps so that newly created future points extend the calculation.
+// For timestamps beyond the story trend, the last known trend value is held
+// forward (step function).
 export function calculateStoryValues(
   storyTrendValues: TimeSeriesPoint[],
   contributors:     ContributorForCalc[],
+  frequency:        string = "monthly",
 ): TimeSeriesPoint[] {
-  return storyTrendValues.map(({ timestamp, value: baselineValue }) => {
+
+  // Build merged timeline — story trend + any future contributor timestamps
+  const allTs = new Set<string>(storyTrendValues.map(v => v.timestamp));
+  for (const c of contributors) {
+    for (const p of c.mergedDataValues) {
+      allTs.add(p.timestamp.slice(0, 10));
+    }
+  }
+  const sortedTs = Array.from(allTs).sort();
+
+  // Pre-build story baseline map for O(1) lookup
+  const storyValueMap = new Map<string, number>(
+    storyTrendValues.map(v => [v.timestamp, v.value])
+  );
+
+  return sortedTs.map(timestamp => {
+    // Step-forward baseline: use exact value or last known story trend value
+    const baselineValue = storyValueMap.has(timestamp)
+      ? storyValueMap.get(timestamp)!
+      : getLatestAtOrBefore(storyTrendValues, timestamp, 0);
+
     let totalEffect = 0;
 
     for (const contributor of contributors) {
-      // Weight stored as 0–100, convert to 0–1 scalar
       const weight = getLatestAtOrBefore(contributor.weightValues, timestamp, 0) / 100;
-
-      // Skip this contributor entirely if weight is 0 — default state
       if (weight === 0) continue;
 
-      const lagDays    = getLatestAtOrBefore(contributor.lagValues,          timestamp, 0);
+      const lagDays     = getLatestAtOrBefore(contributor.lagValues,         timestamp, 0);
       const correlation = getLatestAtOrBefore(contributor.correlationValues, timestamp, 0);
 
-      // Shift the lookup timestamp back by lag, snap to nearest contributor point
-      const laggedTs  = lagDays > 0 ? subtractDays(timestamp, lagDays) : timestamp;
-      const nearest   = snapToNearest(contributor.mergedDataValues, laggedTs);
+      const laggedTs = lagDays > 0 ? subtractDays(timestamp, lagDays) : timestamp;
+      const nearest  = snapToNearest(contributor.mergedDataValues, laggedTs);
       if (!nearest) continue;
 
       totalEffect += nearest.value * weight * correlation;

@@ -65,15 +65,53 @@ function normalizeTs(ts: string): string {
   return ts.slice(0, 10); // "2024-01-01T00:00:00Z" → "2024-01-01"
 }
 
-function futureMonths(lastTs: string, count: number): string[] {
+// ── nextTimestamp: advance one frequency increment ────────────────────────────
+function nextTimestamp(ts: string, frequency: string): string {
+  const d = new Date(ts.slice(0, 10) + "T00:00:00Z");
+  switch (frequency.toLowerCase()) {
+    case "monthly":   d.setUTCMonth(d.getUTCMonth() + 1);       break;
+    case "weekly":    d.setUTCDate(d.getUTCDate() + 7);          break;
+    case "daily":     d.setUTCDate(d.getUTCDate() + 1);          break;
+    case "quarterly": d.setUTCMonth(d.getUTCMonth() + 3);        break;
+    case "annual":
+    case "yearly":    d.setUTCFullYear(d.getUTCFullYear() + 1);  break;
+    default:          d.setUTCMonth(d.getUTCMonth() + 1);
+  }
+  return d.toISOString().slice(0, 10);
+}
+
+// ── futureIncrements: generate N future timestamps from last using frequency ──
+function futureIncrements(lastTs: string, count: number, frequency: string): string[] {
   const result: string[] = [];
-  const d = new Date(lastTs);
-  for (let i = 1; i <= count; i++) {
-    const next = new Date(d);
-    next.setMonth(next.getMonth() + i);
-    result.push(next.toISOString().slice(0, 10));
+  let current = lastTs;
+  for (let i = 0; i < count; i++) {
+    current = nextTimestamp(current, frequency);
+    result.push(current);
   }
   return result;
+}
+
+// ── toStepPoints: step-function display for sparse modifier series ────────────
+// Extends the last known value forward to fill gaps — used for weight, lag,
+// and correlation which are sparse by design.
+function toStepPoints(
+  rows: { timestamp: string; value: number }[],
+  timeAxis: string[],
+): { x: string; y: number | null }[] {
+  if (rows.length === 0) return timeAxis.map(ts => ({ x: ts, y: null }));
+  const sorted = [...rows].sort((a, b) =>
+    normalizeTs(a.timestamp).localeCompare(normalizeTs(b.timestamp))
+  );
+  const firstTs = normalizeTs(sorted[0].timestamp);
+  return timeAxis.map(ts => {
+    if (ts < firstTs) return { x: ts, y: null };
+    let best: number | null = null;
+    for (const row of sorted) {
+      if (normalizeTs(row.timestamp) <= ts) best = row.value;
+      else break;
+    }
+    return { x: ts, y: best };
+  });
 }
 
 // ── axisId: deterministic y-axis ID from unit + denomination ─────────────────
@@ -165,7 +203,6 @@ function toFullPoints(
 
 // ─────────────────────────────────────────────────────────────────────────────
 // RangeSlider
-//
 // Now receives the full sorted timeAxis array instead of a point count.
 // Percentages are mapped to actual timestamps for the zoom call, so the
 // slider window always corresponds to real calendar positions.
@@ -256,10 +293,14 @@ function RangeSlider({
 
 // ─────────────────────────────────────────────────────────────────────────────
 // GraphToolBar
-//
-// Whatever look at me I'm the GraphToolBar, I bet you like that don't you
 // ─────────────────────────────────────────────────────────────────────────────
-function GraphToolbar({ viewState }: { viewState: StoryViewState }) {
+function GraphToolbar({
+  viewState,
+  onAddNextPoint,
+}: {
+  viewState:       StoryViewState;
+  onAddNextPoint?: () => void;
+}) {
   const isEditing = viewState.activeView === "contributor";
   return (
     <div className="shrink-0 flex items-center justify-between gap-2 px-3 py-1.5">
@@ -312,6 +353,8 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
   const [selectedPoints, setSelectedPoints] = useState<Map<string, number>>(new Map());
   const [overlayAnchor,  setOverlayAnchor]  = useState<{ x: number; y: number } | null>(null);
   const [inputValue,     setInputValue]     = useState("");
+  const [mouseX,       setMouseX]       = useState<number | null>(null);
+  const [nextPointPx,  setNextPointPx]  = useState<number | null>(null);
 
   const chartWrapperRef   = useRef<HTMLDivElement>(null);
   const mouseDownInfo     = useRef<{ x: number; y: number; time: number } | null>(null);
@@ -493,6 +536,81 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
     };
   }, [assembledStory?.id, activeView]); // re-attach when chart is recreated
 
+  // ── addNextPoint — appends next frequency increment to the active series ──────
+  const addNextPoint = useCallback(() => {
+    if (!assembledStory) return;
+    const frequency = assembledStory.meta?.frequency ?? "monthly";
+    const series    = activeEditSeriesRef.current;
+
+    // Find the active draggable dataset
+    const activeDs = datasetsRef.current.find((ds: any) => ds.dragData) as any;
+    if (!activeDs?._dataId) return;
+
+    // Find last non-null point
+    const points = (activeDs.data as any[]).filter((p: any) => p.y !== null && p.y !== undefined);
+    if (points.length === 0) return;
+
+    const lastTs  = points[points.length - 1].x as string;
+    const lastVal = points[points.length - 1].y as number;
+    const nextTs  = nextTimestamp(lastTs, frequency);
+
+    const allValues =
+      series === "weight"      ? allWeightValues :
+      series === "lag"         ? allLagValues :
+      series === "correlation" ? allCorrelationValues :
+      allDataValues;
+
+    const setter: any =
+      series === "weight"      ? setAllWeightValues :
+      series === "lag"         ? setAllLagValues :
+      series === "correlation" ? setAllCorrelationValues :
+      setAllDataValues;
+
+    const exists = (allValues as any[]).some(
+      (r: any) => r.dataId === activeDs._dataId && normalizeTs(r.timestamp) === nextTs
+    );
+    if (!exists) {
+      setter((prev: any[]) => [...prev, { timestamp: nextTs, value: lastVal, dataId: activeDs._dataId }]);
+      onPointEdited();
+    }
+  }, [assembledStory, allDataValues, allWeightValues, allLagValues, allCorrelationValues,
+      setAllDataValues, setAllWeightValues, setAllLagValues, setAllCorrelationValues, onPointEdited]);
+
+  // ── selectAllPoints — selects every non-null point in the active draggable dataset
+  const selectAllPoints = useCallback(() => {
+    const newSelected = new Map<string, number>();
+    let anchorDsIdx = -1;
+    let anchorPtIdx = -1;
+
+    datasetsRef.current.forEach((ds: any, dsIdx: number) => {
+      if (!ds.dragData) return;
+      (ds.data as any[]).forEach((point: any, ptIdx: number) => {
+        if (point.y !== null && point.y !== undefined) {
+          newSelected.set(`${dsIdx}:${ptIdx}`, point.y as number);
+          if (anchorDsIdx === -1) { anchorDsIdx = dsIdx; anchorPtIdx = ptIdx; }
+        }
+      });
+    });
+
+    setSelectedPoints(newSelected);
+
+    // Position overlay at first point
+    if (anchorDsIdx >= 0 && chartRef.current && chartWrapperRef.current) {
+      const chart   = chartRef.current;
+      const meta    = chart.getDatasetMeta(anchorDsIdx);
+      const pointEl = meta.data[anchorPtIdx] as any;
+      const wrapRect = chartWrapperRef.current.getBoundingClientRect();
+      const canvRect = chart.canvas.getBoundingClientRect();
+      if (pointEl) {
+        setOverlayAnchor({
+          x: canvRect.left - wrapRect.left + pointEl.x,
+          y: canvRect.top  - wrapRect.top  + pointEl.y,
+        });
+      }
+    }
+    setInputValue("");
+  }, []);
+
   // ── Build timeAxis + datasets ───────────────────────────────────────────────
   const { timeAxis, datasets, axisRegistry } = useMemo(() => {
     if (!assembledStory) return { timeAxis: [], datasets: [], axisRegistry: new Map() };
@@ -512,7 +630,8 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
     });
     let timeAxis = Array.from(allTimestamps).sort();
     if (activeView === "contributor" && timeAxis.length > 0) {
-      const extensions = futureMonths(timeAxis[timeAxis.length - 1], 3);
+      const frequency  = assembledStory.meta?.frequency ?? "monthly";
+      const extensions = futureIncrements(timeAxis[timeAxis.length - 1], 3, frequency);
       timeAxis = [...timeAxis, ...extensions];
     }
 
@@ -616,7 +735,7 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
           const isActive = activeEditSeries === "weight";
           datasets.push(makeDataset(
             "Weight",
-            isActive ? toFullPoints(contributor.weightValues, timeAxis) : toPoints(contributor.weightValues),
+            isActive ? toFullPoints(contributor.weightValues, timeAxis) : toStepPoints(contributor.weightValues, timeAxis),
             METRIC_COLORS.weight, 1, "dashed", isActive, "y_ratio",
             isActive ? contributor.dataId : undefined,
           ));
@@ -628,7 +747,7 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
           const isActive = activeEditSeries === "lag";
           datasets.push(makeDataset(
             "Lag",
-            isActive ? toFullPoints(contributor.lagValues, timeAxis) : toPoints(contributor.lagValues),
+            isActive ? toFullPoints(contributor.lagValues, timeAxis) : toStepPoints(contributor.lagValues, timeAxis),
             METRIC_COLORS.lag, 1, "dashed", isActive, "y_days",
             isActive ? contributor.dataId : undefined,
           ));
@@ -640,7 +759,7 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
           const isActive = activeEditSeries === "correlation";
           datasets.push(makeDataset(
             "Correlation to Story",
-            isActive ? toFullPoints(contributor.correlationValues, timeAxis) : toPoints(contributor.correlationValues),
+            isActive ? toFullPoints(contributor.correlationValues, timeAxis) : toStepPoints(contributor.correlationValues, timeAxis),
             METRIC_COLORS.correlation, 1, "dashed", isActive, "y_correlation",
             isActive ? contributor.dataId : undefined,
           ));
@@ -706,6 +825,28 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
     shownAnalysisIds,
     activeEditSeries,
   ]);
+
+  // ── Compute pixel x of the next future point for the floating + button ───────
+  useEffect(() => {
+    if (activeView !== "contributor") { setNextPointPx(null); return; }
+    const chart    = chartRef.current;
+    const wrapRect = chartWrapperRef.current?.getBoundingClientRect();
+    const canvRect = chart?.canvas.getBoundingClientRect();
+    if (!chart || !wrapRect || !canvRect) return;
+
+    const activeDs = datasetsRef.current.find((ds: any) => ds.dragData) as any;
+    if (!activeDs) return;
+    const points = (activeDs.data as any[]).filter((p: any) => p.y !== null && p.y !== undefined);
+    if (points.length === 0) return;
+
+    const lastTs    = (points[points.length - 1] as any).x as string;
+    const frequency = assembledStory?.meta?.frequency ?? "monthly";
+    const nextTs    = nextTimestamp(lastTs, frequency);
+
+    const canvasPx  = chart.scales.x.getPixelForValue(new Date(nextTs).getTime());
+    const relX      = canvRect.left - wrapRect.left + canvasPx;
+    setNextPointPx(relX);
+  }, [datasets, activeView, assembledStory?.meta?.frequency]);
 
   // Keep refs in sync with latest render values
   datasetsRef.current       = datasets;
@@ -850,11 +991,16 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
 
   return (
     <div className="flex flex-col w-full h-full px-2 py-2">
-      <GraphToolbar viewState={viewState} />
+      <GraphToolbar viewState={viewState} onAddNextPoint={addNextPoint} />
 
       <div
         ref={chartWrapperRef}
         className="flex-1 min-h-0 px-2 pt-1 relative"
+        onMouseMove={e => {
+          const rect = chartWrapperRef.current?.getBoundingClientRect();
+          if (rect) setMouseX(e.clientX - rect.left);
+        }}
+        onMouseLeave={() => setMouseX(null)}
       >
         <Line
           key={activeView}
@@ -862,6 +1008,25 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
           data={chartData}
           options={options}
         />
+
+        {/* ── Floating next-point button ──────────────────────────────────────── */}
+        {activeView === "contributor" &&
+        nextPointPx !== null &&
+        mouseX !== null &&
+        Math.abs(mouseX - nextPointPx) < 20 && (
+          <button
+            onClick={addNextPoint}
+            style={{
+              left: nextPointPx,
+              top:  "50%",
+              transform: "translate(-50%, -50%)",
+            }}
+            className="absolute z-20 w-7 h-7 rounded-full bg-indigo-500 hover:bg-indigo-600 text-white flex items-center justify-center shadow-md transition-colors text-lg leading-none"
+            title="Add next point"
+          >
+            +
+          </button>
+        )}
 
         {/* ── Point selection overlay ────────────────────────────────────────── */}
         {overlayAnchor && selectedPoints.size > 0 && (
@@ -892,6 +1057,12 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
                   autoFocus
                 />
                 <p className="text-[10px] text-zinc-400">Enter to apply · Esc to dismiss</p>
+                <button
+                  onClick={selectAllPoints}
+                  className="text-xs text-zinc-400 hover:text-indigo-500 transition-colors text-left"
+                >
+                  Select all points
+                </button>
               </>
             ) : (
               <>
@@ -921,6 +1092,12 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
                   Apply to all
                 </button>
                 <p className="text-[10px] text-zinc-400">Enter to apply · Esc to dismiss</p>
+                <button
+                  onClick={selectAllPoints}
+                  className="text-xs text-zinc-400 hover:text-indigo-500 transition-colors text-left"
+                >
+                  Reselect all
+                </button>
               </>
             )}
           </div>
