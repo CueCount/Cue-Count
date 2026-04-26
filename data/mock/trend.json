@@ -1,0 +1,50 @@
+[
+  {
+    "trendId": "trend-a3vk9mx-p2n8qr5",
+    "trendDataId": "trenddata-a3vk9mx",
+    "name": "USD Share of Global FX Reserves",
+    "unit": "percent",
+    "denomination": 1,
+    "frequency": "monthly",
+    "source": "IMF COFER",
+    "apiDataId": "COFER.USD",
+    "createdAt": "2024-01-10T08:00:00Z",
+    "updatedAt": "2025-01-10T08:00:00Z"
+  },
+  {
+    "trendId": "trend-c8px4mw-k6n3vq1",
+    "trendDataId": "trenddata-c8px4mw",
+    "name": "CNY Share of Global FX Reserves",
+    "unit": "percent",
+    "denomination": 1,
+    "frequency": "monthly",
+    "source": "IMF COFER",
+    "apiDataId": "COFER.CNY",
+    "createdAt": "2024-01-10T08:00:00Z",
+    "updatedAt": "2025-01-10T08:00:00Z"
+  },
+  {
+    "trendId": "trend-e5qw8nx-m1k7pr3",
+    "trendDataId": "trenddata-e5qw8nx",
+    "name": "Central Bank Gold Purchases",
+    "unit": "tonnes",
+    "denomination": 1,
+    "frequency": "monthly",
+    "source": "World Gold Council",
+    "apiDataId": null,
+    "createdAt": "2024-01-10T08:00:00Z",
+    "updatedAt": "2025-01-10T08:00:00Z"
+  },
+  {
+    "trendId": "trend-g1vp5km-n8q3xw2",
+    "trendDataId": "trenddata-g1vp5km",
+    "name": "US Current Account Balance",
+    "unit": "USD",
+    "denomination": 1000000000,
+    "frequency": "monthly",
+    "source": "BEA",
+    "apiDataId": "BEA.CA.M",
+    "createdAt": "2024-01-10T08:00:00Z",
+    "updatedAt": "2025-01-10T08:00:00Z"
+  }
+]

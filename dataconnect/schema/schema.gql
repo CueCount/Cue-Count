@@ -1,127 +1,67 @@
-# schema.gql — Firebase Data Connect
-# ─────────────────────────────────────────────────────────────────────────────
-# Structural decisions reflected here:
-#   - Relationship owns the contributor trend directly (no contributorStory ref)
-#   - Relationship has a name field — the display label for the contributor
-#   - variantId on Relationship and Trend is nullable — null = base/canonical
-#   - Variant.story always references the ROOT focal story
-#   - Trend overrides carry variantId + baseTrend reference
-#   - No VariantValue table — variant data lives in override Trend rows
-#   - Stories are now purely focal stories — no story exists solely to be
-#     a contributor. Contributor identity lives on the Relationship row.
-# ─────────────────────────────────────────────────────────────────────────────
-
-type Perspective @table {
-  id: UUID! @default(expr: "uuidV4()")
-  name: String!
-  slug: String! @unique
-  createdBy: String!
-  plan: String! @default(expr: "'free'")
-  createdAt: Timestamp! @default(expr: "request.time")
-}
-
-type PerspectiveMember @table {
-  perspective: Perspective!
-  userId: String!
-  role: String!
-  createdAt: Timestamp! @default(expr: "request.time")
-}
-
-# Trend — base or variant override.
-# variantId = null + baseTrend = null → canonical/API-sourced trend
-# variantId set + baseTrend set       → override trend, active only when
-#                                        the referenced variant is selected
+# ── Trend ─────────────────────────────────────────────────────────────────────
 type Trend @table {
-  id: UUID! @default(expr: "uuidV4()")
-  name: String!
-  unit: String
+  id:           UUID!      @default(expr: "uuidV4()")
+  trendId:      String!    @unique
+  trendDataId:  String!    @unique
+  name:         String!
+  unit:         String
   denomination: Float
-  description: String
-  source: String!
-  frequency: String!
-  externalId: String
-  variant: Variant            # null = base trend
-  baseTrend: Trend            # null if this IS the base; set if this is an override
-  createdBy: String!
-  createdAt: Timestamp! @default(expr: "request.time")
-  updatedAt: Timestamp! @default(expr: "request.time")
+  frequency:    String!
+  source:       String!
+  apiDataId:    String
+  createdAt:    Timestamp! @default(expr: "request.time")
+  updatedAt:    Timestamp! @default(expr: "request.time")
+  syncedAt:     Timestamp
 }
 
-type TrendValue @table {
-  id: UUID! @default(expr: "uuidV4()")
-  trend: Trend!
-  value: Float!
+# ── TrendData ─────────────────────────────────────────────────────────────────
+type TrendData @table {
+  id:          UUID!       @default(expr: "uuidV4()")
+  trendDataId: String!
+  value:       Float!
+  timestamp:   Timestamp!
+}
+
+# ── Data ──────────────────────────────────────────────────────────────────────
+type Data @table {
+  id:        UUID!      @default(expr: "uuidV4()")
+  dataId:    String!
+  value:     Float!
   timestamp: Timestamp!
 }
 
-type Story @table {
-  id: UUID! @default(expr: "uuidV4()")
-  perspective: Perspective!
-  focalTrend: Trend!
-  name: String!
-  createdBy: String!
-  createdAt: Timestamp! @default(expr: "request.time")
-  updatedAt: Timestamp! @default(expr: "request.time")
-}
-
-# Variant — a named scenario scoped to a root focal story.
-# story must always reference the top-level focal story in the hierarchy.
-# The variant carries no data itself — relationship rows and override trends
-# reference it to declare which scenario they belong to.
-type Variant @table {
-  id: UUID! @default(expr: "uuidV4()")
-  story: Story!               # always the ROOT focal story
-  name: String
-  createdBy: String!
-  createdAt: Timestamp! @default(expr: "request.time")
-}
-
-# Relationship — contributor link AND relationship descriptor.
-# The relationship owns the contributor trend directly — there is no
-# contributorStory. A trend becomes a contributor purely by being
-# referenced from a Relationship row. One row per (focalStory, trend, variant).
-#
-#   variant = null  → base/canonical, always shown by default
-#   variant set     → only active when that variant is selected in the UI
-#
-# name is the display label shown in the sidebar for this contributor.
-# It defaults to the trend name but can be overridden per-relationship.
-type Relationship @table {
-  id: UUID! @default(expr: "uuidV4()")
-  focalStory: Story!
-  trend: Trend!               # CHANGED: was contributorStory: Story!
-  name: String!               # ADDED: display label for this contributor
-  variant: Variant            # null = base relationship
-  type: String!               # "direct" | "inverse" | "correlated" | "lagged"
-  createdBy: String!
-  createdAt: Timestamp! @default(expr: "request.time")
-}
-
-# Weight — correlation strength time series, scoped to a Relationship.
-# Variant weights are automatically isolated because each variant gets
-# its own Relationship row with its own Weight series.
-type Weight @table {
-  id: UUID! @default(expr: "uuidV4()")
-  relationship: Relationship!
-  value: Float!
+# ── WeightData ────────────────────────────────────────────────────────────────
+type WeightData @table {
+  id:        UUID!      @default(expr: "uuidV4()")
+  dataId:    String!
+  value:     Float!
   timestamp: Timestamp!
 }
 
-# RelationshipValue — type-specific quantitative modifier time series.
-# Empty until the UI populates it for relevant relationship types.
-type RelationshipValue @table {
-  id: UUID! @default(expr: "uuidV4()")
-  relationship: Relationship!
-  value: Float!
+# ── LagData ───────────────────────────────────────────────────────────────────
+type LagData @table {
+  id:        UUID!      @default(expr: "uuidV4()")
+  dataId:    String!
+  value:     Float!
   timestamp: Timestamp!
 }
 
-# LagValue — time-series of lag offset (in periods) for "lagged" relationships.
-# Parallel to RelationshipValue but semantically distinct — stores how many
-# periods the contributor trend lags the focal trend at each point in time.
-type LagValue @table {
-  id: UUID! @default(expr: "uuidV4()")
-  relationship: Relationship!
-  value: Float!               # periods of lag (positive = contributor leads)
+# ── CorrelationData ───────────────────────────────────────────────────────────
+# value ranges from -1.0 (perfectly inversely correlated) to 1.0 (perfectly
+# directly correlated). Negative = inverse, positive = direct.
+type CorrelationData @table {
+  id:        UUID!      @default(expr: "uuidV4()")
+  dataId:    String!
+  value:     Float!
   timestamp: Timestamp!
+}
+
+# ── StoryReference ────────────────────────────────────────────────────────────
+type StoryReference @table {
+  id:                UUID!      @default(expr: "uuidV4()")
+  storyDocId:        String!
+  name:              String!
+  analysisNumber:    Int!       @default(expr: "0")
+  contributorNumber: Int!       @default(expr: "0")
+  createdAt:         Timestamp! @default(expr: "request.time")
 }

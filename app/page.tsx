@@ -1,16 +1,24 @@
 "use client";
 
-import { useState } from "react";
-import mockPerspectives from "@/data/mock/perspectives.json";
-import type { PerspectiveRow } from "@/types/db";
+import { useEffect, useState } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 import HorizontalCard from "@/components/HorizontalCard";
 import WorkspaceSidebar from "@/components/WorkspaceSidebar";
 import Breadcrumb from "@/components/Breadcrumb";
+import { DataProvider, useData } from "@/contexts/DataState";
 
-const perspectives = mockPerspectives as PerspectiveRow[];
-
-export default function HomePage() {
+function HomePageInner() {
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const { perspectives, perspectivesLoading, fetchPerspectives } = useData();
+
+  // Once Firebase resolves the authenticated user, fetch their perspectives.
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) fetchPerspectives(user.uid);
+    });
+    return () => unsubscribe();
+  }, [fetchPerspectives]);
 
   return (
     <div className="flex min-h-screen w-full">
@@ -31,15 +39,18 @@ export default function HomePage() {
 
       {/* Main content */}
       <div className="flex flex-col flex-1">
-
         <main className="flex-1 px-8 py-6 flex flex-col gap-6">
-          {perspectives.length > 0 ? (
+          {perspectivesLoading ? (
+            <div className="flex items-center justify-center h-64 text-zinc-400 text-sm">
+              Loading perspectives...
+            </div>
+          ) : perspectives.length > 0 ? (
             <div className="flex flex-col">
               {perspectives.map((perspective) => (
                 <HorizontalCard
                   key={perspective.id}
                   type="perspective"
-                  data={perspective}        // ✅ pass the raw data directly — no remapping
+                  data={perspective}
                   href={`/perspective/${perspective.id}`}
                 />
               ))}
@@ -53,5 +64,13 @@ export default function HomePage() {
       </div>
 
     </div>
+  );
+}
+
+export default function HomePage() {
+  return (
+    <DataProvider>
+      <HomePageInner />
+    </DataProvider>
   );
 }

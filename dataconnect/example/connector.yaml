@@ -1,4 +1,4 @@
-connectorId: example
+connectorId: cue-count
 generate:
   javascriptSdk:
     - outputDir: ../../src/dataconnect-generated

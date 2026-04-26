@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import mockPerspectives from "@/data/mock/perspectives.json";
 
 function BarChartIcon() {
   return (
@@ -23,12 +22,6 @@ export default function WorkspaceSidebar({ onTagSelect, selectedTag }: Props) {
 
   return (
     <div className="flex flex-col gap-6">
-
-      {/* Workspace count */}
-      <div className="flex items-center gap-2 text-pink-500 font-semibold text-sm">
-        <BarChartIcon />
-        <span>{mockPerspectives.length} Workspaces</span>
-      </div>
 
       {/* Search box */}
       <input

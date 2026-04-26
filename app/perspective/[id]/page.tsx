@@ -1,29 +1,50 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
+import { collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 import HorizontalCard from "@/components/HorizontalCard";
 import WorkspaceSidebar from "@/components/WorkspaceSidebar";
 import Breadcrumb from "@/components/Breadcrumb";
-import mockPerspectives from "@/data/mock/perspectives.json";
-import mockStories from "@/data/mock/stories.json";
-import type { PerspectiveRow, StoryRow } from "@/types/db";
+import type { PerspectiveDocument, StoryDocument } from "@/types/db";
 
 export default function PerspectivePage() {
   const params = useParams();
   const perspectiveId = params.id as string;
 
-  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [selectedTag,  setSelectedTag]  = useState<string | null>(null);
+  const [perspective,  setPerspective]  = useState<PerspectiveDocument | null>(null);
+  const [stories,      setStories]      = useState<StoryDocument[]>([]);
+  const [loading,      setLoading]      = useState(true);
 
-  // Look up perspective metadata from mock JSON
-  const perspective = (mockPerspectives as PerspectiveRow[]).find(
-    (p) => p.id === perspectiveId
-  );
+  useEffect(() => {
+    if (!perspectiveId) return;
 
-  // Get all stories belonging to this perspective
-  const allStories = (mockStories as StoryRow[]).filter(
-    (s) => s.perspectiveId === perspectiveId
-  );
+    async function load() {
+      setLoading(true);
+      try {
+        const [perspectiveSnap, storiesSnap] = await Promise.all([
+          getDoc(doc(db, "perspectives", perspectiveId)),
+          getDocs(query(
+            collection(db, "stories"),
+            where("perspectiveId", "==", perspectiveId)
+          )),
+        ]);
+
+        if (perspectiveSnap.exists()) {
+          setPerspective({ id: perspectiveSnap.id, ...perspectiveSnap.data() } as PerspectiveDocument);
+        }
+        setStories(storiesSnap.docs.map((d) => ({ id: d.id, ...d.data() }) as StoryDocument));
+      } catch (err) {
+        console.error("[PerspectivePage] fetch failed:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    load();
+  }, [perspectiveId]);
 
   return (
     <div className="flex min-h-screen w-full">
@@ -36,7 +57,6 @@ export default function PerspectivePage() {
             { label: "Perspectives", href: "/" },
             { label: perspective?.name ?? "Perspective" },
           ]} />
-          {/* rest of your existing sidebar header content */}
         </div>
         <WorkspaceSidebar
           selectedTag={selectedTag}
@@ -46,11 +66,14 @@ export default function PerspectivePage() {
 
       {/* Main content */}
       <div className="flex flex-col flex-1">
-
         <main className="flex-1 px-8 py-6 flex flex-col gap-6">
-          {allStories.length > 0 ? (
+          {loading ? (
+            <div className="flex items-center justify-center h-64 text-zinc-400 text-sm">
+              Loading stories...
+            </div>
+          ) : stories.length > 0 ? (
             <div className="flex flex-col">
-              {allStories.map((story) => (
+              {stories.map((story) => (
                 <HorizontalCard
                   key={story.id}
                   type="story"
@@ -65,7 +88,6 @@ export default function PerspectivePage() {
             </div>
           )}
         </main>
-
       </div>
 
     </div>

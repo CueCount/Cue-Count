@@ -31,7 +31,7 @@ function AlertIcon() {
 }
 
 type Props =
-  | { type: "perspective"; data: PerspectiveRow; href?: string }
+  | { type: "perspective"; data: PerspectiveDocument; href?: string }
   | { type: "story";       data: StoryRow;       href?: string }
   | { type: "trend";       data: TrendRow;       href?: string }
 

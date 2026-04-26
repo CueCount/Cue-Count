@@ -1,0 +1,982 @@
+[
+  {
+    "timestamp": "2022-01-01T00:00:00Z",
+    "value": 58.9994,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2022-02-01T00:00:00Z",
+    "value": 58.9085,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2022-03-01T00:00:00Z",
+    "value": 58.9621,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2022-04-01T00:00:00Z",
+    "value": 58.8319,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2022-05-01T00:00:00Z",
+    "value": 58.8519,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2022-06-01T00:00:00Z",
+    "value": 58.9358,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2022-07-01T00:00:00Z",
+    "value": 58.6879,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2022-08-01T00:00:00Z",
+    "value": 58.7083,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2022-09-01T00:00:00Z",
+    "value": 58.759,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2022-10-01T00:00:00Z",
+    "value": 58.5817,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2022-11-01T00:00:00Z",
+    "value": 58.5626,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2022-12-01T00:00:00Z",
+    "value": 58.6885,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2023-01-01T00:00:00Z",
+    "value": 58.6901,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2023-02-01T00:00:00Z",
+    "value": 58.4962,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2023-03-01T00:00:00Z",
+    "value": 58.4295,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2023-04-01T00:00:00Z",
+    "value": 58.5821,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2023-05-01T00:00:00Z",
+    "value": 58.3923,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2023-06-01T00:00:00Z",
+    "value": 58.4228,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2023-07-01T00:00:00Z",
+    "value": 58.3883,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2023-08-01T00:00:00Z",
+    "value": 58.3595,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2023-09-01T00:00:00Z",
+    "value": 58.3914,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2023-10-01T00:00:00Z",
+    "value": 58.3672,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2023-11-01T00:00:00Z",
+    "value": 58.2672,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2023-12-01T00:00:00Z",
+    "value": 58.2634,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2024-01-01T00:00:00Z",
+    "value": 58.2205,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2024-02-01T00:00:00Z",
+    "value": 58.1489,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2024-03-01T00:00:00Z",
+    "value": 58.0624,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2024-04-01T00:00:00Z",
+    "value": 57.9783,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2024-05-01T00:00:00Z",
+    "value": 57.9522,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2024-06-01T00:00:00Z",
+    "value": 58.0761,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2024-07-01T00:00:00Z",
+    "value": 57.9855,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2024-08-01T00:00:00Z",
+    "value": 57.8075,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2024-09-01T00:00:00Z",
+    "value": 57.9653,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2024-10-01T00:00:00Z",
+    "value": 57.7763,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2024-11-01T00:00:00Z",
+    "value": 57.842,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2024-12-01T00:00:00Z",
+    "value": 57.7508,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2025-01-01T00:00:00Z",
+    "value": 57.6697,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2025-02-01T00:00:00Z",
+    "value": 57.6198,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2025-03-01T00:00:00Z",
+    "value": 57.6731,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2025-04-01T00:00:00Z",
+    "value": 57.5976,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2025-05-01T00:00:00Z",
+    "value": 57.6132,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2025-06-01T00:00:00Z",
+    "value": 57.595,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2025-07-01T00:00:00Z",
+    "value": 57.5892,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2025-08-01T00:00:00Z",
+    "value": 57.5618,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2025-09-01T00:00:00Z",
+    "value": 57.4718,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2025-10-01T00:00:00Z",
+    "value": 57.5182,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2025-11-01T00:00:00Z",
+    "value": 57.3699,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2025-12-01T00:00:00Z",
+    "value": 57.4284,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2026-01-01T00:00:00Z",
+    "value": 57.3756,
+    "trendDataId": "trenddata-a3vk9mx"
+  },
+  {
+    "timestamp": "2022-01-01T00:00:00Z",
+    "value": 2.7823,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2022-02-01T00:00:00Z",
+    "value": 2.7961,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2022-03-01T00:00:00Z",
+    "value": 2.7919,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2022-04-01T00:00:00Z",
+    "value": 2.8178,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2022-05-01T00:00:00Z",
+    "value": 2.8061,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2022-06-01T00:00:00Z",
+    "value": 2.8218,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2022-07-01T00:00:00Z",
+    "value": 2.839,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2022-08-01T00:00:00Z",
+    "value": 2.8292,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2022-09-01T00:00:00Z",
+    "value": 2.8524,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2022-10-01T00:00:00Z",
+    "value": 2.8513,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2022-11-01T00:00:00Z",
+    "value": 2.8519,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2022-12-01T00:00:00Z",
+    "value": 2.8603,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2023-01-01T00:00:00Z",
+    "value": 2.8651,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2023-02-01T00:00:00Z",
+    "value": 2.8643,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2023-03-01T00:00:00Z",
+    "value": 2.8895,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2023-04-01T00:00:00Z",
+    "value": 2.8777,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2023-05-01T00:00:00Z",
+    "value": 2.9012,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2023-06-01T00:00:00Z",
+    "value": 2.9033,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2023-07-01T00:00:00Z",
+    "value": 2.8846,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2023-08-01T00:00:00Z",
+    "value": 2.8975,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2023-09-01T00:00:00Z",
+    "value": 2.9102,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2023-10-01T00:00:00Z",
+    "value": 2.9263,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2023-11-01T00:00:00Z",
+    "value": 2.9132,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2023-12-01T00:00:00Z",
+    "value": 2.9324,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2024-01-01T00:00:00Z",
+    "value": 2.931,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2024-02-01T00:00:00Z",
+    "value": 2.9496,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2024-03-01T00:00:00Z",
+    "value": 2.9599,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2024-04-01T00:00:00Z",
+    "value": 2.961,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2024-05-01T00:00:00Z",
+    "value": 2.95,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2024-06-01T00:00:00Z",
+    "value": 2.973,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2024-07-01T00:00:00Z",
+    "value": 2.9694,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2024-08-01T00:00:00Z",
+    "value": 2.9874,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2024-09-01T00:00:00Z",
+    "value": 2.9824,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2024-10-01T00:00:00Z",
+    "value": 3.0016,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2024-11-01T00:00:00Z",
+    "value": 3.01,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2024-12-01T00:00:00Z",
+    "value": 3.0112,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2025-01-01T00:00:00Z",
+    "value": 3.0173,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2025-02-01T00:00:00Z",
+    "value": 3.0231,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2025-03-01T00:00:00Z",
+    "value": 3.0223,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2025-04-01T00:00:00Z",
+    "value": 3.0159,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2025-05-01T00:00:00Z",
+    "value": 3.0463,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2025-06-01T00:00:00Z",
+    "value": 3.0366,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2025-07-01T00:00:00Z",
+    "value": 3.0292,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2025-08-01T00:00:00Z",
+    "value": 3.0478,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2025-09-01T00:00:00Z",
+    "value": 3.0533,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2025-10-01T00:00:00Z",
+    "value": 3.0529,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2025-11-01T00:00:00Z",
+    "value": 3.0817,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2025-12-01T00:00:00Z",
+    "value": 3.0623,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2026-01-01T00:00:00Z",
+    "value": 3.0921,
+    "trendDataId": "trenddata-c8px4mw"
+  },
+  {
+    "timestamp": "2022-01-01T00:00:00Z",
+    "value": 103.1361,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2022-02-01T00:00:00Z",
+    "value": 97.1846,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2022-03-01T00:00:00Z",
+    "value": 87.6321,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2022-04-01T00:00:00Z",
+    "value": 70.8532,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2022-05-01T00:00:00Z",
+    "value": 69.11,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2022-06-01T00:00:00Z",
+    "value": 55.2521,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2022-07-01T00:00:00Z",
+    "value": 122.6773,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2022-08-01T00:00:00Z",
+    "value": 118.7334,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2022-09-01T00:00:00Z",
+    "value": 127.0038,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2022-10-01T00:00:00Z",
+    "value": 140.164,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2022-11-01T00:00:00Z",
+    "value": 148.9299,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2022-12-01T00:00:00Z",
+    "value": 141.9416,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2023-01-01T00:00:00Z",
+    "value": 87.4557,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2023-02-01T00:00:00Z",
+    "value": 85.2335,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2023-03-01T00:00:00Z",
+    "value": 87.0955,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2023-04-01T00:00:00Z",
+    "value": 73.7022,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2023-05-01T00:00:00Z",
+    "value": 80.5576,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2023-06-01T00:00:00Z",
+    "value": 74.153,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2023-07-01T00:00:00Z",
+    "value": 75.0385,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2023-08-01T00:00:00Z",
+    "value": 69.6444,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2023-09-01T00:00:00Z",
+    "value": 85.577,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2023-10-01T00:00:00Z",
+    "value": 73.6463,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2023-11-01T00:00:00Z",
+    "value": 82.3394,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2023-12-01T00:00:00Z",
+    "value": 110.7808,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2024-01-01T00:00:00Z",
+    "value": 95.4073,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2024-02-01T00:00:00Z",
+    "value": 107.6799,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2024-03-01T00:00:00Z",
+    "value": 105.4571,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2024-04-01T00:00:00Z",
+    "value": 96.2144,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2024-05-01T00:00:00Z",
+    "value": 82.7993,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2024-06-01T00:00:00Z",
+    "value": 73.2643,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2024-07-01T00:00:00Z",
+    "value": 76.5887,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2024-08-01T00:00:00Z",
+    "value": 79.8123,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2024-09-01T00:00:00Z",
+    "value": 70.0323,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2024-10-01T00:00:00Z",
+    "value": 83.3125,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2024-11-01T00:00:00Z",
+    "value": 93.6352,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2024-12-01T00:00:00Z",
+    "value": 93.717,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2025-01-01T00:00:00Z",
+    "value": 110.8504,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2025-02-01T00:00:00Z",
+    "value": 108.2814,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2025-03-01T00:00:00Z",
+    "value": 90.9998,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2025-04-01T00:00:00Z",
+    "value": 82.8676,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2025-05-01T00:00:00Z",
+    "value": 81.7158,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2025-06-01T00:00:00Z",
+    "value": 69.2706,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2025-07-01T00:00:00Z",
+    "value": 70.0335,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2025-08-01T00:00:00Z",
+    "value": 81.4055,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2025-09-01T00:00:00Z",
+    "value": 83.9725,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2025-10-01T00:00:00Z",
+    "value": 82.4077,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2025-11-01T00:00:00Z",
+    "value": 86.8402,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2025-12-01T00:00:00Z",
+    "value": 94.4269,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2026-01-01T00:00:00Z",
+    "value": 118.9128,
+    "trendDataId": "trenddata-e5qw8nx"
+  },
+  {
+    "timestamp": "2022-01-01T00:00:00Z",
+    "value": -80.5944,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2022-02-01T00:00:00Z",
+    "value": -87.4896,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2022-03-01T00:00:00Z",
+    "value": -83.1955,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2022-04-01T00:00:00Z",
+    "value": -82.4145,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2022-05-01T00:00:00Z",
+    "value": -80.2756,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2022-06-01T00:00:00Z",
+    "value": -76.9865,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2022-07-01T00:00:00Z",
+    "value": -70.7734,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2022-08-01T00:00:00Z",
+    "value": -72.4399,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2022-09-01T00:00:00Z",
+    "value": -81.0201,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2022-10-01T00:00:00Z",
+    "value": -79.8885,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2022-11-01T00:00:00Z",
+    "value": -85.5934,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2022-12-01T00:00:00Z",
+    "value": -87.5217,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2023-01-01T00:00:00Z",
+    "value": -85.9961,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2023-02-01T00:00:00Z",
+    "value": -90.894,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2023-03-01T00:00:00Z",
+    "value": -88.9199,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2023-04-01T00:00:00Z",
+    "value": -86.0017,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2023-05-01T00:00:00Z",
+    "value": -84.8998,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2023-06-01T00:00:00Z",
+    "value": -76.0256,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2023-07-01T00:00:00Z",
+    "value": -77.7775,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2023-08-01T00:00:00Z",
+    "value": -78.5789,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2023-09-01T00:00:00Z",
+    "value": -84.3492,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2023-10-01T00:00:00Z",
+    "value": -87.2945,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2023-11-01T00:00:00Z",
+    "value": -91.3356,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2023-12-01T00:00:00Z",
+    "value": -96.7556,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2024-01-01T00:00:00Z",
+    "value": -96.6081,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2024-02-01T00:00:00Z",
+    "value": -87.936,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2024-03-01T00:00:00Z",
+    "value": -92.0536,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2024-04-01T00:00:00Z",
+    "value": -83.2717,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2024-05-01T00:00:00Z",
+    "value": -80.637,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2024-06-01T00:00:00Z",
+    "value": -86.6689,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2024-07-01T00:00:00Z",
+    "value": -76.6846,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2024-08-01T00:00:00Z",
+    "value": -79.9955,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2024-09-01T00:00:00Z",
+    "value": -87.1617,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2024-10-01T00:00:00Z",
+    "value": -94.2428,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2024-11-01T00:00:00Z",
+    "value": -97.2643,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2024-12-01T00:00:00Z",
+    "value": -98.002,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2025-01-01T00:00:00Z",
+    "value": -100.752,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2025-02-01T00:00:00Z",
+    "value": -97.2558,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2025-03-01T00:00:00Z",
+    "value": -93.6473,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2025-04-01T00:00:00Z",
+    "value": -89.7333,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2025-05-01T00:00:00Z",
+    "value": -93.4854,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2025-06-01T00:00:00Z",
+    "value": -87.6362,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2025-07-01T00:00:00Z",
+    "value": -84.2704,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2025-08-01T00:00:00Z",
+    "value": -86.6608,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2025-09-01T00:00:00Z",
+    "value": -90.2273,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2025-10-01T00:00:00Z",
+    "value": -96.9659,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2025-11-01T00:00:00Z",
+    "value": -97.0649,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2025-12-01T00:00:00Z",
+    "value": -96.6596,
+    "trendDataId": "trenddata-g1vp5km"
+  },
+  {
+    "timestamp": "2026-01-01T00:00:00Z",
+    "value": -100.58,
+    "trendDataId": "trenddata-g1vp5km"
+  }
+]
