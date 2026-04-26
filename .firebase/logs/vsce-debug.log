@@ -695,3 +695,157 @@ Generated sources: index.d.ts [22147B] index.cjs.js [13939B] react/README.md [10
 [debug] [2026-04-24T14:23:45.662Z] I0424 10:23:45.662081    7946 installsdk.go:55] Package @dataconnect/generated is already installed. Skipping installation
 I0424 10:23:45.662089    7946 load.go:109] Finished reloading
  {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0424 10:23:45.662081    7946 installsdk.go:55] Package @dataconnect/generated is already installed. Skipping installation\nI0424 10:23:45.662089    7946 load.go:109] Finished reloading\n"}}
+[debug] [2026-04-24T18:24:46.183Z] [Firebase Plugin] Activating Firebase extension.
+[debug] [2026-04-24T18:24:49.069Z] [Firebase Plugin] requireAuthWrapper
+[debug] [2026-04-24T18:24:49.070Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-04-24T18:24:49.070Z] > authorizing via signed-in user (james@cuecount.com)
+[debug] [2026-04-24T18:24:49.071Z] Checked if tokens are valid: true, expires at: 1777056227030
+[debug] [2026-04-24T18:24:49.071Z] Checked if tokens are valid: true, expires at: 1777056227030
+[debug] [2026-04-24T18:24:49.071Z] [Firebase Plugin] User found:  james@cuecount.com
+[info] [Firebase Plugin] (Core:Project) New user detected, fetching projects
+[debug] [2026-04-24T18:24:49.071Z] Checked if tokens are valid: true, expires at: 1777056227030
+[debug] [2026-04-24T18:24:49.072Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=1000
+[debug] [2026-04-24T18:24:49.075Z] [Firebase Plugin] VSCode notification server listening on port 40001
+[info] [Firebase Plugin] Starting SQL Connect toolkit (version 3.4.5) on port 50001
+[info] i  dataconnect: downloading dataconnect-emulator-3.4.5... {"metadata":{"emulator":{"name":"dataconnect"},"message":"downloading dataconnect-emulator-3.4.5..."}}
+[debug] [2026-04-24T18:24:49.200Z] >>> [apiv2][query] GET https://storage.googleapis.com/firemat-preview-drop/emulator/dataconnect-emulator-macos-arm64-v3.4.5 
+[debug] [2026-04-24T18:24:49.389Z] <<< [apiv2][status] GET https://storage.googleapis.com/firemat-preview-drop/emulator/dataconnect-emulator-macos-arm64-v3.4.5 200
+[debug] [2026-04-24T18:24:49.389Z] <<< [apiv2][body] GET https://storage.googleapis.com/firemat-preview-drop/emulator/dataconnect-emulator-macos-arm64-v3.4.5 [stream]
+[debug] [2026-04-24T18:24:49.611Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects 200
+[debug] [2026-04-24T18:24:49.611Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects [omitted]
+[info] i  dataconnect: Removing outdated emulator files: dataconnect-emulator-2.16.0 {"metadata":{"emulator":{"name":"dataconnect"},"message":"Removing outdated emulator files: dataconnect-emulator-2.16.0"}}
+[debug] [2026-04-24T18:24:51.168Z] I0424 14:24:51.163112    1039 control.go:100] [projects/emulator/locations/emulator/services/cue-count-service d3a7] UpdateResources(): done
+Main schema: sources: schema/schema.gql [3109B] 
+Connector "cue-count": sources: example/mutations.gql [3713B] example/queries.gql [4605B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0424 14:24:51.163112    1039 control.go:100] [projects/emulator/locations/emulator/services/cue-count-service d3a7] UpdateResources(): done\nMain schema: sources: schema/schema.gql [3109B] \nConnector \"cue-count\": sources: example/mutations.gql [3713B] example/queries.gql [4605B] \n"}}
+[debug] [2026-04-24T18:24:51.171Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"dataconnect"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2026-04-24T18:24:51.171Z] Ignoring unsupported arg: port {"metadata":{"emulator":{"name":"dataconnect"},"message":"Ignoring unsupported arg: port"}}
+[debug] [2026-04-24T18:24:51.171Z] Starting SQL Connect Emulator with command {"binary":"/Users/jamesmocko/.cache/firebase/emulators/dataconnect-emulator-3.4.5","args":["--logtostderr","-v=2","dev","--listen=localhost:50001","--config_dir=/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/dataconnect","--enable_output_schema_extensions=true","--enable_output_generated_sdk=true"],"optionalArgs":["listen","config_dir","enable_output_schema_extensions","enable_output_generated_sdk"],"joinArgs":true,"shell":false,"port":9399} {"metadata":{"emulator":{"name":"dataconnect"},"message":"Starting SQL Connect Emulator with command {\"binary\":\"/Users/jamesmocko/.cache/firebase/emulators/dataconnect-emulator-3.4.5\",\"args\":[\"--logtostderr\",\"-v=2\",\"dev\",\"--listen=localhost:50001\",\"--config_dir=/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/dataconnect\",\"--enable_output_schema_extensions=true\",\"--enable_output_generated_sdk=true\"],\"optionalArgs\":[\"listen\",\"config_dir\",\"enable_output_schema_extensions\",\"enable_output_generated_sdk\"],\"joinArgs\":true,\"shell\":false,\"port\":9399}"}}
+[info] i  dataconnect: SQL Connect Emulator logging to dataconnect-debug.log {"metadata":{"emulator":{"name":"dataconnect"},"message":"SQL Connect Emulator logging to dataconnect-debug.log"}}
+[debug] [2026-04-24T18:24:51.186Z] I0424 14:24:51.186401    1046 load.go:31] Reloading schema and connectors...
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0424 14:24:51.186401    1046 load.go:31] Reloading schema and connectors...\n"}}
+[debug] [2026-04-24T18:24:51.194Z] I0424 14:24:51.194489    1046 control.go:100] [projects/emulator/locations/emulator/services/cue-count-service 0c29] UpdateResources(): done
+Main schema: sources: schema/schema.gql [3109B] 
+Connector "cue-count": sources: example/mutations.gql [3713B] example/queries.gql [4605B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0424 14:24:51.194489    1046 control.go:100] [projects/emulator/locations/emulator/services/cue-count-service 0c29] UpdateResources(): done\nMain schema: sources: schema/schema.gql [3109B] \nConnector \"cue-count\": sources: example/mutations.gql [3713B] example/queries.gql [4605B] \n"}}
+[debug] [2026-04-24T18:24:51.202Z] I0424 14:24:51.202376    1046 codegen.go:101] [connector "cue-count" javascriptSdk] Generating sources into "/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/src/dataconnect-generated"
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0424 14:24:51.202376    1046 codegen.go:101] [connector \"cue-count\" javascriptSdk] Generating sources into \"/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/src/dataconnect-generated\"\n"}}
+[debug] [2026-04-24T18:24:51.209Z] I0424 14:24:51.209699    1046 collector.go:107] schema extensions wrote into "/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/dataconnect/.dataconnect/schema"
+Generated sources: prelude.gql [82799B] main/input.gql [64879B] main/relation.gql [27506B] main/query.gql [9002B] main/mutation.gql [24395B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0424 14:24:51.209699    1046 collector.go:107] schema extensions wrote into \"/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/dataconnect/.dataconnect/schema\"\nGenerated sources: prelude.gql [82799B] main/input.gql [64879B] main/relation.gql [27506B] main/query.gql [9002B] main/mutation.gql [24395B] \n"}}
+[debug] [2026-04-24T18:24:51.211Z] I0424 14:24:51.211903    1046 collector.go:107] connector "cue-count" javascriptSdk wrote into "/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/src/dataconnect-generated"
+Generated sources: react/index.cjs.js [8367B] esm/package.json [17B] index.cjs.js [13939B] react/index.d.ts [11009B] .guides/usage.md [4588B] index.d.ts [22147B] README.md [101779B] react/package.json [462B] react/esm/index.esm.js [7836B] esm/index.esm.js [12389B] react/esm/package.json [17B] react/README.md [103837B] .guides/setup.md [1682B] .guides/config.json [236B] package.json [855B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0424 14:24:51.211903    1046 collector.go:107] connector \"cue-count\" javascriptSdk wrote into \"/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/src/dataconnect-generated\"\nGenerated sources: react/index.cjs.js [8367B] esm/package.json [17B] index.cjs.js [13939B] react/index.d.ts [11009B] .guides/usage.md [4588B] index.d.ts [22147B] README.md [101779B] react/package.json [462B] react/esm/index.esm.js [7836B] esm/index.esm.js [12389B] react/esm/package.json [17B] react/README.md [103837B] .guides/setup.md [1682B] .guides/config.json [236B] package.json [855B] \n"}}
+[debug] [2026-04-24T18:24:51.212Z] I0424 14:24:51.212731    1046 installsdk.go:55] Package @dataconnect/generated is already installed. Skipping installation
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0424 14:24:51.212731    1046 installsdk.go:55] Package @dataconnect/generated is already installed. Skipping installation\n"}}
+[debug] [2026-04-24T18:24:51.212Z] I0424 14:24:51.212750    1046 load.go:109] Finished reloading
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0424 14:24:51.212750    1046 load.go:109] Finished reloading\n"}}
+[debug] [2026-04-24T18:24:51.213Z] I0424 14:24:51.213502    1046 dev.go:104] Listening on address (HTTP + gRPC): 127.0.0.1:50001
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0424 14:24:51.213502    1046 dev.go:104] Listening on address (HTTP + gRPC): 127.0.0.1:50001\n"}}
+[debug] [2026-04-24T18:24:51.423Z] I0424 14:24:51.423286    1046 engine.go:209] [projects/emulator/locations/emulator/services/cue-count-service 0c29] ExecuteGraphqlRead query IntrospectionQuery: succeeded. 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0424 14:24:51.423286    1046 engine.go:209] [projects/emulator/locations/emulator/services/cue-count-service 0c29] ExecuteGraphqlRead query IntrospectionQuery: succeeded. \n"}}
+[info] [Firebase Plugin] Stopping SQL Connect toolkit
+[warn] ⚠  SQL Connect Emulator has exited upon receiving signal: SIGINT 
+[debug] [2026-04-25T21:27:36.959Z] [Firebase Plugin] Activating Firebase extension.
+[debug] [2026-04-25T21:27:38.960Z] [Firebase Plugin] requireAuthWrapper
+[debug] [2026-04-25T21:27:38.960Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-04-25T21:27:38.961Z] > authorizing via signed-in user (james@cuecount.com)
+[debug] [2026-04-25T21:27:38.962Z] Checked if tokens are valid: false, expires at: 1777056227030
+[debug] [2026-04-25T21:27:38.962Z] Checked if tokens are valid: false, expires at: 1777056227030
+[debug] [2026-04-25T21:27:38.962Z] > refreshing access token with scopes: []
+[debug] [2026-04-25T21:27:38.962Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-04-25T21:27:38.962Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-04-25T21:27:38.966Z] [Firebase Plugin] VSCode notification server listening on port 40001
+[info] [Firebase Plugin] Starting SQL Connect toolkit (version 3.4.5) on port 50001
+[debug] [2026-04-25T21:27:39.175Z] I0425 17:27:39.170166   13272 control.go:100] [projects/emulator/locations/emulator/services/cue-count-service c745] UpdateResources(): done
+Main schema: sources: schema/schema.gql [3109B] 
+Connector "cue-count": sources: example/mutations.gql [3713B] example/queries.gql [4605B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0425 17:27:39.170166   13272 control.go:100] [projects/emulator/locations/emulator/services/cue-count-service c745] UpdateResources(): done\nMain schema: sources: schema/schema.gql [3109B] \nConnector \"cue-count\": sources: example/mutations.gql [3713B] example/queries.gql [4605B] \n"}}
+[debug] [2026-04-25T21:27:39.175Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"dataconnect"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2026-04-25T21:27:39.175Z] Ignoring unsupported arg: port {"metadata":{"emulator":{"name":"dataconnect"},"message":"Ignoring unsupported arg: port"}}
+[debug] [2026-04-25T21:27:39.176Z] Starting SQL Connect Emulator with command {"binary":"/Users/jamesmocko/.cache/firebase/emulators/dataconnect-emulator-3.4.5","args":["--logtostderr","-v=2","dev","--listen=localhost:50001","--config_dir=/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/dataconnect","--enable_output_schema_extensions=true","--enable_output_generated_sdk=true"],"optionalArgs":["listen","config_dir","enable_output_schema_extensions","enable_output_generated_sdk"],"joinArgs":true,"shell":false,"port":9399} {"metadata":{"emulator":{"name":"dataconnect"},"message":"Starting SQL Connect Emulator with command {\"binary\":\"/Users/jamesmocko/.cache/firebase/emulators/dataconnect-emulator-3.4.5\",\"args\":[\"--logtostderr\",\"-v=2\",\"dev\",\"--listen=localhost:50001\",\"--config_dir=/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/dataconnect\",\"--enable_output_schema_extensions=true\",\"--enable_output_generated_sdk=true\"],\"optionalArgs\":[\"listen\",\"config_dir\",\"enable_output_schema_extensions\",\"enable_output_generated_sdk\"],\"joinArgs\":true,\"shell\":false,\"port\":9399}"}}
+[info] i  dataconnect: SQL Connect Emulator logging to dataconnect-debug.log {"metadata":{"emulator":{"name":"dataconnect"},"message":"SQL Connect Emulator logging to dataconnect-debug.log"}}
+[debug] [2026-04-25T21:27:39.193Z] I0425 17:27:39.192374   13273 load.go:31] Reloading schema and connectors...
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0425 17:27:39.192374   13273 load.go:31] Reloading schema and connectors...\n"}}
+[debug] [2026-04-25T21:27:39.201Z] I0425 17:27:39.201318   13273 control.go:100] [projects/emulator/locations/emulator/services/cue-count-service 2dd1] UpdateResources(): done
+Main schema: sources: schema/schema.gql [3109B] 
+Connector "cue-count": sources: example/mutations.gql [3713B] example/queries.gql [4605B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0425 17:27:39.201318   13273 control.go:100] [projects/emulator/locations/emulator/services/cue-count-service 2dd1] UpdateResources(): done\nMain schema: sources: schema/schema.gql [3109B] \nConnector \"cue-count\": sources: example/mutations.gql [3713B] example/queries.gql [4605B] \n"}}
+[debug] [2026-04-25T21:27:39.211Z] I0425 17:27:39.210935   13273 codegen.go:101] [connector "cue-count" javascriptSdk] Generating sources into "/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/src/dataconnect-generated"
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0425 17:27:39.210935   13273 codegen.go:101] [connector \"cue-count\" javascriptSdk] Generating sources into \"/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/src/dataconnect-generated\"\n"}}
+[debug] [2026-04-25T21:27:39.221Z] I0425 17:27:39.220442   13273 collector.go:107] schema extensions wrote into "/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/dataconnect/.dataconnect/schema"
+Generated sources: prelude.gql [82799B] main/input.gql [64879B] main/relation.gql [27506B] main/query.gql [9002B] main/mutation.gql [24395B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0425 17:27:39.220442   13273 collector.go:107] schema extensions wrote into \"/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/dataconnect/.dataconnect/schema\"\nGenerated sources: prelude.gql [82799B] main/input.gql [64879B] main/relation.gql [27506B] main/query.gql [9002B] main/mutation.gql [24395B] \n"}}
+[debug] [2026-04-25T21:27:39.223Z] I0425 17:27:39.223055   13273 collector.go:107] connector "cue-count" javascriptSdk wrote into "/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/src/dataconnect-generated"
+Generated sources: react/index.cjs.js [8367B] .guides/usage.md [4588B] .guides/config.json [236B] index.d.ts [22147B] index.cjs.js [13939B] react/esm/package.json [17B] react/esm/index.esm.js [7836B] esm/index.esm.js [12389B] esm/package.json [17B] package.json [855B] README.md [101779B] react/README.md [103837B] .guides/setup.md [1682B] react/index.d.ts [11009B] react/package.json [462B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0425 17:27:39.223055   13273 collector.go:107] connector \"cue-count\" javascriptSdk wrote into \"/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/src/dataconnect-generated\"\nGenerated sources: react/index.cjs.js [8367B] .guides/usage.md [4588B] .guides/config.json [236B] index.d.ts [22147B] index.cjs.js [13939B] react/esm/package.json [17B] react/esm/index.esm.js [7836B] esm/index.esm.js [12389B] esm/package.json [17B] package.json [855B] README.md [101779B] react/README.md [103837B] .guides/setup.md [1682B] react/index.d.ts [11009B] react/package.json [462B] \n"}}
+[debug] [2026-04-25T21:27:39.223Z] I0425 17:27:39.223887   13273 installsdk.go:55] Package @dataconnect/generated is already installed. Skipping installation
+I0425 17:27:39.223911   13273 load.go:109] Finished reloading
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0425 17:27:39.223887   13273 installsdk.go:55] Package @dataconnect/generated is already installed. Skipping installation\nI0425 17:27:39.223911   13273 load.go:109] Finished reloading\n"}}
+[debug] [2026-04-25T21:27:39.225Z] I0425 17:27:39.225307   13273 dev.go:104] Listening on address (HTTP + gRPC): 127.0.0.1:50001
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0425 17:27:39.225307   13273 dev.go:104] Listening on address (HTTP + gRPC): 127.0.0.1:50001\n"}}
+[debug] [2026-04-25T21:27:39.291Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 400
+[debug] [2026-04-25T21:27:39.291Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[error] Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[error] Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[error] [Firebase Plugin] requireAuth error: Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[debug] [2026-04-25T21:27:39.418Z] I0425 17:27:39.418515   13273 engine.go:209] [projects/emulator/locations/emulator/services/cue-count-service 2dd1] ExecuteGraphqlRead query IntrospectionQuery: succeeded. 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0425 17:27:39.418515   13273 engine.go:209] [projects/emulator/locations/emulator/services/cue-count-service 2dd1] ExecuteGraphqlRead query IntrospectionQuery: succeeded. \n"}}
+[info] [Firebase Plugin] Stopping SQL Connect toolkit
+[debug] [2026-04-25T21:56:36.060Z] [Firebase Plugin] Activating Firebase extension.
+[debug] [2026-04-25T21:56:37.853Z] [Firebase Plugin] requireAuthWrapper
+[debug] [2026-04-25T21:56:37.854Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-04-25T21:56:37.854Z] > authorizing via signed-in user (james@cuecount.com)
+[debug] [2026-04-25T21:56:37.855Z] Checked if tokens are valid: false, expires at: 1777056227030
+[debug] [2026-04-25T21:56:37.855Z] Checked if tokens are valid: false, expires at: 1777056227030
+[debug] [2026-04-25T21:56:37.855Z] > refreshing access token with scopes: []
+[debug] [2026-04-25T21:56:37.856Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-04-25T21:56:37.856Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-04-25T21:56:37.859Z] [Firebase Plugin] VSCode notification server listening on port 40001
+[info] [Firebase Plugin] Starting SQL Connect toolkit (version 3.4.5) on port 50001
+[debug] [2026-04-25T21:56:38.058Z] I0425 17:56:38.052729   13931 control.go:100] [projects/emulator/locations/emulator/services/cue-count-service 3b78] UpdateResources(): done
+Main schema: sources: schema/schema.gql [3109B] 
+Connector "cue-count": sources: example/mutations.gql [3713B] example/queries.gql [4605B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0425 17:56:38.052729   13931 control.go:100] [projects/emulator/locations/emulator/services/cue-count-service 3b78] UpdateResources(): done\nMain schema: sources: schema/schema.gql [3109B] \nConnector \"cue-count\": sources: example/mutations.gql [3713B] example/queries.gql [4605B] \n"}}
+[debug] [2026-04-25T21:56:38.058Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"dataconnect"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2026-04-25T21:56:38.058Z] Ignoring unsupported arg: port {"metadata":{"emulator":{"name":"dataconnect"},"message":"Ignoring unsupported arg: port"}}
+[debug] [2026-04-25T21:56:38.058Z] Starting SQL Connect Emulator with command {"binary":"/Users/jamesmocko/.cache/firebase/emulators/dataconnect-emulator-3.4.5","args":["--logtostderr","-v=2","dev","--listen=localhost:50001","--config_dir=/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/dataconnect","--enable_output_schema_extensions=true","--enable_output_generated_sdk=true"],"optionalArgs":["listen","config_dir","enable_output_schema_extensions","enable_output_generated_sdk"],"joinArgs":true,"shell":false,"port":9399} {"metadata":{"emulator":{"name":"dataconnect"},"message":"Starting SQL Connect Emulator with command {\"binary\":\"/Users/jamesmocko/.cache/firebase/emulators/dataconnect-emulator-3.4.5\",\"args\":[\"--logtostderr\",\"-v=2\",\"dev\",\"--listen=localhost:50001\",\"--config_dir=/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/dataconnect\",\"--enable_output_schema_extensions=true\",\"--enable_output_generated_sdk=true\"],\"optionalArgs\":[\"listen\",\"config_dir\",\"enable_output_schema_extensions\",\"enable_output_generated_sdk\"],\"joinArgs\":true,\"shell\":false,\"port\":9399}"}}
+[info] i  dataconnect: SQL Connect Emulator logging to dataconnect-debug.log {"metadata":{"emulator":{"name":"dataconnect"},"message":"SQL Connect Emulator logging to dataconnect-debug.log"}}
+[debug] [2026-04-25T21:56:38.074Z] I0425 17:56:38.073849   13932 load.go:31] Reloading schema and connectors...
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0425 17:56:38.073849   13932 load.go:31] Reloading schema and connectors...\n"}}
+[debug] [2026-04-25T21:56:38.082Z] I0425 17:56:38.082880   13932 control.go:100] [projects/emulator/locations/emulator/services/cue-count-service 9c5b] UpdateResources(): done
+Main schema: sources: schema/schema.gql [3109B] 
+Connector "cue-count": sources: example/queries.gql [4605B] example/mutations.gql [3713B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0425 17:56:38.082880   13932 control.go:100] [projects/emulator/locations/emulator/services/cue-count-service 9c5b] UpdateResources(): done\nMain schema: sources: schema/schema.gql [3109B] \nConnector \"cue-count\": sources: example/queries.gql [4605B] example/mutations.gql [3713B] \n"}}
+[debug] [2026-04-25T21:56:38.091Z] I0425 17:56:38.091141   13932 codegen.go:101] [connector "cue-count" javascriptSdk] Generating sources into "/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/src/dataconnect-generated"
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0425 17:56:38.091141   13932 codegen.go:101] [connector \"cue-count\" javascriptSdk] Generating sources into \"/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/src/dataconnect-generated\"\n"}}
+[debug] [2026-04-25T21:56:38.099Z] I0425 17:56:38.099597   13932 collector.go:107] schema extensions wrote into "/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/dataconnect/.dataconnect/schema"
+Generated sources: prelude.gql [82799B] main/relation.gql [27506B] main/query.gql [9002B] main/mutation.gql [24395B] main/input.gql [64879B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0425 17:56:38.099597   13932 collector.go:107] schema extensions wrote into \"/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/dataconnect/.dataconnect/schema\"\nGenerated sources: prelude.gql [82799B] main/relation.gql [27506B] main/query.gql [9002B] main/mutation.gql [24395B] main/input.gql [64879B] \n"}}
+[debug] [2026-04-25T21:56:38.101Z] I0425 17:56:38.101789   13932 collector.go:107] connector "cue-count" javascriptSdk wrote into "/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/src/dataconnect-generated"
+Generated sources: package.json [855B] react/esm/index.esm.js [7836B] react/README.md [103837B] README.md [101779B] react/index.d.ts [11009B] .guides/config.json [236B] react/package.json [462B] react/index.cjs.js [8367B] .guides/usage.md [4588B] index.d.ts [22147B] esm/index.esm.js [12389B] esm/package.json [17B] index.cjs.js [13939B] react/esm/package.json [17B] .guides/setup.md [1682B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0425 17:56:38.101789   13932 collector.go:107] connector \"cue-count\" javascriptSdk wrote into \"/Users/jamesmocko/Documents/001-Projects/001-Development/cuecount/src/dataconnect-generated\"\nGenerated sources: package.json [855B] react/esm/index.esm.js [7836B] react/README.md [103837B] README.md [101779B] react/index.d.ts [11009B] .guides/config.json [236B] react/package.json [462B] react/index.cjs.js [8367B] .guides/usage.md [4588B] index.d.ts [22147B] esm/index.esm.js [12389B] esm/package.json [17B] index.cjs.js [13939B] react/esm/package.json [17B] .guides/setup.md [1682B] \n"}}
+[debug] [2026-04-25T21:56:38.102Z] I0425 17:56:38.102814   13932 installsdk.go:55] Package @dataconnect/generated is already installed. Skipping installation
+I0425 17:56:38.102842   13932 load.go:109] Finished reloading
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0425 17:56:38.102814   13932 installsdk.go:55] Package @dataconnect/generated is already installed. Skipping installation\nI0425 17:56:38.102842   13932 load.go:109] Finished reloading\n"}}
+[debug] [2026-04-25T21:56:38.104Z] I0425 17:56:38.104220   13932 dev.go:104] Listening on address (HTTP + gRPC): 127.0.0.1:50001
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0425 17:56:38.104220   13932 dev.go:104] Listening on address (HTTP + gRPC): 127.0.0.1:50001\n"}}
+[debug] [2026-04-25T21:56:38.174Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 400
+[debug] [2026-04-25T21:56:38.174Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[error] Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[error] Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[error] [Firebase Plugin] requireAuth error: Authentication Error: Your credentials are no longer valid. Please run firebase login --reauth
+
+For CI servers and headless environments, generate a new token with firebase login:ci
+[debug] [2026-04-25T21:56:38.307Z] I0425 17:56:38.307455   13932 engine.go:209] [projects/emulator/locations/emulator/services/cue-count-service 9c5b] ExecuteGraphqlRead query IntrospectionQuery: succeeded. 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0425 17:56:38.307455   13932 engine.go:209] [projects/emulator/locations/emulator/services/cue-count-service 9c5b] ExecuteGraphqlRead query IntrospectionQuery: succeeded. \n"}}

@@ -21,6 +21,11 @@ import { getTrendColor } from "@/components/StorySidebar";
 import type { StoryViewState } from "@/app/story/[id]/page";
 import type { TooltipItem } from "chart.js";
 import zoomPlugin from "chartjs-plugin-zoom";
+import {
+  nextTimestamp,
+  futureIncrements,
+  snapToFrequency,
+} from "@/lib/timeIncrements";
 
 // ── Register Chart.js components ──────────────────────────────────────────────
 ChartJS.register(
@@ -63,32 +68,6 @@ type TimePoint = { x: string; y: number };
 
 function normalizeTs(ts: string): string {
   return ts.slice(0, 10); // "2024-01-01T00:00:00Z" → "2024-01-01"
-}
-
-// ── nextTimestamp: advance one frequency increment ────────────────────────────
-function nextTimestamp(ts: string, frequency: string): string {
-  const d = new Date(ts.slice(0, 10) + "T00:00:00Z");
-  switch (frequency.toLowerCase()) {
-    case "monthly":   d.setUTCMonth(d.getUTCMonth() + 1);       break;
-    case "weekly":    d.setUTCDate(d.getUTCDate() + 7);          break;
-    case "daily":     d.setUTCDate(d.getUTCDate() + 1);          break;
-    case "quarterly": d.setUTCMonth(d.getUTCMonth() + 3);        break;
-    case "annual":
-    case "yearly":    d.setUTCFullYear(d.getUTCFullYear() + 1);  break;
-    default:          d.setUTCMonth(d.getUTCMonth() + 1);
-  }
-  return d.toISOString().slice(0, 10);
-}
-
-// ── futureIncrements: generate N future timestamps from last using frequency ──
-function futureIncrements(lastTs: string, count: number, frequency: string): string[] {
-  const result: string[] = [];
-  let current = lastTs;
-  for (let i = 0; i < count; i++) {
-    current = nextTimestamp(current, frequency);
-    result.push(current);
-  }
-  return result;
 }
 
 // ── toStepPoints: step-function display for sparse modifier series ────────────
@@ -209,82 +188,106 @@ function toFullPoints(
 // ─────────────────────────────────────────────────────────────────────────────
 function RangeSlider({
   timeAxis,
+  zoomStart,
+  zoomEnd,
   onRangeChange,
 }: {
   timeAxis:      string[];
+  zoomStart:     string | null;
+  zoomEnd:       string | null;
   onRangeChange: (minTime: string, maxTime: string) => void;
 }) {
-  const [range, setRange]    = useState({ min: 0, max: 100 });
-  const trackRef             = useRef<HTMLDivElement>(null);
-  const dragging             = useRef<"min" | "max" | "window" | null>(null);
-  const dragStartX           = useRef(0);
-  const dragStartRange       = useRef({ min: 0, max: 100 });
-
-  // Convert % → timestamp string
+  const trackRef       = useRef<HTMLDivElement>(null);
+  const dragging       = useRef<"min" | "max" | "window" | null>(null);
+  const dragStartX     = useRef(0);
+  const dragStartRange = useRef({ min: 0, max: 100 });
+ 
+  // ── % ↔ time conversions ──────────────────────────────────────────────────
+  // Slider position is a percentage [0, 100] across timeAxis. timeToPct walks
+  // the axis to find the nearest index for a given timestamp. Used to derive
+  // the rendered handle positions from the props on every render.
   const pctToTime = useCallback((pct: number): string => {
     if (timeAxis.length === 0) return "";
     const idx = Math.round((pct / 100) * (timeAxis.length - 1));
     return timeAxis[Math.max(0, Math.min(timeAxis.length - 1, idx))];
   }, [timeAxis]);
-
-  const commit = useCallback((min: number, max: number) => {
-    setRange({ min, max });
-    onRangeChange(pctToTime(min), pctToTime(max));
-  }, [onRangeChange, pctToTime]);
-
+ 
+  const timeToPct = useCallback((time: string | null): number => {
+    if (!time || timeAxis.length === 0) return 0;
+    // Find the index whose timestamp is >= the requested time. This handles
+    // the case where the chart zoom landed between two axis ticks (e.g. user
+    // wheel-zoomed to a precise window) — we snap to the nearest tick.
+    let idx = timeAxis.findIndex(t => t >= time);
+    if (idx === -1) idx = timeAxis.length - 1;
+    return (idx / (timeAxis.length - 1)) * 100;
+  }, [timeAxis]);
+ 
+  // ── Derived display positions ─────────────────────────────────────────────
+  // Computed every render from props. No useState/useEffect dance.
+  const displayMin = zoomStart != null ? timeToPct(zoomStart) : 0;
+  const displayMax = zoomEnd   != null ? timeToPct(zoomEnd)   : 100;
+ 
+  // ── Drag handler ──────────────────────────────────────────────────────────
+  // On mousedown, we capture the starting position. On every mousemove, we
+  // compute the new range and immediately notify the parent. The parent
+  // updates upstream state, the slider rerenders with new derived positions
+  // — the loop closes synchronously within React's batching.
   const onMouseDown = (handle: "min" | "max" | "window") =>
     (e: React.MouseEvent) => {
+      console.log("[slider] mousedown on", handle);
       e.preventDefault();
       dragging.current       = handle;
       dragStartX.current     = e.clientX;
-      dragStartRange.current = { ...range };
-
+      dragStartRange.current = { min: displayMin, max: displayMax };
+ 
       const onMove = (ev: MouseEvent) => {
         if (!dragging.current) return;
+        console.log("[slider] mousemove, dragging:", dragging.current);
         const rect  = trackRef.current?.getBoundingClientRect();
         if (!rect) return;
         const delta = ((ev.clientX - dragStartX.current) / rect.width) * 100;
         const { min: sMin, max: sMax } = dragStartRange.current;
-
+ 
+        let nextMin = sMin;
+        let nextMax = sMax;
         if (dragging.current === "min") {
-          commit(Math.max(0, Math.min(sMax - 5, sMin + delta)), sMax);
+          nextMin = Math.max(0, Math.min(sMax - 5, sMin + delta));
         } else if (dragging.current === "max") {
-          commit(sMin, Math.min(100, Math.max(sMin + 5, sMax + delta)));
+          nextMax = Math.min(100, Math.max(sMin + 5, sMax + delta));
         } else {
-          const width   = sMax - sMin;
-          const nextMin = Math.max(0, Math.min(100 - width, sMin + delta));
-          commit(nextMin, nextMin + width);
+          const width = sMax - sMin;
+          nextMin = Math.max(0, Math.min(100 - width, sMin + delta));
+          nextMax = nextMin + width;
         }
+        onRangeChange(pctToTime(nextMin), pctToTime(nextMax));
       };
-
+ 
       const onUp = () => {
         dragging.current = null;
         window.removeEventListener("mousemove", onMove);
         window.removeEventListener("mouseup", onUp);
       };
-
+ 
       window.addEventListener("mousemove", onMove);
       window.addEventListener("mouseup", onUp);
     };
-
-  const { min, max } = range;
-
+ 
   return (
     <div className="relative w-full h-8 flex items-center px-1 select-none" ref={trackRef}>
       <div className="absolute inset-x-1 h-1.5 rounded-full bg-zinc-200" />
       <div
         className="absolute h-1.5 rounded-full bg-purple-200 cursor-grab active:cursor-grabbing"
-        style={{ left: `${min}%`, width: `${max - min}%` }}
+        style={{ left: `${displayMin}%`, width: `${displayMax - displayMin}%` }}
         onMouseDown={onMouseDown("window")}
       />
       <div
         className="absolute w-3 h-3 rounded-full bg-purple-600 border-2 border-white shadow cursor-col-resize z-10"
-        style={{ left: `${min}%`, top: "50%", transform: "translate(-50%, -50%)" }}
+        style={{ left: `${displayMin}%`, top: "50%", transform: "translate(-50%, -50%)" }}
         onMouseDown={onMouseDown("min")}
       />
       <div
         className="absolute w-3 h-3 rounded-full bg-purple-600 border-2 border-white shadow cursor-col-resize z-10"
-        style={{ left: `${max}%`, top: "50%", transform: "translate(-50%, -50%)" }}
+        style={{ left: `${displayMax}%`, top: "50%", transform: "translate(-50%, -50%)" }}
         onMouseDown={onMouseDown("max")}
       />
     </div>
@@ -337,6 +340,8 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
     assembledStory,
     activeStoryDoc,
     activeAnalysisId,
+    activeViewState,
+    setActiveViewState,
     allDataValues,
     setAllDataValues,
     allWeightValues,
@@ -354,7 +359,13 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
   const [overlayAnchor,  setOverlayAnchor]  = useState<{ x: number; y: number } | null>(null);
   const [inputValue,     setInputValue]     = useState("");
   const [mouseX,       setMouseX]       = useState<number | null>(null);
-  const [nextPointPx,  setNextPointPx]  = useState<number | null>(null);
+  const [ghostPoint, setGhostPoint] = useState<{
+    timestamp: string;
+    pxX:       number;
+    pxY:       number;
+    value:     number;
+    dataId:    string;
+  } | null>(null);
 
   const chartWrapperRef   = useRef<HTMLDivElement>(null);
   const mouseDownInfo     = useRef<{ x: number; y: number; time: number } | null>(null);
@@ -387,17 +398,34 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
     setInputValue("");
   }, [activeView, activeEditSeries]);
 
-  // ── Handle range slider → zoom the chart ───────────────────────────────────
-  // Receives actual timestamp strings, converts to ms for TimeScale zoom.
-  const handleRangeChange = useCallback((minTime: string, maxTime: string) => {
+  // ── Sync chart zoom from activeViewState on initialization ──────────────────
+  useEffect(() => {
+    console.log("[effect] zoom sync ran");
+    if (!activeViewState) return;
     const chart = chartRef.current;
     if (!chart) return;
     chart.zoomScale(
       "x",
-      { min: new Date(minTime).getTime(), max: new Date(maxTime).getTime() },
+      {
+        min: new Date(activeViewState.zoomStart).getTime(),
+        max: new Date(activeViewState.zoomEnd).getTime(),
+      },
       "default",
     );
-  }, []);
+  }, [activeViewState]);
+
+  // ── Handle range slider → update activeViewState ───────────────────────────
+  const handleRangeChange = useCallback((minTime: string, maxTime: string) => {
+    const chart = chartRef.current;
+    if (chart) {
+      chart.zoomScale(
+        "x",
+        { min: new Date(minTime).getTime(), max: new Date(maxTime).getTime() },
+        "default",
+      );
+    }
+    setActiveViewState({ zoomStart: minTime, zoomEnd: maxTime });
+  }, [setActiveViewState]);
 
   // ── writePoint — shared by drag and input apply ────────────────────────────
   const writePoint = useCallback((
@@ -635,6 +663,28 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
       timeAxis = [...timeAxis, ...extensions];
     }
 
+    // Extend timeAxis past the last actual data point — only in contributor
+    // view, since that's the only place edits happen and a future buffer
+    // matters. Story and analysis views are read-only and use the natural
+    // data range. domainEnd lives at the story level (in activeViewState)
+    // for RangeSlider consistency, but only this view consumes it.
+    if (activeView === "contributor" && timeAxis.length > 0) {
+      const frequency = assembledStory.meta?.frequency ?? "monthly";
+      if (activeViewState) {
+        let cursor = timeAxis[timeAxis.length - 1];
+        while (cursor < activeViewState.domainEnd) {
+          cursor = nextTimestamp(cursor, frequency);
+          if (cursor > activeViewState.domainEnd) break;
+          timeAxis.push(cursor);
+        }
+      } else {
+        // Fallback when activeViewState isn't initialized yet — covers the
+        // brief gap between first render and initStory completion.
+        const extensions = futureIncrements(timeAxis[timeAxis.length - 1], 6, frequency);
+        timeAxis = [...timeAxis, ...extensions];
+      }
+    }
+
     const datasets: ReturnType<typeof makeDataset>[] = [];
     const storyColor = getTrendColor(0);
 
@@ -825,29 +875,7 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
     shownAnalysisIds,
     activeEditSeries,
   ]);
-
-  // ── Compute pixel x of the next future point for the floating + button ───────
-  useEffect(() => {
-    if (activeView !== "contributor") { setNextPointPx(null); return; }
-    const chart    = chartRef.current;
-    const wrapRect = chartWrapperRef.current?.getBoundingClientRect();
-    const canvRect = chart?.canvas.getBoundingClientRect();
-    if (!chart || !wrapRect || !canvRect) return;
-
-    const activeDs = datasetsRef.current.find((ds: any) => ds.dragData) as any;
-    if (!activeDs) return;
-    const points = (activeDs.data as any[]).filter((p: any) => p.y !== null && p.y !== undefined);
-    if (points.length === 0) return;
-
-    const lastTs    = (points[points.length - 1] as any).x as string;
-    const frequency = assembledStory?.meta?.frequency ?? "monthly";
-    const nextTs    = nextTimestamp(lastTs, frequency);
-
-    const canvasPx  = chart.scales.x.getPixelForValue(new Date(nextTs).getTime());
-    const relX      = canvRect.left - wrapRect.left + canvasPx;
-    setNextPointPx(relX);
-  }, [datasets, activeView, assembledStory?.meta?.frequency]);
-
+  
   // Keep refs in sync with latest render values
   datasetsRef.current       = datasets;
   selectedPointsRef.current = selectedPoints;
@@ -956,8 +984,35 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
       },
 
       zoom: {
-        zoom:  { wheel: { enabled: true }, pinch: { enabled: true }, mode: "x" },
-        pan:   { enabled: true, mode: "x" },
+        zoom:  {
+          wheel: { enabled: true },
+          pinch: { enabled: true },
+          mode:  "x",
+          onZoomComplete: ({ chart }: any) => {
+            // Sync activeViewState whenever the user's wheel/pinch gesture ends.
+            // Reading chart.scales.x.min/max gives us the precise window the
+            // user landed on after Chart.js applied its own constraints.
+            const xScale = chart.scales.x;
+            if (!xScale) return;
+            setActiveViewState({
+              zoomStart: new Date(xScale.min).toISOString(),
+              zoomEnd:   new Date(xScale.max).toISOString(),
+            });
+          },
+        },
+        pan:   {
+          enabled: true,
+          mode:    "x",
+          onPanComplete: ({ chart }: any) => {
+            // Same pattern as onZoomComplete — sync after the gesture ends.
+            const xScale = chart.scales.x;
+            if (!xScale) return;
+            setActiveViewState({
+              zoomStart: new Date(xScale.min).toISOString(),
+              zoomEnd:   new Date(xScale.max).toISOString(),
+            });
+          },
+        },
         limits: { x: { minRange: 1000 * 60 * 60 * 24 * 30 } }, // minimum 30-day window
       },
 
@@ -966,6 +1021,12 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
     scales: {
       x: {
         type: "time",
+        // ── Single source of truth ──────────────────────────────────────────
+        // Read x-axis bounds from activeViewState. RangeSlider writes to the
+        // same field, so the two stay in sync automatically. Falls back to
+        // undefined (chart autoscales) if state hasn't been initialized yet.
+        min: activeViewState ? new Date(activeViewState.zoomStart).getTime() : undefined,
+        max: activeViewState ? new Date(activeViewState.zoomEnd).getTime()   : undefined,
         time: {
           tooltipFormat:  "yyyy-MM",
           displayFormats: { month: "MMM yyyy", year: "yyyy" },
@@ -975,7 +1036,8 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
         ticks:  { display: false },
       },
       ...yScales,
-    },
+    }
+
   }), [datasets, allDataValues, setAllDataValues, allWeightValues, setAllWeightValues, allLagValues, setAllLagValues, allCorrelationValues, axisRegistry, yScales, writePoint, selectedPoints]);
   
   // ── Render ──────────────────────────────────────────────────────────────────
@@ -992,42 +1054,138 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
   return (
     <div className="flex flex-col w-full h-full px-2 py-2">
       <GraphToolbar viewState={viewState} onAddNextPoint={addNextPoint} />
-
+ 
       <div
         ref={chartWrapperRef}
         className="flex-1 min-h-0 px-2 pt-1 relative"
         onMouseMove={e => {
           const rect = chartWrapperRef.current?.getBoundingClientRect();
           if (rect) setMouseX(e.clientX - rect.left);
+ 
+          // ── Ghost marker computation ────────────────────────────────────
+          // Only runs in contributor view (the only view where edits happen)
+          // and only while not actively dragging an existing point — drag
+          // events overlap with mousemove and we don't want a ghost to
+          // appear next to the cursor while the user's mid-drag.
+          if (activeView !== "contributor") { setGhostPoint(null); return; }
+          if (isDraggingPoint.current) { setGhostPoint(null); return; }
+ 
+          const chart = chartRef.current;
+          if (!chart || !activeStoryDoc || !assembledStory) { setGhostPoint(null); return; }
+ 
+          // Find the active draggable dataset — same lookup addNextPoint uses.
+          // This is the series the click would write to.
+          const activeDs = datasetsRef.current.find((ds: any) => ds.dragData) as any;
+          if (!activeDs?._dataId) { setGhostPoint(null); return; }
+ 
+          // Translate cursor X to a timestamp, snap to the frequency grid.
+          const canvasRect = chart.canvas.getBoundingClientRect();
+          const canvasPxX  = e.clientX - canvasRect.left;
+          if (canvasPxX < 0 || canvasPxX > canvasRect.width) { setGhostPoint(null); return; }
+ 
+          const tsMs   = chart.scales.x.getValueForPixel(canvasPxX);
+          if (tsMs == null) { setGhostPoint(null); return; }
+          const rawTs  = new Date(tsMs).toISOString().slice(0, 10);
+ 
+          const frequency = assembledStory.meta?.frequency ?? "monthly";
+          const originStart = activeViewState?.domainStart ?? rawTs;
+          const snappedTs = snapToFrequency(rawTs, frequency, originStart);
+ 
+          // Don't show a ghost on top of an existing point — within the same
+          // increment, the existing point owns that slot.
+          const existingAtSnap = (activeDs.data as any[]).some(
+            (p: any) => p?.x && p.y != null && normalizeTs(p.x) === snappedTs
+          );
+          if (existingAtSnap) { setGhostPoint(null); return; }
+ 
+          // Resolve the y-value to put the ghost at — interpolate from the
+          // current dataset's points so the marker sits on the line. If the
+          // dataset is empty or has only one point, fall back to a
+          // series-specific default.
+          const series = activeEditSeriesRef.current;
+          const realPts = (activeDs.data as any[])
+            .filter((p: any) => p?.y != null)
+            .map((p: any) => ({ timestamp: normalizeTs(p.x), value: p.y as number }))
+            .sort((a: any, b: any) => a.timestamp.localeCompare(b.timestamp));
+ 
+          let inferredValue = 0;
+          if (realPts.length === 0) {
+            inferredValue = series === "weight" ? 100
+                          : series === "lag"    ? 0
+                          : series === "correlation" ? 1
+                          : 0;
+          } else if (snappedTs <= realPts[0].timestamp) {
+            inferredValue = realPts[0].value;
+          } else if (snappedTs >= realPts[realPts.length - 1].timestamp) {
+            inferredValue = realPts[realPts.length - 1].value;
+          } else {
+            for (let i = 0; i < realPts.length - 1; i++) {
+              const a = realPts[i], b = realPts[i + 1];
+              if (snappedTs >= a.timestamp && snappedTs <= b.timestamp) {
+                const aMs = new Date(a.timestamp).getTime();
+                const bMs = new Date(b.timestamp).getTime();
+                const sMs = new Date(snappedTs).getTime();
+                const ratio = bMs === aMs ? 0 : (sMs - aMs) / (bMs - aMs);
+                inferredValue = a.value + ratio * (b.value - a.value);
+                break;
+              }
+            }
+          }
+ 
+          // Convert (snappedTs, inferredValue) back to canvas pixels so the
+          // ghost renders exactly on the line.
+          const yScaleId   = (activeDs as any).yAxisID ?? "y";
+          const ghostPxXOnCanvas = chart.scales.x.getPixelForValue(new Date(snappedTs).getTime());
+          const ghostPxYOnCanvas = chart.scales[yScaleId]?.getPixelForValue(inferredValue);
+          if (ghostPxYOnCanvas == null) { setGhostPoint(null); return; }
+ 
+          // Translate canvas-relative px to wrapper-relative px for absolute
+          // positioning of the marker overlay.
+          const wrapRect = chartWrapperRef.current?.getBoundingClientRect();
+          if (!wrapRect) { setGhostPoint(null); return; }
+          const wrapperPxX = canvasRect.left - wrapRect.left + ghostPxXOnCanvas;
+          const wrapperPxY = canvasRect.top  - wrapRect.top  + ghostPxYOnCanvas;
+ 
+          setGhostPoint({
+            timestamp: snappedTs,
+            pxX:       wrapperPxX,
+            pxY:       wrapperPxY,
+            value:     inferredValue,
+            dataId:    activeDs._dataId,
+          });
         }}
-        onMouseLeave={() => setMouseX(null)}
+        onMouseLeave={() => { setMouseX(null); setGhostPoint(null); }}
       >
         <Line
-          key={activeView}
           ref={chartRef}
           data={chartData}
           options={options}
         />
-
-        {/* ── Floating next-point button ──────────────────────────────────────── */}
-        {activeView === "contributor" &&
-        nextPointPx !== null &&
-        mouseX !== null &&
-        Math.abs(mouseX - nextPointPx) < 20 && (
+ 
+        {/* ── Click-to-add ghost marker ─────────────────────────────────── */}
+        {/* Renders a translucent dot at the snapped (timestamp, interpolated  */}
+        {/* value) position. Click writes the point via writePoint — exactly  */}
+        {/* the same path drag and input-apply use, so all downstream logic   */}
+        {/* (clamping, isDirty, calc rebuild) just works.                     */}
+        {ghostPoint && (
           <button
-            onClick={addNextPoint}
+            onClick={() => {
+              const series = activeEditSeriesRef.current;
+              writePoint(series, ghostPoint.dataId, ghostPoint.timestamp,
+                clampForSeries(series, ghostPoint.value));
+              onPointEdited();
+              setGhostPoint(null);
+            }}
             style={{
-              left: nextPointPx,
-              top:  "50%",
+              left: ghostPoint.pxX,
+              top:  ghostPoint.pxY,
               transform: "translate(-50%, -50%)",
             }}
-            className="absolute z-20 w-7 h-7 rounded-full bg-indigo-500 hover:bg-indigo-600 text-white flex items-center justify-center shadow-md transition-colors text-lg leading-none"
-            title="Add next point"
-          >
-            +
-          </button>
+            className="absolute z-20 w-4 h-4 rounded-full bg-indigo-500/40 hover:bg-indigo-500 border-2 border-white shadow transition-colors cursor-pointer"
+            title={`Add point at ${ghostPoint.timestamp}`}
+          />
         )}
-
+ 
         {/* ── Point selection overlay ────────────────────────────────────────── */}
         {overlayAnchor && selectedPoints.size > 0 && (
           <div
@@ -1103,16 +1261,18 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
           </div>
         )}
       </div>
-
+ 
       {timeAxis.length > 0 && (
         <div className="shrink-0 pt-1 pb-1">
           <RangeSlider
             timeAxis={timeAxis}
+            zoomStart={activeViewState?.zoomStart ?? null}
+            zoomEnd={activeViewState?.zoomEnd ?? null}
             onRangeChange={handleRangeChange}
           />
         </div>
       )}
-
+ 
     </div>
   );
 }

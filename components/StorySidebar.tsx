@@ -5,6 +5,7 @@ import Breadcrumb from "@/components/Breadcrumb";
 import AddContributorModal from "@/components/AddContributor";
 import type { AssembledContributor } from "@/types/db";
 import type { StoryViewState } from "@/app/story/[id]/page";
+import CreateAnalysisModal from "@/components/CreateAnalysis";
 import { useState } from "react";
 import {
   EyeIcon,
@@ -456,8 +457,10 @@ export default function StorySidebar({ viewState }: { viewState: StoryViewState 
     activeStoryDoc,
     activeAnalysisId,
     perspectives,
+    createAnalysis,
   } = useData();
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showCreateAnalysis, setShowCreateAnalysis] = useState(false);
   if (!assembledStory) return null;
   const { id: storyId, name: title, trendDataValues, contributors } = assembledStory;
   const perspective = perspectives.find((p) => p.id === activeStoryDoc?.perspectiveId);
@@ -602,6 +605,14 @@ export default function StorySidebar({ viewState }: { viewState: StoryViewState 
               <AnalysisCard key={analysis.id} variant={analysis} viewState={viewState} />
             ))
           )}
+
+          <button
+            onClick={() => setShowCreateAnalysis(true)}
+            className="mt-2 px-3 py-3 rounded-md bg-zinc-50 hover:bg-zinc-100 text-sm font-medium text-indigo-500 hover:text-indigo-700 transition-colors duration-150 flex items-center justify-center gap-2"
+          >
+            Add Analysis
+            <span className="text-base leading-none">+</span>
+          </button>
         </div>
       )}
 
@@ -660,6 +671,22 @@ export default function StorySidebar({ viewState }: { viewState: StoryViewState 
       {/* ── Add Contributor Modal ──────────────────────────────────────── */}
       {showAddModal && (
         <AddContributorModal onClose={() => setShowAddModal(false)} />
+      )}
+
+      {/* ── Add Analysis Modal ──────────────────────────────────────── */}
+      {showCreateAnalysis && (
+        <CreateAnalysisModal
+          onClose={() => setShowCreateAnalysis(false)}
+          onProceed={async (baseAnalysisId) => {
+            setShowCreateAnalysis(false);
+            await createAnalysis({
+              name: baseAnalysisId
+                ? `Copy of ${activeStoryDoc?.Analysis?.[baseAnalysisId]?.Name ?? "Analysis"}`
+                : "New Analysis",
+              baseAnalysisId: baseAnalysisId ?? undefined,
+            });
+          }}
+        />
       )}
 
     </div>
