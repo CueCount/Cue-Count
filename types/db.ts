@@ -6,6 +6,28 @@
 // owner in the Firebase document hierarchy.
 // ─────────────────────────────────────────────────────────────────────────────
 
+export type StoryVisibility = "private" | "public_visible" | "public_usable";
+ 
+// ViewerEntry — populated lazily. When the admin first designates an email,
+// uid+name are null. When that user actually signs in and visits the story,
+// we populate uid+name as a one-time write.
+export type ViewerEntry = {
+  uid:  string | null;     // populated on first authenticated visit
+  name: string | null;     // populated on first authenticated visit (from displayName)
+};
+ 
+// Map keyed by lowercase email address. Using the email as key gives us:
+//   • Direct lookup by auth email at story-load time
+//   • Uniqueness for free
+//   • The ability to designate viewers BEFORE they have an account
+export type ViewersMap = { [email: string]: ViewerEntry };
+ 
+export type StoryPermissions = {
+  admin:      string;            // UID of the only editor
+  visibility: StoryVisibility;
+  viewers:    ViewersMap;
+};
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Firebase document types
 // ─────────────────────────────────────────────────────────────────────────────
@@ -32,6 +54,7 @@ export type StoryDocument = {
   trendId: string;
   createdAt: string;
   updatedAt: string;
+  permissions: StoryPermissions;
   Analysis: {
     [analysisId: string]: {
       Name: string;
@@ -157,4 +180,17 @@ export type AssembledStory = {
   contributors:     AssembledContributor[];
   analyses:         AssembledAnalysis[];
   calculatedDataValues: { timestamp: string; value: number }[];
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// StoryReference — Postgres row used as a searchable index for the
+// AddContributor modal. Mirrors a small subset of fields from StoryDocument
+// so we can filter by visibility/admin without doing N Firestore reads.
+// NOTE: not yet wired into story create/update flow — TODO.
+// ─────────────────────────────────────────────────────────────────────────────
+export type StoryReferenceRow = {
+  storyId:    string;
+  name:       string;
+  visibility: StoryVisibility;
+  adminUid:   string;
 };

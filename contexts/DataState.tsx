@@ -6,6 +6,7 @@ import {
   useState,
   useCallback,
   useMemo,
+  useRef,
   type ReactNode,
 } from "react";
 import {
@@ -213,6 +214,14 @@ type DataState = {
     baseAnalysisId?: string;
   }) => Promise<{ analysisId: string }>;
 
+  deleteAnalysis: (analysisId: string) => Promise<void>;
+
+  renameAnalysis: (analysisId: string, newName: string) => Promise<void>;
+
+  renameStory: (newName: string) => Promise<void>;
+
+  saveStory: () => Promise<{ writes: number }>;
+
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -275,6 +284,19 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const [allWeightValues,           setAllWeightValues]           = useState<WeightRow[]>([]);
   const [allLagValues,              setAllLagValues]              = useState<LagRow[]>([]);
   const [allCorrelationValues,      setAllCorrelationValues]      = useState<CorrelationRow[]>([]);
+
+  // ── Load-time snapshot (used by saveStory for diffing) ───────────────────
+  const loadedSnapshotRef = useRef<{
+    data:        DataRow[];
+    weight:      WeightRow[];
+    lag:         LagRow[];
+    correlation: CorrelationRow[];
+  }>({
+    data:        [],
+    weight:      [],
+    lag:         [],
+    correlation: [],
+  });
 
   // ── fetchPerspectives ─────────────────────────────────────────────────────
   // SWAP TO POSTGRES: replace getDocs with your ORM query filtered by uid.
@@ -467,6 +489,14 @@ export function DataProvider({ children }: { children: ReactNode }) {
       setAllWeightValues(weightValues);
       setAllLagValues(lagValues);
       setAllCorrelationValues(corValues);
+
+      // Capture load-time snapshot for save diffing. We clone the arrays
+      loadedSnapshotRef.current = {
+        data:        [...dataValues],
+        weight:      [...weightValues],
+        lag:         [...lagValues],
+        correlation: [...corValues],
+      };
 
       // Initialize activeViewState from the focal trend's domain.
       const focalMeta = trendMeta.find(t => t.trendId === storyDoc.trendId);
@@ -994,6 +1024,293 @@ export function DataProvider({ children }: { children: ReactNode }) {
     return { analysisId: newAnalysisId };
   }, [activeStoryDoc, allTrendMeta, allTrendDataValues, initStory]);
 
+  // ── deleteAnalysis ────────────────────────────────────────────────────────
+  //
+  // Permanently removes an analysis. Postgres rows tied to this analysis's
+  // dataIds (story + every contributor's dataId) are deleted immediately,
+  // then the analysis entry is dropped from the Firebase doc.
+  //
+  // Why immediate Postgres delete instead of deferred-to-save: every analysis
+  // owns its own dataIds, and once the Firebase doc forgets them, there's
+  // nothing to anchor a future cleanup pass to. Doing it inline matches the
+  // pattern unlinkContributor already uses and avoids orphan rows.
+  //
+  // Constraint: every story must have ≥1 analysis (createStory guarantees
+  // this; initStory's resolution chain depends on it). Deleting the only
+  // remaining analysis throws.
+  //
+  const deleteAnalysis = useCallback(async (analysisId: string) => {
+    if (!activeStoryDoc) return;
+ 
+    console.log(`[DataState] ▶ deleteAnalysis() — analysisId: ${analysisId}`);
+ 
+    const analysisIds = Object.keys(activeStoryDoc.Analysis ?? {});
+    if (analysisIds.length <= 1) {
+      throw new Error("[deleteAnalysis] cannot delete the only remaining analysis on a story");
+    }
+ 
+    const targetEntry = activeStoryDoc.Analysis?.[analysisId];
+    if (!targetEntry) {
+      console.warn(`[DataState] ✗ deleteAnalysis — analysis ${analysisId} not found on story`);
+      return;
+    }
+ 
+    // 1. Collect all dataIds in this analysis: story + every contributor.
+    const dataIdsToDelete: string[] = [];
+    if (targetEntry.Story?.DataId) dataIdsToDelete.push(targetEntry.Story.DataId);
+    for (const c of Object.values(targetEntry.Contributors ?? {})) {
+      if ((c as any)?.DataId) dataIdsToDelete.push((c as any).DataId);
+    }
+    console.log(`[DataState]   collected ${dataIdsToDelete.length} dataIds to delete`);
+ 
+    // 2. Postgres deletes — one per series per dataId. The deleteByDataId
+    //    mutations remove all rows under that dataId in a single call, so
+    //    the total mutation count is dataIds × 4 series, NOT row count.
+    //    Fast even for large analyses.
+    if (!USE_MOCK && dataIdsToDelete.length > 0) {
+      const factories: (() => Promise<any>)[] = [];
+      for (const dataId of dataIdsToDelete) {
+        factories.push(
+          () => deleteDataByDataId({            dataId }),
+          () => deleteWeightDataByDataId({      dataId }),
+          () => deleteLagDataByDataId({         dataId }),
+          () => deleteCorrelationDataByDataId({ dataId }),
+        );
+      }
+      await runInBatches(factories, 20);
+      console.log(`[DataState] ✓ deleteAnalysis — ${factories.length} Postgres delete mutations complete`);
+    }
+ 
+    // 3. Firebase: drop the analysis entry from the doc.
+    const storyRef = doc(db, "stories", activeStoryDoc.id);
+    await updateDoc(storyRef, {
+      [`Analysis.${analysisId}`]: deleteField(),
+    });
+    console.log(`[DataState] ✓ deleteAnalysis — Firebase entry removed`);
+ 
+    // 4. In-session state. If the deleted analysis was active, fall back to
+    //    the alphabetically-first remaining and reload via initStory (cleanest
+    //    way to refresh all flat slices for the new active analysis). If it
+    //    wasn't active, surgically patch state and prune the now-orphan rows
+    //    from flat slices so they don't linger.
+    const wasActive = activeAnalysisId === analysisId;
+    if (wasActive) {
+      const remaining = analysisIds.filter(id => id !== analysisId).sort();
+      const fallback  = remaining[0];
+      // initStory will re-fetch the doc (which no longer has this analysis)
+      // and pick its own active analysis from what's left.
+      await initStory(activeStoryDoc.id, null, fallback);
+    } else {
+      // Patch activeStoryDoc — drop the analysis entry locally.
+      setActiveStoryDoc(prev => {
+        if (!prev) return prev;
+        const nextAnalysis = { ...(prev.Analysis ?? {}) };
+        delete nextAnalysis[analysisId];
+        return { ...prev, Analysis: nextAnalysis };
+      });
+ 
+      // Prune flat slices — any rows tied to this analysis's dataIds are
+      // now orphan in-session, drop them.
+      const dropSet = new Set(dataIdsToDelete);
+      setAllDataValues(prev        => prev.filter(r => !dropSet.has(r.dataId)));
+      setAllWeightValues(prev      => prev.filter(r => !dropSet.has(r.dataId)));
+      setAllLagValues(prev         => prev.filter(r => !dropSet.has(r.dataId)));
+      setAllCorrelationValues(prev => prev.filter(r => !dropSet.has(r.dataId)));
+ 
+      // Same prune in the saved snapshot so a subsequent saveStory diff
+      // doesn't try to "restore" rows that were just deleted.
+      loadedSnapshotRef.current = {
+        data:        loadedSnapshotRef.current.data       .filter(r => !dropSet.has(r.dataId)),
+        weight:      loadedSnapshotRef.current.weight     .filter(r => !dropSet.has(r.dataId)),
+        lag:         loadedSnapshotRef.current.lag        .filter(r => !dropSet.has(r.dataId)),
+        correlation: loadedSnapshotRef.current.correlation.filter(r => !dropSet.has(r.dataId)),
+      };
+    }
+ 
+    console.log(`[DataState] ✓ deleteAnalysis complete — analysisId: ${analysisId}`);
+  }, [activeStoryDoc, activeAnalysisId, initStory]);
+ 
+  // ── renameAnalysis ────────────────────────────────────────────────────────
+  //
+  // Pure Firebase write — no Postgres involvement. Updates Analysis.{id}.Name
+  // and patches activeStoryDoc in-session so the UI reflects immediately.
+  //
+  const renameAnalysis = useCallback(async (analysisId: string, newName: string) => {
+    if (!activeStoryDoc) return;
+    const trimmed = newName.trim();
+    if (!trimmed) {
+      console.warn("[DataState] ✗ renameAnalysis — empty name rejected");
+      return;
+    }
+ 
+    console.log(`[DataState] ▶ renameAnalysis() — ${analysisId} → "${trimmed}"`);
+ 
+    const storyRef = doc(db, "stories", activeStoryDoc.id);
+    await updateDoc(storyRef, {
+      [`Analysis.${analysisId}.Name`]: trimmed,
+    });
+ 
+    setActiveStoryDoc(prev => {
+      if (!prev) return prev;
+      const entry = prev.Analysis?.[analysisId];
+      if (!entry) return prev;
+      return {
+        ...prev,
+        Analysis: {
+          ...prev.Analysis,
+          [analysisId]: { ...entry, Name: trimmed },
+        },
+      };
+    });
+ 
+    console.log(`[DataState] ✓ renameAnalysis complete`);
+  }, [activeStoryDoc]);
+
+  // ── renameStory ───────────────────────────────────────────────────────────
+  //
+  // Pure Firebase write to the top-level `name` field on the story doc.
+  //
+  const renameStory = useCallback(async (newName: string) => {
+    if (!activeStoryDoc) return;
+    const trimmed = newName.trim();
+    if (!trimmed) {
+      console.warn("[DataState] ✗ renameStory — empty name rejected");
+      return;
+    }
+ 
+    console.log(`[DataState] ▶ renameStory() — "${activeStoryDoc.name}" → "${trimmed}"`);
+ 
+    const storyRef = doc(db, "stories", activeStoryDoc.id);
+    await updateDoc(storyRef, { name: trimmed });
+ 
+    setActiveStoryDoc(prev => prev ? { ...prev, name: trimmed } : prev);
+ 
+    console.log(`[DataState] ✓ renameStory complete`);
+  }, [activeStoryDoc]);
+
+  // ── saveStory ─────────────────────────────────────────────────────────────
+  //
+  // Diffs the in-memory flat slices against loadedSnapshotRef and upserts any
+  // changed/new rows to Postgres. No deletes — point-level delete UI doesn't
+  // exist yet, so the diff doesn't need that branch.
+  //
+  // Diff key per series: (dataId, timestamp). Values matching on this pair
+  // with equal `value` are skipped; pairs that exist in current but not the
+  // snapshot are inserted; pairs in both with different values are updated.
+  // Postgres `upsert` handles insert and update identically — we just need
+  // to identify which rows to touch and which to skip.
+  //
+  // All four series fan out into a single throttled batch via runInBatches,
+  // so total Postgres connection usage is bounded regardless of edit volume.
+  // On success: snapshot is replaced with the live state, so subsequent
+  // saves only diff against the new baseline.
+  //
+  const saveStory = useCallback(async (): Promise<{ writes: number }> => {
+    console.log("[DataState] ▶ saveStory()");
+ 
+    // Helper: diff two row arrays by (dataId, timestamp), return rows to upsert.
+    // Generic over row shape — works for DataRow, WeightRow, LagRow, CorrelationRow
+    // since they all share the { dataId, timestamp, value } triple.
+    function diff<R extends { dataId: string; timestamp: string; value: number }>(
+      current:  R[],
+      snapshot: R[],
+    ): R[] {
+      // Normalize timestamps to YYYY-MM-DD for matching — Postgres returns
+      // ISO timestamps with time component (`...T00:00:00.000000Z`), but
+      // writePoint stores the date-only form. Both refer to the same row.
+      const norm = (ts: string) => ts.slice(0, 10);
+ 
+      const snapByKey = new Map<string, R>();
+      for (const row of snapshot) {
+        snapByKey.set(`${row.dataId}|${norm(row.timestamp)}`, row);
+      }
+      const out: R[] = [];
+      for (const row of current) {
+        const key   = `${row.dataId}|${norm(row.timestamp)}`;
+        const prior = snapByKey.get(key);
+        if (!prior || prior.value !== row.value) {
+          out.push(row);
+        }
+      }
+      return out;
+    }
+ 
+    const snap = loadedSnapshotRef.current;
+    const dataChanges        = diff(allDataValues,        snap.data);
+    const weightChanges      = diff(allWeightValues,      snap.weight);
+    const lagChanges         = diff(allLagValues,         snap.lag);
+    const correlationChanges = diff(allCorrelationValues, snap.correlation);
+ 
+    const totalChanges =
+      dataChanges.length + weightChanges.length +
+      lagChanges.length  + correlationChanges.length;
+ 
+    if (totalChanges === 0) {
+      console.log("[DataState] ✓ saveStory — no changes to persist");
+      return { writes: 0 };
+    }
+ 
+    console.log(
+      `[DataState]   diff — data:${dataChanges.length} weight:${weightChanges.length} ` +
+      `lag:${lagChanges.length} correlation:${correlationChanges.length}`
+    );
+ 
+    if (USE_MOCK) {
+      // In mock mode there's no Postgres to write to; just refresh the
+      // snapshot so isDirty handling on the caller side stays sensible.
+      loadedSnapshotRef.current = {
+        data:        [...allDataValues],
+        weight:      [...allWeightValues],
+        lag:         [...allLagValues],
+        correlation: [...allCorrelationValues],
+      };
+      console.log("[DataState] ✓ saveStory — mock mode, snapshot updated");
+      return { writes: totalChanges };
+    }
+ 
+    // Build factories for every changed row across all four series.
+    const toIsoTimestamp = (ts: string): string => ts.length === 10 ? `${ts}T00:00:00.000Z` : ts;
+    const factories: (() => Promise<any>)[] = [];
+ 
+    for (const r of dataChanges) {
+      factories.push(() => upsertData({
+        id: crypto.randomUUID(), dataId: r.dataId,
+        timestamp: toIsoTimestamp(r.timestamp), value: r.value,
+      }));
+    }
+    for (const r of weightChanges) {
+      factories.push(() => upsertWeightData({
+        id: crypto.randomUUID(), dataId: r.dataId,
+        timestamp: toIsoTimestamp(r.timestamp), value: r.value,
+      }));
+    }
+    for (const r of lagChanges) {
+      factories.push(() => upsertLagData({
+        id: crypto.randomUUID(), dataId: r.dataId,
+        timestamp: toIsoTimestamp(r.timestamp), value: r.value,
+      }));
+    }
+    for (const r of correlationChanges) {
+      factories.push(() => upsertCorrelationData({
+        id: crypto.randomUUID(), dataId: r.dataId,
+        timestamp: toIsoTimestamp(r.timestamp), value: r.value,
+      }));
+    }
+ 
+    await runInBatches(factories, 20);
+ 
+    // Refresh snapshot to reflect what's now persisted.
+    loadedSnapshotRef.current = {
+      data:        [...allDataValues],
+      weight:      [...allWeightValues],
+      lag:         [...allLagValues],
+      correlation: [...allCorrelationValues],
+    };
+ 
+    console.log(`[DataState] ✓ saveStory — ${totalChanges} rows persisted`);
+    return { writes: totalChanges };
+  }, [allDataValues, allWeightValues, allLagValues, allCorrelationValues]);
+
   // ── assembledStory ────────────────────────────────────────────────────────
   //
   // Memoized derived view. Rebuilds whenever any slice, activeStoryDoc, or
@@ -1164,6 +1481,10 @@ export function DataProvider({ children }: { children: ReactNode }) {
       createAnalysis,
       activeViewState,
       setActiveViewState,
+      saveStory,
+      deleteAnalysis,
+      renameAnalysis,
+      renameStory,
     }),
     [
       perspectives,
@@ -1189,6 +1510,10 @@ export function DataProvider({ children }: { children: ReactNode }) {
       createAnalysis,
       activeViewState,
       setActiveViewState,
+      saveStory,
+      deleteAnalysis,
+      renameAnalysis,
+      renameStory,
     ]
   );
 

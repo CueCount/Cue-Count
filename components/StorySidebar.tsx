@@ -1,11 +1,14 @@
 "use client";
 
 import { useData } from "@/contexts/DataState";
+import { useAuth } from "@/contexts/AuthContext";
 import Breadcrumb from "@/components/Breadcrumb";
 import AddContributorModal from "@/components/AddContributor";
-import type { AssembledContributor } from "@/types/db";
+import type { AssembledContributor, StoryVisibility } from "@/types/db";
 import type { StoryViewState } from "@/app/story/[id]/page";
 import CreateAnalysisModal from "@/components/CreateAnalysis";
+import DetailsModal from "@/components/DetailsModal";
+import StoryPermissionsModal from "@/components/StoryPermissionsModal";
 import { useState } from "react";
 import {
   EyeIcon,
@@ -18,13 +21,15 @@ import {
 
 // ── Colors ────────────────────────────────────────────────────────────────────
 export const TREND_COLORS = [
-  "#c026d3",
-  "#06b6d4",
-  "#e879f9",
-  "#f0abfc",
-  "#f5d0fe",
-  "#d946ef",
-  "#a21caf",
+  "#c026d3", // fuchsia
+  "#06b6d4", // cyan
+  "#ea580c", // orange
+  "#16a34a", // green
+  "#6366f1", // indigo
+  "#dc2626", // red
+  "#9333ea", // purple
+  "#0284c7", // sky blue
+  "#ca8a04", // gold
 ];
 
 export function getTrendColor(index: number): string {
@@ -123,9 +128,49 @@ function MetricSeriesRow({
   );
 }
 
+// ── Visibility helpers ────────────────────────────────────────────────────────
+function VisibilityIcon({ visibility }: { visibility: StoryVisibility }) {
+  switch (visibility) {
+    case "public_visible":
+      // Person outline — anyone can see
+      return (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+          <circle cx="12" cy="7" r="4" />
+        </svg>
+      );
+    case "public_usable":
+      // Link/chain — anyone can see and use
+      return (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+        </svg>
+      );
+    case "private":
+    default:
+      // Lock — restricted access
+      return (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+        </svg>
+      );
+  }
+}
+ 
+function visibilityLabel(visibility: StoryVisibility): string {
+  switch (visibility) {
+    case "public_visible": return "Public";
+    case "public_usable":  return "Public + Usable";
+    case "private":
+    default:               return "Private";
+  }
+}
+
 // ── Analysis card ─────────────────────────────────────────────────────────────
 type AnalysisEntry = { id: string; Name?: string; createdAt?: string };
-
+ 
 function AnalysisCard({
   variant,
   viewState,
@@ -133,57 +178,134 @@ function AnalysisCard({
   variant:   AnalysisEntry;
   viewState: StoryViewState;
 }) {
-  const { activeAnalysisId, setActiveAnalysisId } = useData();
+  const {
+    activeAnalysisId,
+    setActiveAnalysisId,
+    deleteAnalysis,
+    renameAnalysis,
+    activeStoryDoc,
+  } = useData();
   const isActive = activeAnalysisId === variant.id;
   const isShown  = viewState.shownAnalysisIds.has(variant.id);
-
+ 
+  const [menuOpen,    setMenuOpen]    = useState(false);
+  const [showRename,  setShowRename]  = useState(false);
+  const [confirmDel,  setConfirmDel]  = useState(false);
+ 
+  const isOnlyAnalysis = Object.keys(activeStoryDoc?.Analysis ?? {}).length <= 1;
+ 
+  async function handleDelete() {
+    setConfirmDel(false);
+    try {
+      await deleteAnalysis(variant.id);
+    } catch (err) {
+      console.error("[AnalysisCard] delete failed:", err);
+    }
+  }
+ 
   return (
-    <div
-      className={`
-        flex flex-col gap-1.5 px-3 py-2.5 rounded-md mb-1.5 cursor-pointer
-        transition-colors duration-150
-        ${isActive
-          ? "bg-indigo-50 border border-indigo-200"
-          : "bg-zinc-100 border border-transparent hover:border-zinc-200"
-        }
-      `}
-      onClick={() => setActiveAnalysisId(isActive ? "RootAnalysis" : variant.id)}
-    >
-      <p className={`text-sm font-medium leading-snug ${isActive ? "text-indigo-700" : "text-zinc-700"}`}>
-        {variant.Name ?? "Unnamed variant"}
-      </p>
-      <div className="flex items-center gap-2">
-        <button
-          onClick={(e) => { e.stopPropagation(); viewState.onToggleAnalysis(variant.id); }}
-          title={isShown ? "Hide from graph" : "Show on graph"}
-          className={`transition-colors duration-150 ${
-            isShown
-              ? "text-indigo-500 hover:text-indigo-700"
-              : "text-zinc-300 hover:text-zinc-500"
-          }`}
-        >
-          {isShown ? <EyeIcon /> : <EyeOffIcon />}
-        </button>
-        {isActive && (
-          <span className="text-[10px] font-medium px-1.5 py-0.5 rounded border bg-indigo-100 text-indigo-600 border-indigo-200">
-            Active
-          </span>
-        )}
-        {variant.createdAt && (
-          <span className="text-xs text-zinc-400">
-            {new Date(variant.createdAt).toLocaleDateString("en-US", {
-              month: "short", day: "numeric", year: "numeric",
-            })}
-          </span>
-        )}
+    <>
+      <div
+        className={`
+          flex flex-col gap-1.5 px-3 py-2.5 rounded-md mb-1.5 cursor-pointer
+          transition-colors duration-150
+          ${isActive
+            ? "bg-indigo-50 border border-indigo-200"
+            : "bg-zinc-100 border border-transparent hover:border-zinc-200"
+          }
+        `}
+        onClick={() => { if (!isActive) setActiveAnalysisId(variant.id); }}
+      >
+        <div className="flex items-start justify-between gap-2">
+          <p className={`text-sm font-medium leading-snug flex-1 ${isActive ? "text-indigo-700" : "text-zinc-700"}`}>
+            {variant.Name ?? "Unnamed variant"}
+          </p>
+ 
+          {/* "..." menu — Rename / Delete */}
+          <div className="relative shrink-0">
+            <button
+              onClick={(e) => { e.stopPropagation(); setMenuOpen(v => !v); }}
+              className="text-zinc-400 hover:text-zinc-600 transition-colors p-0.5 rounded"
+            >
+              <MoreIcon />
+            </button>
+ 
+            {menuOpen && (
+              <>
+                <div
+                  className="fixed inset-0 z-10"
+                  onClick={(e) => { e.stopPropagation(); setMenuOpen(false); }}
+                />
+                <div className="absolute right-0 top-6 z-20 w-36 bg-white rounded-lg shadow-lg border border-zinc-100 py-1 overflow-hidden">
+                  <button
+                    onClick={(e) => { e.stopPropagation(); setMenuOpen(false); setShowRename(true); }}
+                    className="w-full text-left px-3 py-2 text-sm text-zinc-700 hover:bg-zinc-50 transition-colors"
+                  >
+                    Rename
+                  </button>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); setMenuOpen(false); setConfirmDel(true); }}
+                    disabled={isOnlyAnalysis}
+                    title={isOnlyAnalysis ? "A story must have at least one analysis" : undefined}
+                    className="w-full text-left px-3 py-2 text-sm text-red-500 hover:bg-red-50 disabled:text-zinc-300 disabled:cursor-not-allowed disabled:hover:bg-transparent transition-colors"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+ 
+        <div className="flex items-center gap-2">
+          <button
+            onClick={(e) => { e.stopPropagation(); viewState.onToggleAnalysis(variant.id); }}
+            title={isShown ? "Hide from graph" : "Show on graph"}
+            className={`transition-colors duration-150 ${
+              isShown
+                ? "text-indigo-500 hover:text-indigo-700"
+                : "text-zinc-300 hover:text-zinc-500"
+            }`}
+          >
+            {isShown ? <EyeIcon /> : <EyeOffIcon />}
+          </button>
+          {isActive && (
+            <span className="text-[10px] font-medium px-1.5 py-0.5 rounded border bg-indigo-100 text-indigo-600 border-indigo-200">
+              Active
+            </span>
+          )}
+          {variant.createdAt && (
+            <span className="text-xs text-zinc-400">
+              {new Date(variant.createdAt).toLocaleDateString("en-US", {
+                month: "short", day: "numeric", year: "numeric",
+              })}
+            </span>
+          )}
+        </div>
       </div>
-    </div>
+ 
+      {showRename && (
+        <DetailsModal
+          title="Analysis Details"
+          fieldLabel="Analysis Name"
+          initialValue={variant.Name ?? ""}
+          onSave={(newName) => renameAnalysis(variant.id, newName)}
+          onClose={() => setShowRename(false)}
+        />
+      )}
+ 
+      {confirmDel && (
+        <DeleteAnalysisConfirmModal
+          analysisName={variant.Name ?? "this analysis"}
+          onConfirm={handleDelete}
+          onCancel={() => setConfirmDel(false)}
+        />
+      )}
+    </>
   );
 }
 
 // ── ContributorPanel ──────────────────────────────────────────────────────────
-// Shown when activeView === "contributor".
-// Story pair toggles shown at top; contributor pair + metrics below.
 function ContributorPanel({
   storyName,
   storyDataPointCount,
@@ -358,10 +480,48 @@ function UnlinkConfirmModal({
   );
 }
 
-// ── ContributorNode ───────────────────────────────────────────────────────────
-// One row per contributor in the story view list.
-// Single eye toggle controls the whole TrendData + analysis pair.
+// ── DeleteAnalysisConfirmModal ────────────────────────────────────────────────
+function DeleteAnalysisConfirmModal({
+  analysisName,
+  onConfirm,
+  onCancel,
+}: {
+  analysisName: string;
+  onConfirm:    () => void;
+  onCancel:     () => void;
+}) {
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm"
+      onClick={(e) => { if (e.target === e.currentTarget) onCancel(); }}
+    >
+      <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm flex flex-col gap-4">
+        <p className="text-sm font-semibold text-zinc-800">Delete Analysis?</p>
+        <p className="text-sm text-zinc-500 leading-relaxed">
+          <span className="font-medium text-zinc-700">{analysisName}</span> will be permanently
+          deleted, along with all weight, lag, correlation, and edited data points associated
+          with it. This cannot be undone.
+        </p>
+        <div className="flex items-center gap-2 justify-end">
+          <button
+            onClick={onCancel}
+            className="px-3 py-1.5 text-sm text-zinc-500 hover:text-zinc-700 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            className="px-3 py-1.5 text-sm font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg transition-colors"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
+// ── ContributorNode ───────────────────────────────────────────────────────────
 function ContributorNode({
   contributor,
   colorIndex,
@@ -452,15 +612,20 @@ function ContributorNode({
 // ── StorySidebar ──────────────────────────────────────────────────────────────
 
 export default function StorySidebar({ viewState }: { viewState: StoryViewState }) {
+  const { user } = useAuth();
   const {
     assembledStory,
     activeStoryDoc,
     activeAnalysisId,
     perspectives,
     createAnalysis,
+    renameStory,
   } = useData();
   const [showAddModal, setShowAddModal] = useState(false);
   const [showCreateAnalysis, setShowCreateAnalysis] = useState(false);
+  const [storyMenuOpen, setStoryMenuOpen] = useState(false);
+  const [showStoryRename, setShowStoryRename] = useState(false);
+  const [showPermissions, setShowPermissions] = useState(false);
   if (!assembledStory) return null;
   const { id: storyId, name: title, trendDataValues, contributors } = assembledStory;
   const perspective = perspectives.find((p) => p.id === activeStoryDoc?.perspectiveId);
@@ -468,12 +633,15 @@ export default function StorySidebar({ viewState }: { viewState: StoryViewState 
     ? { id: activeAnalysisId, ...(activeStoryDoc?.Analysis?.[activeAnalysisId] as any) }
     : null;
   const analyses: AnalysisEntry[] = Object.entries(activeStoryDoc?.Analysis ?? {})
-    .sort(([a]) => a === "RootAnalysis" ? -1 : 1)
-    .map(([id, entry]) => ({ id, ...(entry as any) }));
+    .map(([id, entry]) => ({ id, ...(entry as any) }))
+    .sort((a, b) => (a.Name ?? a.id).localeCompare(b.Name ?? b.id));
   const activeContributor = viewState.activeView === "contributor"
     ? contributors.find((c) => c.id === viewState.activeContributorId) ?? null
     : null;
   const focalColor = getTrendColor(0);
+  const visibility: StoryVisibility = activeStoryDoc?.permissions?.visibility ?? "private";
+  const viewers = activeStoryDoc?.permissions?.viewers ?? {};
+  const isAdmin = !!user && activeStoryDoc?.permissions?.admin === user.uid;
 
   return (
     <div className="flex flex-col h-full">
@@ -488,15 +656,19 @@ export default function StorySidebar({ viewState }: { viewState: StoryViewState 
         ]} />
         <div className="w-8 h-8 rounded-full bg-zinc-300 shrink-0 overflow-hidden" />
         <span className="text-sm font-medium text-zinc-700">Admin</span>
+        {/* Visibility status — clickable only for the admin */}
         <button
-          onClick={() => {}}
-          title="Edit permissions"
-          className="text-zinc-400 hover:text-zinc-600 transition-colors duration-150"
+          onClick={() => isAdmin && setShowPermissions(true)}
+          disabled={!isAdmin}
+          title={isAdmin ? "Change permissions" : "Permissions (admin only)"}
+          className={`flex items-center gap-1 text-sm transition-colors duration-150 ${
+            isAdmin
+              ? "text-zinc-600 hover:text-indigo-600 cursor-pointer"
+              : "text-zinc-400 cursor-default"
+          }`}
         >
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-          </svg>
+          <VisibilityIcon visibility={visibility} />
+          <span>{visibilityLabel(visibility)}</span>
         </button>
       </div>
 
@@ -521,6 +693,32 @@ export default function StorySidebar({ viewState }: { viewState: StoryViewState 
                 onToggle={viewState.onToggleStoryTrend}
                 label="Root Data"
               />
+
+              {/* "..." menu — Rename (Edit Color / View Source deferred) */}
+              <div className="relative ml-auto">
+                <button
+                  onClick={() => setStoryMenuOpen(v => !v)}
+                  className="text-zinc-400 hover:text-zinc-600 transition-colors p-0.5 rounded"
+                >
+                  <MoreIcon />
+                </button>
+                {storyMenuOpen && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-10"
+                      onClick={() => setStoryMenuOpen(false)}
+                    />
+                    <div className="absolute right-0 top-6 z-20 w-36 bg-white rounded-lg shadow-lg border border-zinc-100 py-1 overflow-hidden">
+                      <button
+                        onClick={() => { setStoryMenuOpen(false); setShowStoryRename(true); }}
+                        className="w-full text-left px-3 py-2 text-sm text-zinc-700 hover:bg-zinc-50 transition-colors"
+                      >
+                        Rename
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           </div>
 
@@ -686,6 +884,28 @@ export default function StorySidebar({ viewState }: { viewState: StoryViewState 
               baseAnalysisId: baseAnalysisId ?? undefined,
             });
           }}
+        />
+      )}
+
+      {/* ── Rename Story Modal ──────────────────────────────────────── */}
+      {showStoryRename && (
+        <DetailsModal
+          title="Story Details"
+          fieldLabel="Story Name"
+          initialValue={title}
+          onSave={(newName) => renameStory(newName)}
+          onClose={() => setShowStoryRename(false)}
+        />
+      )}
+
+      {/* ── Story Permissions Modal ─────────────────────────────────── */}
+      {showPermissions && (
+        <StoryPermissionsModal
+          storyId={storyId}
+          storyName={title}
+          currentVisibility={visibility}
+          viewers={viewers}
+          onClose={() => setShowPermissions(false)}
         />
       )}
 

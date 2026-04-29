@@ -19,6 +19,7 @@
     "dotenv": "^17.4.2",
     "firebase": "^12.12.1",
     "hammerjs": "^2.0.8",
+    "lucide-react": "^1.12.0",
     "next": "16.1.6",
     "react": "19.2.3",
     "react-chartjs-2": "^5.3.1",

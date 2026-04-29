@@ -1,48 +1,9 @@
 "use client";
 
 // app/landing/page.tsx
-import { useState } from "react";
-import {
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-} from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import Link from "next/link";
 
 export default function LandingPage() {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [mode, setMode] = useState<"login" | "signup">("login");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
-    try {
-      if (mode === "login") {
-        await signInWithEmailAndPassword(auth, email, password);
-      } else {
-        await createUserWithEmailAndPassword(auth, email, password);
-      }
-      // AuthWrapper will automatically detect the new session and show the app
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Something went wrong.";
-      setError(msg.replace("Firebase: ", "").replace(/\(auth\/.*\)\.?/, "").trim());
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const openModal = (m: "login" | "signup") => {
-    setMode(m);
-    setError("");
-    setEmail("");
-    setPassword("");
-    setModalOpen(true);
-  };
-
   return (
     <>
       <style>{`
@@ -125,6 +86,8 @@ export default function LandingPage() {
           text-transform: uppercase;
           cursor: pointer;
           transition: all 0.2s;
+          text-decoration: none;
+          display: inline-block;
         }
 
         .btn-ghost:hover {
@@ -144,15 +107,12 @@ export default function LandingPage() {
           text-transform: uppercase;
           cursor: pointer;
           transition: all 0.2s;
+          text-decoration: none;
+          display: inline-block;
         }
 
         .btn-primary:hover {
           background: #d4b470;
-        }
-
-        .btn-primary:disabled {
-          opacity: 0.5;
-          cursor: not-allowed;
         }
 
         /* HERO */
@@ -236,143 +196,6 @@ export default function LandingPage() {
           color: rgba(196,164,95,0.6);
           text-transform: uppercase;
         }
-
-        /* MODAL OVERLAY */
-        .overlay {
-          position: fixed;
-          inset: 0;
-          background: rgba(0,0,0,0.75);
-          backdrop-filter: blur(6px);
-          z-index: 100;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          animation: fadeIn 0.2s ease;
-        }
-
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-
-        @keyframes slideUp {
-          from { opacity: 0; transform: translateY(16px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* MODAL */
-        .modal {
-          background: #111;
-          border: 1px solid rgba(255,255,255,0.1);
-          width: 100%;
-          max-width: 420px;
-          padding: 48px;
-          position: relative;
-          animation: slideUp 0.25s ease;
-        }
-
-        .modal-close {
-          position: absolute;
-          top: 20px;
-          right: 20px;
-          background: none;
-          border: none;
-          color: rgba(255,255,255,0.3);
-          font-size: 1.2rem;
-          cursor: pointer;
-          line-height: 1;
-          transition: color 0.2s;
-          font-family: 'DM Mono', monospace;
-        }
-
-        .modal-close:hover { color: #e8e4dc; }
-
-        .modal-title {
-          font-family: 'DM Serif Display', serif;
-          font-size: 1.8rem;
-          color: #e8e4dc;
-          margin-bottom: 6px;
-        }
-
-        .modal-sub {
-          font-size: 0.72rem;
-          color: rgba(232,228,220,0.35);
-          letter-spacing: 0.05em;
-          margin-bottom: 36px;
-        }
-
-        .modal-toggle {
-          display: flex;
-          gap: 0;
-          margin-bottom: 32px;
-          border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .toggle-btn {
-          flex: 1;
-          background: none;
-          border: none;
-          color: rgba(232,228,220,0.35);
-          padding: 10px;
-          font-family: 'DM Mono', monospace;
-          font-size: 0.7rem;
-          letter-spacing: 0.1em;
-          text-transform: uppercase;
-          cursor: pointer;
-          transition: all 0.2s;
-        }
-
-        .toggle-btn.active {
-          background: rgba(196,164,95,0.1);
-          color: #c4a45f;
-        }
-
-        .field {
-          margin-bottom: 16px;
-        }
-
-        .field label {
-          display: block;
-          font-size: 0.65rem;
-          letter-spacing: 0.12em;
-          text-transform: uppercase;
-          color: rgba(232,228,220,0.4);
-          margin-bottom: 8px;
-        }
-
-        .field input {
-          width: 100%;
-          background: rgba(255,255,255,0.04);
-          border: 1px solid rgba(255,255,255,0.1);
-          color: #e8e4dc;
-          padding: 12px 16px;
-          font-family: 'DM Mono', monospace;
-          font-size: 0.85rem;
-          outline: none;
-          transition: border-color 0.2s;
-        }
-
-        .field input:focus {
-          border-color: rgba(196,164,95,0.5);
-        }
-
-        .field input::placeholder {
-          color: rgba(232,228,220,0.2);
-        }
-
-        .error-msg {
-          font-size: 0.72rem;
-          color: #e07070;
-          margin-bottom: 16px;
-          letter-spacing: 0.03em;
-        }
-
-        .modal-submit {
-          width: 100%;
-          margin-top: 8px;
-          padding: 14px;
-          font-size: 0.78rem;
-        }
       `}</style>
 
       <div className="landing">
@@ -380,8 +203,8 @@ export default function LandingPage() {
         <nav>
           <div className="nav-logo">Cue<span>Count</span></div>
           <div className="nav-actions">
-            <button className="btn-ghost" onClick={() => openModal("login")}>Log in</button>
-            <button className="btn-primary" onClick={() => openModal("signup")}>Get Access</button>
+            <Link href="/login" className="btn-ghost">Log in</Link>
+            <Link href="/login?mode=signup" className="btn-primary">Get Access</Link>
           </div>
         </nav>
 
@@ -398,74 +221,13 @@ export default function LandingPage() {
             transcripts, and market signals — before they become obvious.
           </p>
           <div className="hero-cta">
-            <button className="btn-primary" onClick={() => openModal("signup")}>Request Access</button>
-            <button className="btn-ghost" onClick={() => openModal("login")}>Sign In</button>
+            <Link href="/login?mode=signup" className="btn-primary">Request Access</Link>
+            <Link href="/login" className="btn-ghost">Sign In</Link>
           </div>
         </div>
 
         {/* Floating badge */}
         <div className="data-badge">Early Access · Invite Only</div>
-
-        {/* MODAL */}
-        {modalOpen && (
-          <div className="overlay" onClick={(e) => e.target === e.currentTarget && setModalOpen(false)}>
-            <div className="modal">
-              <button className="modal-close" onClick={() => setModalOpen(false)}>✕</button>
-
-              <div className="modal-title">{mode === "login" ? "Welcome back." : "Get started."}</div>
-              <div className="modal-sub">
-                {mode === "login" ? "Sign in to your CueCount workspace." : "Create your CueCount account."}
-              </div>
-
-              {/* Toggle */}
-              <div className="modal-toggle">
-                <button
-                  className={`toggle-btn ${mode === "login" ? "active" : ""}`}
-                  onClick={() => { setMode("login"); setError(""); }}
-                >
-                  Log In
-                </button>
-                <button
-                  className={`toggle-btn ${mode === "signup" ? "active" : ""}`}
-                  onClick={() => { setMode("signup"); setError(""); }}
-                >
-                  Sign Up
-                </button>
-              </div>
-
-              <form onSubmit={handleSubmit}>
-                <div className="field">
-                  <label>Email</label>
-                  <input
-                    type="email"
-                    placeholder="you@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    autoComplete="email"
-                  />
-                </div>
-                <div className="field">
-                  <label>Password</label>
-                  <input
-                    type="password"
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    autoComplete={mode === "login" ? "current-password" : "new-password"}
-                  />
-                </div>
-
-                {error && <div className="error-msg">{error}</div>}
-
-                <button type="submit" className="btn-primary modal-submit" disabled={loading}>
-                  {loading ? "..." : mode === "login" ? "Sign In" : "Create Account"}
-                </button>
-              </form>
-            </div>
-          </div>
-        )}
       </div>
     </>
   );

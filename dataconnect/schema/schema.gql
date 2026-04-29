@@ -56,6 +56,13 @@ type CorrelationData @table {
   timestamp: Timestamp!
 }
 
+# ── StoryVisibility ───────────────────────────────────────────────────────────
+enum StoryVisibility {
+  PRIVATE
+  PUBLIC_VISIBLE
+  PUBLIC_USABLE
+}
+
 # ── StoryReference ────────────────────────────────────────────────────────────
 type StoryReference @table {
   id:                UUID!      @default(expr: "uuidV4()")
@@ -63,5 +70,7 @@ type StoryReference @table {
   name:              String!
   analysisNumber:    Int!       @default(expr: "0")
   contributorNumber: Int!       @default(expr: "0")
+  adminUid:          String!
+  visibility:        StoryVisibility! @index @default(value: PRIVATE)
   createdAt:         Timestamp! @default(expr: "request.time")
 }

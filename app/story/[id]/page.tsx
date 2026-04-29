@@ -1,10 +1,18 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { useParams } from "next/navigation";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
+import { Loader2, AlertCircle } from "lucide-react";
 import { DataProvider, useData } from "@/contexts/DataState";
+import { useAuth } from "@/contexts/AuthContext";
 import StorySidebar from "@/components/StorySidebar";
 import StoryGraph from "@/components/StoryGraph";
+import {
+  canUserViewStory,
+  populateViewerOnFirstVisit,
+  normalizeEmail,
+} from "@/lib/permissions";
 
 export type ActiveEditSeries = "merged" | "weight" | "lag" | "correlation" ;
 
@@ -51,7 +59,6 @@ export type StoryViewState = {
   onSelectEditSeries:  (series: ActiveEditSeries) => void;
   onPointEdited:       () => void;
   onSave:              () => void;
-  onSaveAsNew:         () => void;
 
   // ── View transitions ──────────────────────────────────────────────────────
   onStoryView:           (contributorIds?: string[]) => void;
@@ -74,7 +81,7 @@ export type StoryViewState = {
 // ─────────────────────────────────────────────────────────────────────────────
 
 function StoryPageInner({ storyId }: { storyId: string }) {
-  const { initStory, assembledStory, activeStoryDoc } = useData();
+  const { initStory, assembledStory, activeStoryDoc, saveStory } = useData();
 
   // ── View ───────────────────────────────────────────────────────────────────
   const [activeView,           setActiveView]           = useState<"story" | "contributor" | "analysis">("story");
@@ -174,12 +181,20 @@ function StoryPageInner({ storyId }: { storyId: string }) {
       next.has(id) ? next.delete(id) : next.add(id);
       return next;
     });
-
   const onToggleStoryTrend      = useCallback(() => setShownStoryTrend(v => !v),    []);
   const onSelectEditSeries      = useCallback((s: ActiveEditSeries) => setActiveEditSeries(s), []);
   const onPointEdited           = useCallback(() => setIsDirty(true), []);
-  const onSave                  = useCallback(() => { /* TODO: persist */ setIsDirty(false); }, []);
-  const onSaveAsNew             = useCallback(() => { /* TODO: create new analysis */ }, []);
+  const onSave = useCallback(async () => {
+    try {
+      const result = await saveStory();
+      console.log(`[page] save complete — ${result.writes} rows persisted`);
+      setIsDirty(false);
+    } catch (err) {
+      console.error("[page] save failed:", err);
+      // Leave isDirty true so the user knows their changes weren't persisted.
+      // Future: surface a toast or banner with the error.
+    }
+  }, [saveStory]);
   const onToggleStoryAnalysis    = useCallback(() => setShownStoryAnalysis(v => !v), []);
   const onToggleContributorTrend = useCallback(makeToggle(setShownContributorTrendIds), []);
   const onToggleContributor     = useCallback(makeToggle(setShownContributorIds),   []);
@@ -209,7 +224,6 @@ function StoryPageInner({ storyId }: { storyId: string }) {
     onSelectEditSeries,
     onPointEdited,
     onSave,
-    onSaveAsNew,
     onToggleStoryAnalysis,
     onToggleContributorTrend,
     onToggleContributor,
@@ -220,13 +234,133 @@ function StoryPageInner({ storyId }: { storyId: string }) {
   };
 
   return (
-    <div className="flex min-h-screen w-full">
-      <aside className="w-96 shrink-0 px-5 py-6 overflow-y-auto">
-        <StorySidebar viewState={viewState} />
-      </aside>
-      <main className="flex-1 overflow-hidden">
-        <StoryGraph viewState={viewState} />
-      </main>
+    <AccessGuard storyId={storyId}>
+      <div className="flex min-h-screen w-full">
+        <aside className="w-96 shrink-0 px-5 py-6 overflow-y-auto">
+          <StorySidebar viewState={viewState} />
+        </aside>
+        <main className="flex-1 overflow-hidden">
+          <StoryGraph viewState={viewState} />
+        </main>
+      </div>
+    </AccessGuard>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// AccessGuard
+//
+// Gates rendering of the story based on auth + the story doc's permissions:
+//
+//   • Public stories (visible / usable)  → render for everyone, signed in or not
+//   • Private stories                    → render only if signed-in user is the
+//                                          admin OR their email is in the
+//                                          designated viewers map
+//
+// First-visit lazy population: when an authorized viewer visits with a uid+name
+// that haven't been written yet (entry.uid === null), we fire-and-forget update
+// the viewer entry. Doesn't block render.
+// ─────────────────────────────────────────────────────────────────────────────
+
+function AccessGuard({ storyId, children }: { storyId: string; children: React.ReactNode }) {
+  const { activeStoryDoc } = useData();
+  const { user, loading: authLoading } = useAuth();
+  const router = useRouter();
+
+  const accessState = useMemo(() => {
+    if (!activeStoryDoc || activeStoryDoc.id !== storyId) return "loading" as const;
+    if (authLoading) return "loading" as const;
+
+    const allowed = canUserViewStory(activeStoryDoc, user?.uid ?? null, user?.email ?? null);
+    if (allowed) return "allowed" as const;
+    return user ? "denied_signed_in" as const : "denied_signed_out" as const;
+  }, [activeStoryDoc, storyId, user, authLoading]);
+
+  // First-visit lazy population: fires once when an authorized non-admin
+  // viewer arrives and their entry hasn't been backfilled yet.
+  useEffect(() => {
+    if (accessState !== "allowed") return;
+    if (!activeStoryDoc || !user?.email) return;
+    const isAdmin = activeStoryDoc.permissions.admin === user.uid;
+    if (isAdmin) return;
+    const email = normalizeEmail(user.email);
+    const entry = activeStoryDoc.permissions.viewers?.[email];
+    if (entry && entry.uid === null) {
+      populateViewerOnFirstVisit(storyId, email, {
+        uid:         user.uid,
+        displayName: user.displayName,
+      }).catch((err) => console.warn("[AccessGuard] populate failed:", err));
+    }
+  }, [accessState, activeStoryDoc, user, storyId]);
+
+  if (accessState === "loading") {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-zinc-50">
+        <Loader2 size={28} className="animate-spin text-blue-600" />
+      </div>
+    );
+  }
+
+  if (accessState === "denied_signed_in") {
+    return (
+      <NoAccessCard
+        signedIn={true}
+        primaryAction={
+          <button
+            onClick={() => router.back()}
+            className="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-zinc-900 text-sm font-medium transition-colors"
+          >
+            Go back
+          </button>
+        }
+      />
+    );
+  }
+
+  if (accessState === "denied_signed_out") {
+    const returnTo = `/story/${storyId}`;
+    return (
+      <NoAccessCard
+        signedIn={false}
+        primaryAction={
+          <Link
+            href={`/login?returnTo=${encodeURIComponent(returnTo)}`}
+            className="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition-colors"
+          >
+            Sign in or create an account
+          </Link>
+        }
+      />
+    );
+  }
+
+  return <>{children}</>;
+}
+
+function NoAccessCard({
+  signedIn, primaryAction,
+}: {
+  signedIn:      boolean;
+  primaryAction: React.ReactNode;
+}) {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-zinc-50 px-4">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-sm p-8">
+        <div className="flex flex-col items-center text-center mb-6">
+          <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mb-3">
+            <AlertCircle size={24} className="text-red-600" />
+          </div>
+          <h1 className="text-xl font-semibold text-zinc-900 mb-2">
+            You don't have access to this story
+          </h1>
+          <p className="text-sm text-zinc-600">
+            {signedIn
+              ? "This story is private. Ask the story owner to add your email as a designated viewer."
+              : "This story is private. If your email has been added by the owner, sign in to view it."}
+          </p>
+        </div>
+        <div className="space-y-2">{primaryAction}</div>
+      </div>
     </div>
   );
 }

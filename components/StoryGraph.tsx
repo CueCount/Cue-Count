@@ -875,7 +875,7 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
     shownAnalysisIds,
     activeEditSeries,
   ]);
-  
+
   // Keep refs in sync with latest render values
   datasetsRef.current       = datasets;
   selectedPointsRef.current = selectedPoints;
@@ -1163,10 +1163,6 @@ export default function StoryGraph({ viewState }: { viewState: StoryViewState })
         />
  
         {/* ── Click-to-add ghost marker ─────────────────────────────────── */}
-        {/* Renders a translucent dot at the snapped (timestamp, interpolated  */}
-        {/* value) position. Click writes the point via writePoint — exactly  */}
-        {/* the same path drag and input-apply use, so all downstream logic   */}
-        {/* (clamping, isDirty, calc rebuild) just works.                     */}
         {ghostPoint && (
           <button
             onClick={() => {
